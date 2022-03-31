@@ -1,0 +1,174 @@
+#menu_player_container {
+  position: absolute;
+  bottom: 0px;
+  left: 60px;
+  top: inherit;
+  right: auto;
+  display: flex;
+  align-items: center;
+  animation-fill-mode: forwards;
+  pointer-events: all;
+}
+
+#menu_player {
+  height: 90px;
+  margin: 15px;
+  backdrop-filter: blur(10px);
+  animation-fill-mode: forwards;
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 30px;
+  width: 50vw;
+}
+
+#menu_player_cover_container {
+  height: 80px;
+  width: 80px;
+  border-radius: 25px;
+  margin: 5px;
+  overflow: hidden;
+}
+
+#menu_player_cover {
+  height: 100%;
+  width: 100%;
+}
+
+#menu_player_controls_container {
+  height: 60px;
+  width: calc(100% - 100px);
+}
+
+#menu_player_slider {
+  width: 100%;
+  opacity: 1;
+  margin-right: 10px;
+  animation-fill-mode: forwards;
+}
+
+#menu_player_slider:hover {
+  cursor: pointer;
+}
+
+#menu_player_slider::-webkit-slider-runnable-track {
+  height: 2px;
+  background: white;
+}
+
+#menu_player_slider::-webkit-slider-thumb {
+  width: 12px;
+  height: 12px;
+  border-radius: 25px;
+  background: var(--accentColor);
+  margin-top: -7px;
+}
+
+#menu_player_music_controls_container {
+  display: flex;
+  flex-direction: row;
+  height: 40px;
+  align-items: center;
+}
+
+.menu_player_music_control {
+  width: 24px;
+  margin-left: 10px;
+  margin-right: 10px;
+  opacity: 0.8;
+  animation-fill-mode: forwards;
+}
+
+.menu_player_music_control:hover {
+  opacity: 1;
+  cursor: pointer;
+  width: 24px;
+}
+
+#menu_player_audio {
+  display: none;
+}
+
+@keyframes menuPlayerGrowthIn {
+  0% {
+    width: calc(100vw - 105px);
+  }
+  100% {
+    width: calc(100vw - 225px);
+  }
+}
+
+@keyframes menuPlayerGrowthOut {
+  0% {
+    width: calc(100vw - 225px);
+  }
+  100% {
+    width: calc(100vw - 105px);
+  }
+}
+
+@keyframes playerGrow {
+  0% {
+    width: 50vw;
+  }
+  100% {
+    width: 70vw;
+  }
+}
+
+@keyframes playerShrink {
+  0% {
+    width: 70vw;
+
+  }
+  100% {
+    width: 50vw;
+  }
+}
+
+@keyframes playerBackgroundIn {
+  0% {
+    background: rgba(255, 255, 255, 0);
+    backdrop-filter: blur(0);
+  }
+  100% {
+    background: rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(3px);
+  }
+}
+
+@keyframes playerBackgroundOut {
+  0% {
+    background: rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(3px);
+  }
+  100% {
+    background: rgba(255, 255, 255, 0);
+    backdrop-filter: blur(0);
+  }
+}
+
+@keyframes playerChangePositionIn {
+  0% {
+    left: 60px;
+  }
+  100% {
+    left: 180px;
+  }
+}
+
+@keyframes playerChangePositionOut {
+  0% {
+    left: 180px;
+  }
+  100% {
+    left: 60px;
+  }
+}
+
+@keyframes movePlayer {
+  100% {
+    left: var(--endOffsetLeft);
+    top: var(--endOffsetTop);
+  }
+}

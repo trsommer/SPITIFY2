@@ -1,0 +1,278 @@
+#search_view {
+    display: block;
+    height: 100vh;
+    overflow-y: hidden;
+}
+
+#search_container {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+#search_top_container {
+    width: 100%;
+    height: 40vh;
+    display: flex;
+    flex-direction: row;
+    padding-top: 60px;
+}
+
+#search_most_relevant_result {
+    height: 40vh;
+    width: 30%;
+}
+
+#search_most_relevant_result_heading {
+    color: white;
+    margin-left: 50px;
+}
+
+#search_most_relevant_result_image_container {
+    height: 32vh;
+    width: 32vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    margin-left: 45px;
+}
+
+#search_most_relevant_image {
+    height: 100%;
+    border-radius: 20px;
+    position: absolute;
+}
+
+#search_most_relevant_image_darkener {
+    height: 100%;
+    width: 100%;
+    border-radius: 20px;
+    position: absolute;
+    z-index: 3;
+    background: linear-gradient(0deg, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0) 70%);
+
+}
+
+#search_most_relevant_image_darkener:hover {
+    cursor: pointer;
+}
+
+
+#search_most_relevant_result_image_heading_container {
+    position: absolute;
+    width: 40vh;
+    height: 30vh;
+    padding-left: 6vh;
+    pointer-events: none;
+}
+
+#search_most_relevant_result_image_heading {
+    color: white;
+    position: absolute;
+    bottom: 0;
+    font-size: 35px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    z-index: 4;
+}
+
+#search_results_artist_container{
+    height: 60vh;
+    width: 30%;
+    display: flex;
+    flex-direction: column;
+}
+
+#search_results_artists {
+    margin-left: 50px;
+}
+
+#search_results_artist_heading {
+    color: white;
+    margin-left: 50px;
+}
+
+.search_results_artist{
+    height: 12vh;
+    display: flex;
+    align-items: center;
+    width: 90%;
+    background-color: rgba(255,255,255,0.0);
+    transition: background-color 0.15;
+    border-radius: 13px;
+}
+
+.search_results_artist:hover{
+    background-color: rgba(255,255,255,0.3);
+    cursor: pointer;
+}
+
+
+
+.search_results_artist img {
+    height: 90%;
+    border-radius: 10px;
+    margin-left: 5px;
+}
+
+.search_results_artist_text {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-left: 10px;
+}
+
+.search_results_artist_text_artist {
+    font-size: 18px;
+    color: white;
+}
+
+.search_results_artist_text_type {
+    color: grey;
+    font-size: 16px;
+}
+
+
+#search_bottom_container {
+    width: 100%;
+    height: calc(60vh - 60px);
+    display: flex;
+    flex-direction: row;
+}
+
+#search_results_artists {
+
+}
+
+#search_section_songs_result {
+    height: 80%;
+    width: 100%;
+}
+
+#search_section_songs_result_container {
+    height: 40vh;
+    width: 70%;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+
+#search_section_songs_result_heading {
+    color: white;
+    margin-left: 50px;
+}
+
+.search_results_song {
+    height: 20%;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    background-color: rgba(255,255,255,0.0);
+    border-radius: 5px;
+    transition: background-color 0.15s;
+}
+
+.search_results_song_number {
+    height: 100%;
+    width: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.search_results_song_number p {
+    color: grey;
+}
+
+.search_results_song:hover {
+    background-color: rgba(255,255,255,0.3);
+    cursor: pointer;
+}
+
+.search_results_song img {
+    border-radius: 5px;
+    height: 90%;
+    margin-left: 5px;
+}
+
+.search_results_song p {
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+.search_results_song_text {
+    display: flex;
+    flex-direction: column;
+}
+
+.search_results_song_text_title {
+    color: white;
+}
+
+.search_results_song_text_artist {
+    color: grey;
+    font-size: 14px;
+}
+
+.search_results_song_text_time {
+    right: 0;
+    position: absolute;
+    color: grey;
+    font-size: 14px;
+    margin-right: 10px;
+}
+
+#search_results_albums_heading {
+    color: white;
+    margin-left: 50px;
+}
+
+#search_bottom_albums_container {
+    width: 70%;
+    height: 50vh;
+}
+
+#search_results_albums {
+    display: flex;
+    flex-direction: row;
+    margin-left: 35px;
+}
+
+.search_results_album {
+    width: 15%;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 10px;
+    background-color: rgba(255, 255, 255, 0.0);
+    transition: background-color 0.15s;
+    border-radius: 13px;
+}
+
+.search_results_album:hover {
+    background-color: rgba(255, 255, 255, 0.3);
+    cursor: pointer;
+}
+
+.search_results_album_image {
+    width: 100%;
+    border-radius: 15px;
+
+}
+
+.search_results_album_text_title {
+    color: white;
+    font-size: 16px;
+}
+
+.search_results_album_text_type {
+    color: grey;
+    font-size: 12px;
+}
+
+.search_results_album_text {
+    margin-left: 5px;
+}
