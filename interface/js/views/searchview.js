@@ -105,6 +105,9 @@ function setAlbumContent(content) {
 
     for (var i = 0; i < 5; i++) {
         albumData = data[i]
+        if (albumData == undefined) {
+            break;
+        }
         albumName = albumData["name"]
         albumType = albumData["type"]
 

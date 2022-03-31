@@ -45,7 +45,9 @@ function changePlayState() {
     }
 }
 
-function skipTo(value) {
+function skipTo(object) {
+    value = object.value
+    console.log(value);
     var audioPlayer = document.getElementById('menu_player_audio')
     var duration = audioPlayer.duration
 

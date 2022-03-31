@@ -1,4 +1,4 @@
-const {app, BrowserWindow, ipcMain,dialog} = require('electron')
+const {app, BrowserWindow, ipcMain, Notification} = require('electron')
 const path = require('path')
 const axios = require('axios')
 const { encode } = require('punycode')
@@ -8,6 +8,13 @@ const searchYT = require('youtube-search-without-api-key')
 async function getAccessToken() {
   response = await axios.get("https://open.spotify.com/get_access_token")
   return response.data["accessToken"]
+}
+
+const NOTIFICATION_TITLE = 'Basic Notification'
+const NOTIFICATION_BODY = 'Notification from the Main process'
+
+function showNotification(title, body) {
+  new Notification({ title: title, body: body }).show()
 }
 
 async function searchSpotify(query) {
@@ -52,6 +59,7 @@ async function convertURL(url) {
 async function searchYoutube(input) {
   //start = new Date()
   searchResult = await searchYT.search(input)
+  showNotification('test', input)
   //time = new Date() - start
   //console.log('Execution time4: %dms', time)
   return searchResult

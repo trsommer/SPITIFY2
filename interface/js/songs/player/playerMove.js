@@ -113,7 +113,7 @@ function animationToPlayerPosition(newOffset) {
     player = document.getElementById('menu_player_container')
     root.style.setProperty('--endOffsetTop', newOffset.y + "px")
     root.style.setProperty('--endOffsetLeft', newOffset.x + "px")
-    player.style.animation = "movePlayer 0.5s forwards"
+    player.style.animation = "movePlayer 0.4s forwards"
 }
 
 function setPlayerPosition() {

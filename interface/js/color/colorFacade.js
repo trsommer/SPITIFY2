@@ -1,6 +1,7 @@
 async function getColors(id) {
     date1 = new Date();
     img = document.getElementById(id) 
+    if(img == null) return
     const colorThief = new ColorThief();
     date2 = new Date();
     colors = await colorThief.getPalette(img)
