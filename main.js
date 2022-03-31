@@ -3,15 +3,12 @@ const path = require('path')
 const axios = require('axios')
 const { encode } = require('punycode')
 const youtubedl = require('youtube-dl-exec')
-const searchYT = require('youtube-search-without-api-key')
+const ytMusic = require('node-youtube-music')
 
 async function getAccessToken() {
   response = await axios.get("https://open.spotify.com/get_access_token")
   return response.data["accessToken"]
 }
-
-const NOTIFICATION_TITLE = 'Basic Notification'
-const NOTIFICATION_BODY = 'Notification from the Main process'
 
 function showNotification(title, body) {
   new Notification({ title: title, body: body }).show()
@@ -56,13 +53,13 @@ async function convertURL(url) {
   return output
 }
 
-async function searchYoutube(input) {
-  //start = new Date()
-  searchResult = await searchYT.search(input)
-  showNotification('test', input)
-  //time = new Date() - start
-  //console.log('Execution time4: %dms', time)
-  return searchResult
+async function searchYoutubeMusic(input) {
+  start = new Date()
+  const music = await ytMusic.searchMusics(input)
+  time = new Date() - start
+  showNotification('Spitify now playing', input)
+  console.log('Execution time4: %dms', time)
+  return music
 }
 
 function getEncodedURL(url, variables, hash) {
@@ -99,11 +96,10 @@ app.whenReady().then(() => {
   })
   ipcMain.handle('convert:url', async (event, url) => {
     const response = await convertURL(url)
-    searchYoutube("bts")
     return response
   })
   ipcMain.handle('searchYoutube:input', async (event, input) => {
-    const response = await searchYoutube(input)
+    const response = await searchYoutubeMusic(input)
     return response
   })
   createWindow()
