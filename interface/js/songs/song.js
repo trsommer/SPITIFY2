@@ -6,12 +6,13 @@ class Song {
     #playstate = false
     #length = 0
     
-    constructor(songInfo) {
+    constructor(songInfo, url) {
         this.#setInfo(songInfo)
         this.#setURL()
     }
 
-    #setInfo(songInfo) {
+    #setInfo(songInfo, url) {
+        console.log(songInfo);
         this.#name = songInfo["name"]
         var artistsArray = songInfo["artists"]["items"]
         for (let i = 0; i < artistsArray.length; i++) {
@@ -19,8 +20,15 @@ class Song {
             var artistObj = new Artist(artist["profile"]["name"], artist["uri"])
             this.#artists[i] = artistObj
         }
-        this.#imageCoverUrl = songInfo["album"]["coverArt"]["sources"][0]['url']
 
+        console.log(typeof songInfo)
+
+        if (!("album" in songInfo)) {
+            this.#imageCoverUrl = getAlbumCover()
+            return
+        }
+        this.#imageCoverUrl = songInfo["album"]["coverArt"]["sources"][0]['url']
+        
         console.log(this.#imageCoverUrl);
 
     }

@@ -8,6 +8,14 @@ async function playSong(info) {
     sendNotification(currentSong.getName(), currentSong.getArtistsAsString())
 }
 
+async function playSong(info, albumCover) {
+    console.log(info)
+    song = new Song(info, albumCover)
+    addToQueue(song)
+    playQueue()
+    sendNotification(currentSong.getName(), currentSong.getArtistsAsString())
+}
+
 function onEndPlay() {
     clearCurrentlyPlaying()
     playQueue()

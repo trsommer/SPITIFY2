@@ -5,10 +5,10 @@ async function setupAlbumView(id, additionalInfo) {
     var albumInfo = await getSpotifyAlbum(id)
     tracks = albumInfo["data"]["album"]["tracks"]["items"]
     info = additionalInfo
-    switchView("album_view")
     setContentArtists()
     console.log(tracks)
     addTracks()
+    switchView("album_view")
 }
 
 async function setContentArtists() {
@@ -25,6 +25,10 @@ async function setContentArtists() {
     document.documentElement.style.setProperty("--accentColor", colorString)
 
     title = info["name"]
+    test = [... title]
+    if (test.length > 25) {
+        console.log("long title");
+    }
     document.getElementById("album_view_header").innerHTML = title
 
     artists = info["artists"]["items"]
@@ -35,7 +39,7 @@ async function setContentArtists() {
 }
 
 function addTracks() {
-    imageUrl = info["coverArt"]["sources"][2]["url"]
+    imageUrl = getAlbumCover()
     contentContainer = document.getElementById("album_view_content")
     contentContainer.innerHTML = ""
 
@@ -76,6 +80,9 @@ function addTracks() {
         trackTime.innerHTML = trackTimeFormated
         trackDiv.appendChild(trackTime)
         document.getElementById("album_view_content").appendChild(trackDiv)
+        trackDiv.addEventListener("click", function() {
+            playSongAlbum(index)
+        })
     }
 }
 
@@ -91,4 +98,14 @@ function getArtistString(artists) {
     }
 
     return artistString
+}
+
+function playSongAlbum(id) {
+    songInfo = tracks[id]["track"]
+    playSong(songInfo)
+}
+
+function getAlbumCover() {
+    return info["coverArt"]["sources"][2]["url"]
+
 }

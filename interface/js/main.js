@@ -115,6 +115,8 @@ async function toggleSearchView(query) {
     query = query.trim()
     if (query == "") {
         switchView("last_searches_view")
+    } else{
+        switchView("search_view")
     }
 }
 
