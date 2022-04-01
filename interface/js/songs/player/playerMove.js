@@ -13,6 +13,9 @@ function startMovePlayer(e) {
     e.preventDefault()
     mouseDown = true;
     player = document.getElementById('menu_player_container')
+    playerBg = document.getElementById('menu_player')
+    playerBg.classList.remove('mouseUpCursor')
+    playerBg.classList.add('mouseDownCursor')
     startCords = {
         x: e.clientX,
         y: e.clientY
@@ -57,6 +60,7 @@ function endMovePlayer(e) {
     e.preventDefault()
     mouseDown = false
     player = document.getElementById('menu_player_container')
+    playerBg = document.getElementById('menu_player')
     startLeft = startOffset.x + "px"
     startTop="60px"
 
@@ -82,6 +86,8 @@ function endMovePlayer(e) {
     console.log("go back")
     offset = getOffset(currentPosition)
     animationToPlayerPosition(offset)
+    playerBg.classList.remove('mouseDownCursor')
+    playerBg.classList.add('mouseUpCursor')
 
     document.onmouseup = null;
     document.onmousemove = null;

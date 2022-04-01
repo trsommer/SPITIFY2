@@ -1,5 +1,5 @@
 #search_view {
-    display: block;
+    display: none;
     height: 100vh;
     overflow-y: hidden;
 }

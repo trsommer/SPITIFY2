@@ -1,5 +1,5 @@
 var currentView = "artist_view"
-var views = ["search_view", "artist_view", "last_searches_view"]
+var views = ["search_view", "artist_view", "last_searches_view", "album_view"]
 var scrollBarShape = 0
 
 

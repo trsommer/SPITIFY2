@@ -8,6 +8,8 @@
   align-items: center;
   animation-fill-mode: forwards;
   pointer-events: all;
+  display: flex;
+  justify-content: center;
 }
 
 #menu_player {
@@ -22,12 +24,22 @@
   width: 50vw;
 }
 
+#menu_player_content {
+  display: flex;
+  flex-direction: inherit;
+  align-items: center;
+  position: absolute;
+  width: calc(100% - 30px);
+  pointer-events: none;
+}
+
 #menu_player_cover_container {
   height: 80px;
   width: 80px;
   border-radius: 25px;
   margin: 5px;
   overflow: hidden;
+  pointer-events: none;
 }
 
 #menu_player_cover {
@@ -38,6 +50,7 @@
 #menu_player_controls_container {
   height: 60px;
   width: calc(100% - 100px);
+  pointer-events: none;
 }
 
 #menu_player_slider {
@@ -45,6 +58,7 @@
   opacity: 1;
   margin-right: 10px;
   animation-fill-mode: forwards;
+  pointer-events: all;
 }
 
 #menu_player_slider:hover {
@@ -52,7 +66,7 @@
 }
 
 #menu_player_slider::-webkit-slider-runnable-track {
-  height: 2px;
+  height: 4px;
   background: white;
 }
 
@@ -69,6 +83,7 @@
   flex-direction: row;
   height: 40px;
   align-items: center;
+  pointer-events: none;
 }
 
 .menu_player_music_control {
@@ -77,6 +92,7 @@
   margin-right: 10px;
   opacity: 0.8;
   animation-fill-mode: forwards;
+  pointer-events: all;
 }
 
 .menu_player_music_control:hover {
@@ -171,4 +187,12 @@
     left: var(--endOffsetLeft);
     top: var(--endOffsetTop);
   }
+}
+
+.mouseDownCursor {
+  cursor: grabbing;
+}
+
+.mouseUpCursor {
+  cursor: grab;
 }

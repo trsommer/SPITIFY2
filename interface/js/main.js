@@ -91,9 +91,12 @@ window.addEventListener('resize', function(event){
 
 
 async function search(query) {
+    console.log("searching for:" + query + ".");
     query = query.trim()
-
-    if (query == '') return
+    if (query == "") {
+        switchView("last_searches_view")
+        return
+    }
     switchView("search_view")
 
     if (query == lastSearch) return

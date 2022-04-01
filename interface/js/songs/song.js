@@ -31,8 +31,8 @@ class Song {
         console.log(title)
 
         var response = await getYoutubeUrl(title)
-        console.log(response)
-        var url = response["0"]["url"]
+        var id = response[0]['youtubeId']
+        var url = "https://www.youtube.com/watch?v=" + id
         var streamingUrl = await getStreamingUrl(url)
 
         this.#url = streamingUrl

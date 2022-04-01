@@ -1,5 +1,6 @@
 spotifyIds = []
 songInfo = []
+var albums = []
 
 function setContentSearch(content) {
     artists = content["artists"]
@@ -15,6 +16,7 @@ function setContentSearch(content) {
 
 function setHighlightContent(content) {
     data = content["items"]["0"]
+    if(data == undefined) return
     url = data["visuals"]["avatarImage"]["sources"]["0"]["url"]
     artistName = data["profile"]["name"]
     spotifyURI = data["uri"]
@@ -30,6 +32,7 @@ function setOtherArtistsContent(content) {
 
     for (var i = 0; i < 3; i++) {
         data = content["items"][i+1]
+        if (data == undefined) return
         artistContainer = document.getElementById("search_results_artist_" + i)
         image = artistContainer.querySelector(".search_results_artist_image")
         nameArtist = artistContainer.querySelector(".search_results_artist_text_artist")
@@ -60,8 +63,8 @@ function setSongsContent(content) {
 
     for (let i = 0; i < 5; i++) {
         trackContainer = document.getElementById("song_result_" + i)
+        if(trackContainer == undefined) return
         track = content["items"][i]["track"]
-        
         image = trackContainer.querySelector(".search_result_track_image")
         nameTrack = trackContainer.querySelector(".search_results_song_text_title")
         nameArtist = trackContainer.querySelector(".search_results_song_text_artist")
@@ -102,6 +105,7 @@ function setSongsContent(content) {
 
 function setAlbumContent(content) {
     data = content["items"]
+    albums = data
 
     for (var i = 0; i < 5; i++) {
         albumData = data[i]
@@ -117,8 +121,6 @@ function setAlbumContent(content) {
             imgUrl = "standardImages/cover.jpg"
         }
 
-
-
         albumContainer = document.getElementById("search_results_album_" + i)
 
         albumContainer.querySelector(".search_results_album_image").src = imgUrl
@@ -131,5 +133,13 @@ function setAlbumContent(content) {
 }
 
 function playSongSearchView(id) {
+    console.log(songInfo);
     playSong(songInfo[id])
+}
+
+async function openAlbum(id) {
+    var album = albums[id]
+    var spotifyURI = album["uri"]
+    var theSplit = spotifyURI.split(":")
+    setupAlbumView(theSplit[2], album)
 }

@@ -4,6 +4,12 @@ async function getSpotifyArtist(id) {
     return returnArray["data"]["artist"]
 }
 
+async function getSpotifyAlbum(id) {
+    returnArray = await window.electronAPI.getAlbumInfo(id)
+
+    return returnArray
+}
+
 async function getSpotifySearchResults(query) {
     returnArray = await window.electronAPI.searchSpotify(query)
 
@@ -12,8 +18,6 @@ async function getSpotifySearchResults(query) {
 
 async function getYoutubeUrl(query) {
     returnArray = await window.electronAPI.searchYoutube(query)
-
-    console.log(query);
 
     return returnArray
 }

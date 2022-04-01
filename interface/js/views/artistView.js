@@ -1,5 +1,6 @@
 var scrolledDown = false
 var scrollMaxY = document.documentElement.scrollHeight - 60
+var topSongs = []
 
 function scrollArtistView(scrollY) {
     if (scrollY > 72){
@@ -69,6 +70,7 @@ async function setContent(content) {
     }
     alternativeTitleElem = document.getElementById("top_container_alternativeTitle")
 
+    console.log(content)
 
     console.log(artistName)
     console.log(bgImage)
@@ -94,6 +96,7 @@ async function setContent(content) {
 function setMusicPreviewContent(content) {
     latestRelease = content["latest"]
     topSongs = content["topTracks"]["items"]
+
     setNewReleaseContent(latestRelease)
     x = 6
 
@@ -147,3 +150,8 @@ function setPlaceHolderVisibility(index, visibility) {
     else placeholder.style.display = "none"
 }
 
+function playTopSong(id) {
+    console.log("playTopSong" + id)
+    console.log(topSongs);
+    playSong(topSongs[id]["track"])
+}

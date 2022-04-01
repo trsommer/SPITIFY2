@@ -14,6 +14,7 @@
     <script src="js/songs/song.js"></script>
     <script src="js/songs/queue.js"></script>
     <script src="js/view_control.js"></script>
+    <script src="js/views/albumView.js"></script>
     <script src="js/views/searchview.js"></script>
     <script src="js/color/colorFacade.js"></script>
     <script src="js/color/colorAnalysis.js"></script>
@@ -92,8 +93,10 @@
                 <svg class="menu_topMenu_item_text" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 65.21 17.92"><defs></defs><g id="Ebene_2" data-name="Ebene 2"><g id="Ebene_1-2" data-name="Ebene 1"><path class="cls-1" d="M4,3.76c2.23,0,3.71,1.31,3.78,3.11H6.16A1.93,1.93,0,0,0,4,5.15c-1.24,0-2.06.61-2.06,1.5,0,.7.52,1.18,1.65,1.46l1.62.39C7.26,9,8,9.79,8,11.25c0,1.77-1.67,3-3.94,3S.2,13.07,0,11.16H1.7c.2,1.16,1,1.72,2.36,1.72s2.23-.59,2.23-1.5c0-.74-.4-1.16-1.56-1.44L3.12,9.55C1.2,9.09.27,8.2.27,6.74.27,5,1.81,3.76,4,3.76Z"/><path class="cls-1" d="M18.16,11.18a4,4,0,0,1-4.22,3.09c-2.91,0-4.68-2-4.68-5.22s1.79-5.29,4.6-5.29,4.43,2,4.43,5.07v.64H11v.1a2.9,2.9,0,0,0,3,3.22,2.44,2.44,0,0,0,2.52-1.61ZM11,8.14h5.51a2.72,2.72,0,0,0-2.7-2.91A2.85,2.85,0,0,0,11,8.14Z"/><path class="cls-1" d="M22.25,1.48V3.94h2V5.33h-2v6c0,.92.39,1.34,1.26,1.34a6.81,6.81,0,0,0,.7,0v1.42a6,6,0,0,1-1.08.08c-1.86,0-2.58-.76-2.58-2.71V5.33H19V3.94h1.52V1.48Z"/><path class="cls-1" d="M28.27,1.48V3.94h2V5.33h-2v6c0,.92.39,1.34,1.26,1.34a6.47,6.47,0,0,0,.7,0v1.42a5.83,5.83,0,0,1-1.07.08c-1.87,0-2.59-.76-2.59-2.71V5.33H25.06V3.94h1.51V1.48Z"/><path class="cls-1" d="M31.92,1.06A1.07,1.07,0,1,1,33,2.13,1.06,1.06,0,0,1,31.92,1.06Zm.22,2.88h1.7V14.09h-1.7Z"/><path class="cls-1" d="M36.13,3.94h1.6V5.56h0A3.4,3.4,0,0,1,41,3.76c2.22,0,3.51,1.44,3.51,3.74v6.59h-1.7V7.8c0-1.64-.77-2.54-2.33-2.54a2.6,2.6,0,0,0-2.65,2.86v6h-1.7Z"/><path class="cls-1" d="M46.57,14.93h1.75a2.62,2.62,0,0,0,2.61,1.54c1.76,0,2.82-1,2.82-2.52V12.34h0a3.66,3.66,0,0,1-3.25,1.83c-2.59,0-4.29-2-4.29-5.2s1.7-5.21,4.33-5.21a3.7,3.7,0,0,1,3.3,1.88h0V3.94h1.62v10c0,2.42-1.79,4-4.59,4C48.62,17.92,46.86,16.66,46.57,14.93Zm7.18-6c0-2.23-1.18-3.72-3-3.72S47.91,6.7,47.91,9s1.14,3.71,2.89,3.71S53.75,11.21,53.75,9Z"/><path class="cls-1" d="M61.21,3.76c2.23,0,3.71,1.31,3.78,3.11H63.37a1.94,1.94,0,0,0-2.16-1.72c-1.24,0-2.06.61-2.06,1.5,0,.7.52,1.18,1.65,1.46l1.61.39c2,.49,2.8,1.29,2.8,2.75,0,1.77-1.67,3-3.94,3s-3.87-1.2-4.06-3.11h1.7c.2,1.16,1,1.72,2.36,1.72s2.23-.59,2.23-1.5c0-.74-.4-1.16-1.57-1.44l-1.61-.39c-1.91-.46-2.84-1.35-2.84-2.81C57.48,5,59,3.76,61.21,3.76Z"/></g></g></svg>
             </div>
         </div>
-        <div id="menu_player_container" onmousedown="startMovePlayer()">
-                <div id="menu_player"> 
+        <div id="menu_player_container">
+            <div id="menu_player" class="mouseUpCursor" onmousedown="startMovePlayer()"> 
+            </div>
+            <div id="menu_player_content">
                 <div id="menu_player_cover_container">
                     <img id="menu_player_cover" src="standardImages/cover.jpg" alt="">
                 </div>
@@ -107,6 +110,7 @@
                 </div>
                 <audio src="" id="menu_player_audio" onended="onEndPlay()" ontimeupdate="setProgress()"></audio>
             </div>
+            
         </div>
     </div>
     <div id="viewport">
@@ -137,21 +141,21 @@
                         <h2 id="av_music_preview_heading">Top Songs</h2>
                         <div id="av_music_preview_musicShowcase_content">
                             <div class="av_music_preview_musicShowcase_tracks">
-                                <div class="av_music_preview_musicShowcase_track" id="av_music_preview_musicShowcase_container_0">
+                                <div class="av_music_preview_musicShowcase_track" id="av_music_preview_musicShowcase_container_0" onclick="playTopSong(0)">
                                     <img class="av_music_preview_musicShowcase_trackIMG" id="av_music_preview_musicShowcase_poster_0" src="standardImages/cover.jpg" alt="">
                                     <div class="av_music_preview_musicShowcase_trackText">
                                         <h4 id="av_music_preview_musicShowcase_0_text1">SongTitle</h4>
                                         <p id="av_music_preview_musicShowcase_0_text2">Album - EP - 2021</p>
                                     </div>
                                 </div>
-                                <div class="av_music_preview_musicShowcase_track" id="av_music_preview_musicShowcase_container_1">
+                                <div class="av_music_preview_musicShowcase_track" id="av_music_preview_musicShowcase_container_1" onclick="playTopSong(1)">
                                     <img class="av_music_preview_musicShowcase_trackIMG" id="av_music_preview_musicShowcase_poster_1" src="standardImages/cover.jpg" alt="">
                                     <div class="av_music_preview_musicShowcase_trackText">
                                         <h4 id="av_music_preview_musicShowcase_1_text1">SongTitle</h4>
                                         <p id="av_music_preview_musicShowcase_1_text2">Album - EP - 2021</p>
                                     </div>
                                 </div>
-                                <div class="av_music_preview_musicShowcase_track" id="av_music_preview_musicShowcase_container_2">
+                                <div class="av_music_preview_musicShowcase_track" id="av_music_preview_musicShowcase_container_2" onclick="playTopSong(2)">
                                     <img class="av_music_preview_musicShowcase_trackIMG" id="av_music_preview_musicShowcase_poster_2" src="standardImages/cover.jpg" alt="">
                                     <div class="av_music_preview_musicShowcase_trackText">
                                         <h4 id="av_music_preview_musicShowcase_2_text1">SongTitle</h4>
@@ -160,21 +164,21 @@
                                 </div>
                             </div>
                             <div class="av_music_preview_musicShowcase_tracks">
-                                <div class="av_music_preview_musicShowcase_track" id="av_music_preview_musicShowcase_container_3">
+                                <div class="av_music_preview_musicShowcase_track" id="av_music_preview_musicShowcase_container_3" onclick="playTopSong(3)">
                                     <img class="av_music_preview_musicShowcase_trackIMG" id="av_music_preview_musicShowcase_poster_3" src="standardImages/cover.jpg" alt="">
                                     <div class="av_music_preview_musicShowcase_trackText">
                                         <h4 id="av_music_preview_musicShowcase_3_text1">SongTitle</h4>
                                         <p id="av_music_preview_musicShowcase_3_text2">Album - EP - 2021</p>
                                     </div>
                                 </div>
-                                <div class="av_music_preview_musicShowcase_track" id="av_music_preview_musicShowcase_container_4">
+                                <div class="av_music_preview_musicShowcase_track" id="av_music_preview_musicShowcase_container_4" onclick="playTopSong(4)">
                                     <img class="av_music_preview_musicShowcase_trackIMG" id="av_music_preview_musicShowcase_poster_4" src="standardImages/cover.jpg" alt="">
                                     <div class="av_music_preview_musicShowcase_trackText">
                                         <h4 id="av_music_preview_musicShowcase_4_text1">SongTitle</h4>
                                         <p id="av_music_preview_musicShowcase_4_text2">Album - EP - 2021</p>
                                     </div>
                                 </div>
-                                <div class="av_music_preview_musicShowcase_track" id="av_music_preview_musicShowcase_container_5">
+                                <div class="av_music_preview_musicShowcase_track" id="av_music_preview_musicShowcase_container_5" onclick="playTopSong(5)">
                                     <img class="av_music_preview_musicShowcase_trackIMG" id="av_music_preview_musicShowcase_poster_5" src="standardImages/cover.jpg" alt="">
                                     <div class="av_music_preview_musicShowcase_trackText">
                                         <h4 id="av_music_preview_musicShowcase_5_text1">SongTitle</h4>
@@ -304,35 +308,35 @@
                         </h2>
                         <div>
                             <div id="search_results_albums">
-                                <div class="search_results_album" id="search_results_album_0">
+                                <div class="search_results_album" id="search_results_album_0" onclick="openAlbum(0)">
                                     <img src="standardImages/cover.jpg" class="search_results_album_image">
                                     <div class="search_results_album_text">
                                         <p class="search_results_album_text_title">Title</p>
                                         <p class="search_results_album_text_type">Type</p>
                                     </div>
                                 </div>
-                                <div class="search_results_album" id="search_results_album_1">
+                                <div class="search_results_album" id="search_results_album_1" onclick="openAlbum(1)">
                                     <img src="standardImages/cover.jpg" class="search_results_album_image">
                                     <div class="search_results_album_text">
                                         <p class="search_results_album_text_title">Title</p>
                                         <p class="search_results_album_text_type">Type</p>
                                     </div>
                                 </div>
-                                <div class="search_results_album" id="search_results_album_2">
+                                <div class="search_results_album" id="search_results_album_2" onclick="openAlbum(2)">
                                     <img src="standardImages/cover.jpg" class="search_results_album_image">
                                     <div class="search_results_album_text">
                                         <p class="search_results_album_text_title">Title</p>
                                         <p class="search_results_album_text_type">Type</p>
                                     </div>
                                 </div>
-                                <div class="search_results_album" id="search_results_album_3">
+                                <div class="search_results_album" id="search_results_album_3" onclick="openAlbum(3)">
                                     <img src="standardImages/cover.jpg" class="search_results_album_image">
                                     <div class="search_results_album_text">
                                         <p class="search_results_album_text_title">Title</p>
                                         <p class="search_results_album_text_type">Type</p>
                                     </div>
                                 </div>
-                                <div class="search_results_album" id="search_results_album_4">
+                                <div class="search_results_album" id="search_results_album_4" onclick="openAlbum(4)">
                                     <img src="standardImages/cover.jpg" class="search_results_album_image">
                                     <div class="search_results_album_text">
                                         <p class="search_results_album_text_title">Title</p>
@@ -349,6 +353,7 @@
         <div id="last_searches_view">
         </div>
         <div id="album_view">
+            
         </div>
         <div id="playlist_view">
         </div>

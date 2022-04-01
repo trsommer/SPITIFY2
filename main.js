@@ -4,6 +4,7 @@ const axios = require('axios')
 const { encode } = require('punycode')
 const youtubedl = require('youtube-dl-exec')
 const ytMusic = require('node-youtube-music')
+const sqlite3 = require('sqlite3').verbose()
 
 async function getAccessToken() {
   response = await axios.get("https://open.spotify.com/get_access_token")
@@ -42,6 +43,17 @@ async function getArtistInfo(artistID) {
   return response.data
 }
 
+async function getAlbumInfo(albumID) {
+  accessToken = await getAccessToken()
+  urlStart = 'https://api-partner.spotify.com/pathfinder/v1/query?operationName=queryAlbumTracks&'
+  variables = '{"uri":"spotify:album:' + albumID + '", "offset":0,"limit":300}'
+  hash = '{"persistedQuery": {"version": 1, "sha256Hash": "3ea563e1d68f486d8df30f69de9dcedae74c77e684b889ba7408c589d30f7f2e"}}'
+
+  url = getEncodedURL(urlStart, variables, hash)
+  response = await axios.get(url, {headers: {'authorization': 'Bearer ' + accessToken}})
+  return response.data
+}
+
 async function convertURL(url) {
   //start = new Date()
   output = await youtubedl(url, {
@@ -69,6 +81,40 @@ function getEncodedURL(url, variables, hash) {
   return url + params.toString()
 }
 
+function accessDataBase(query) {
+  db = getDB()
+  db.all(query, (err, rows) => {
+    if (err) {
+      throw err
+    }
+    db.close()
+    return rows
+  })
+}
+
+function runOnDB(query) {
+  db = getDB()
+  db.run(query, (err) => {
+    if (err) {
+      throw err
+    }
+    db.close()
+  })
+}
+
+function getDB() {
+  db = new sqlite3.Database('./db/spitify.sqlite')
+}
+
+function testFunction() {
+  runOnDB("CREATE TABLE songs (id INTEGER PRIMARY KEY, title TEXT, artist TEXT, album TEXT, youtubeID TEXT, duration INTEGER, imageUrl TEXT, streamingUrl TEXT)")
+}
+
+async function albumTest() {
+  albumInfo = await getAlbumInfo("71O60S5gIJSIAhdnrDIh3N")
+  console.log(albumInfo);
+}
+
 function createWindow () {
   const mainWindow = new BrowserWindow({
     width: 1350, 
@@ -83,6 +129,9 @@ function createWindow () {
     }
   })
   mainWindow.loadFile('interface/index.html')
+  getDB()
+  albumTest()
+  //testFunction()
 }
 
 app.whenReady().then(() => {
@@ -92,6 +141,10 @@ app.whenReady().then(() => {
   })
   ipcMain.handle('get:artistInfo', async (event, artistID) => {
     const response = await getArtistInfo(artistID)
+    return response
+  })
+  ipcMain.handle('get:albumInfo', async (event, albumID) => {
+    const response = await getAlbumInfo(albumID)
     return response
   })
   ipcMain.handle('convert:url', async (event, url) => {
