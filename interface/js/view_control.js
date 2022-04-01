@@ -17,6 +17,8 @@ function switchView(view) {
 
     document.getElementById(view).style.display = "block"
 
+    console.log("switched to " + view)
+
 }
 
 window.addEventListener('scroll', function(event){

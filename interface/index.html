@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="css/artist_view.css">
     <link rel="stylesheet" href="css/player.css">
     <link rel="stylesheet" href="css/search_view.css">
+    <link rel="stylesheet" href="css/album_view.css">
     <script src="js/color/colorThief.js"></script>
     <script src="js/songs/artists.js"></script>
     <script src="js/songs/song.js"></script>
@@ -353,7 +354,25 @@
         <div id="last_searches_view">
         </div>
         <div id="album_view">
-            
+            <div id="album_view_bgImage_container">
+                <img src="standardImages/cover.jpg" id="album_view_bgImage">
+                <div id="album_view_gradientBG"></div>
+                
+                <div id="album_view_cover_container">
+                    <img src="standardImages/cover.jpg" id="album_view_cover">
+                    <div id="album_view_cover_gradient"></div>
+                </div>
+            </div>
+            <div id="album_view_header_container">
+                <h1 id="album_view_header">THE TITLE</h1>
+                <h4 id="album_view_2ndHeader">The artists - year</h4>
+                <div id="album_view_header_buttton_container">
+                    <input type="button" value="play" class="album_view_header_buttton">
+                    <input type="button" value="shuffle" class="album_view_header_buttton">
+                </div>
+            </div>
+            <div id="album_view_content">
+            </div>
         </div>
         <div id="playlist_view">
         </div>

@@ -20,7 +20,6 @@
 }
 
 body {
-    background-color: black;
     margin: 0;
     user-select: none;
     display: flex;
@@ -301,6 +300,7 @@ p {
     z-index: -1;
     width: calc(100% - 60px);
     right: 0;
+    background-color: #151616;
 }
 
 #top_container_alternativeTitle_container {
