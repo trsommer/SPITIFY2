@@ -19,11 +19,18 @@
   border: 1px solid transparent;
 }
 
+.flatBottom::-webkit-scrollbar-thumb {
+    background: var(--accentColor);
+    border-radius: 10px 10px 0 0;
+    border: 1px solid transparent;
+  }
+
 body {
     margin: 0;
     user-select: none;
     display: flex;
     overflow-x: hidden;
+    background-color: #151616;
 }
 
 p {
@@ -39,7 +46,7 @@ p {
 }
 
 #menu_top_content {
-    pointer-events: all;
+    pointer-events: none;
 }
 
 @keyframes menuAnimationIn{
@@ -130,7 +137,7 @@ p {
     background-color: var(--accentColor);
     position: absolute;
     right: 0;
-    pointer-events: all;
+    pointer-events: none;
     opacity: 0.85;
     backdrop-filter: blur(3px);
 }
@@ -219,6 +226,7 @@ p {
     justify-content: center;
     align-items: center;
     animation-fill-mode: forwards;
+    pointer-events: all;
 }
 
 @keyframes seachContainerIn {

@@ -123,8 +123,9 @@ class Song {
 
             audio.src = this.#url
             this.addToPlayer()
+            setVolume()
             changePlayState()
-            sendNotification(this.#name, this.getArtistsAsString)
+            //sendNotification(this.#name, this.getArtistsAsString)
         } else {
             this.#playstate = true
         }
@@ -134,5 +135,6 @@ class Song {
     addToPlayer() {
         var playerImage = document.getElementById('menu_player_cover')
         playerImage.src = this.#imageCoverUrl
+        setPlayerText(this.#name, this.getArtistsAsString())
     }
 }

@@ -69,7 +69,6 @@ async function searchYoutubeMusic(input) {
   start = new Date()
   const music = await ytMusic.searchMusics(input)
   time = new Date() - start
-  showNotification('Spitify now playing', input)
   console.log('Execution time4: %dms', time)
   return music
 }
@@ -154,6 +153,9 @@ app.whenReady().then(() => {
   ipcMain.handle('searchYoutube:input', async (event, input) => {
     const response = await searchYoutubeMusic(input)
     return response
+  })
+  ipcMain.handle('send:notification', async (event, title, body) => {
+    showNotification(title, body)
   })
   createWindow()
   app.on('activate', function () {

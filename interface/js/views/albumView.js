@@ -24,12 +24,20 @@ async function setContentArtists() {
 
     document.documentElement.style.setProperty("--accentColor", colorString)
 
+    header = document.getElementById("album_view_header")
+
     title = info["name"]
     test = [... title]
     if (test.length > 25) {
-        console.log("long title");
+        //long title
+        header.classList.add("album_view_header_small")
+        header.classList.remove("album_view_header_big")
+    } else {
+        //small title
+        header.classList.remove("album_view_header_small")
+        header.classList.add("album_view_header_big")
     }
-    document.getElementById("album_view_header").innerHTML = title
+    header.innerHTML = title
 
     artists = info["artists"]["items"]
     artistString = getArtistString(artists)
@@ -108,4 +116,29 @@ function playSongAlbum(id) {
 function getAlbumCover() {
     return info["coverArt"]["sources"][2]["url"]
 
+}
+
+function playSongsAlbum() {
+    clearQueue()
+    for (let index = 0; index < tracks.length; index++) {
+        const track = tracks[index];
+        playSong(track["track"])
+    }
+}
+
+function shuffleSongsAlbum() {
+    clearQueue()
+    var shuffledArray = [...tracks]
+    shuffleArray(shuffledArray)
+    for (let index = 0; index < shuffledArray.length; index++) {
+        const thisTrack = shuffledArray[index]
+        playSong(thisTrack["track"])
+    }
+}
+
+function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
 }

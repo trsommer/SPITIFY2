@@ -18,7 +18,6 @@ function removeFromQueue() {
 async function playQueue() {
     var songQueueLength = songQueue.length
 
-
     if (songQueueLength == 0) {
         return
     }
@@ -27,6 +26,7 @@ async function playQueue() {
         var song = removeFromQueue()
         console.log(song);
         song.play()
+        sendNotification(song.getName(), song.getArtistsAsString())
     }
 }
 
@@ -43,4 +43,8 @@ function replaceQueue(song) {
 
 function clearCurrentlyPlaying() {
     currentSong = null
+}
+
+function clearQueue() {
+    songQueue = []
 }

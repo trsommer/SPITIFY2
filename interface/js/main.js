@@ -105,8 +105,6 @@ async function search(query) {
 
     response = await getSpotifySearchResults(query)
 
-    console.log(response);
-
     setContentSearch(response)
 
 }

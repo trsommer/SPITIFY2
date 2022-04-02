@@ -28,8 +28,12 @@ window.addEventListener('scroll', function(event){
         scrollArtistView(scrollY)
     }
 
+    var limit = Math.max( document.body.scrollHeight, document.body.offsetHeight, document.documentElement.clientHeight, document.documentElement.scrollHeight, document.documentElement.offsetHeight) - window.innerHeight
+
     if (scrollY == 0) {
         setScrollBarShape(0)
+    } else if (scrollY >= limit) {
+        setScrollBarShape(2)
     } else {
         setScrollBarShape(1)
     }
@@ -39,13 +43,17 @@ window.addEventListener('scroll', function(event){
 
 function setScrollBarShape(type) {
     body = document.getElementsByTagName("body")[0]
-
-    if(type == 0 && scrollBarShape == 1) {
-        body.setAttribute( 'class', 'flatTop' );
-        scrollBarShape = 0
-    } 
-    if (type == 1 && scrollBarShape == 0) {
-        body.setAttribute( 'class', 'roundTop' );
-        scrollBarShape = 1
+    switch (type) {
+        case 0:
+            body.setAttribute( 'class', 'flatTop' )
+            break
+        case 1:
+            body.setAttribute( 'class', 'roundTop' )
+            break
+        case 2:
+            body.setAttribute( 'class', 'flatBottom' )
+            break
+        default:
+            return
     }
 }

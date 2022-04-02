@@ -10,8 +10,6 @@ function setContentSearch(content) {
     setOtherArtistsContent(artists)
     setSongsContent(songs)
     setAlbumContent(albums)
-
-    console.log(spotifyIds);
 }
 
 function setHighlightContent(content) {

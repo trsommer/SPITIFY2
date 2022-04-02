@@ -5,15 +5,12 @@ async function playSong(info) {
     song = new Song(info)
     addToQueue(song)
     playQueue()
-    sendNotification(currentSong.getName(), currentSong.getArtistsAsString())
 }
 
 async function playSong(info, albumCover) {
-    console.log(info)
     song = new Song(info, albumCover)
     addToQueue(song)
     playQueue()
-    sendNotification(currentSong.getName(), currentSong.getArtistsAsString())
 }
 
 function onEndPlay() {
@@ -66,4 +63,21 @@ function skipTo(object) {
 
 function getPlayerState() {
     return playerState
+}
+
+function setPlayerText(title, artistString) {
+    titleHTML = document.getElementById("menu_player_text_title")
+    artistsHTML = document.getElementById("menu_player_text_artists")
+
+    titleHTML.innerHTML = title
+    artistsHTML.innerHTML = artistString
+}
+
+function setVolume() {
+    var volumeSlider = document.getElementById('menu_player_volume_slider')
+    value = volumeSlider.value
+    var audio = document.getElementById('menu_player_audio')
+    var newVolume = value / 100
+
+    audio.volume = newVolume
 }

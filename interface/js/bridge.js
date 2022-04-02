@@ -25,6 +25,14 @@ async function getYoutubeUrl(query) {
 async function getStreamingUrl(url) {
     result = await window.electronAPI.convertURL(url)
 
+    console.log("convertion:");
+    console.log(url);
+    console.log(result);
+
     return result
+}
+
+async function sendNotification(title, body) {
+    window.electronAPI.sendNotification(title, body)
 }
 
