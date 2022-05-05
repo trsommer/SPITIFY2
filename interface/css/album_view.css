@@ -72,6 +72,7 @@
 #album_view_header {
     margin: 0;
     color: var(--accentColor);
+    max-width: 75%;
 }
 
 .album_view_header_big {
@@ -177,6 +178,7 @@
 .album_view_track_text_artists {
     left: 50vw;
     position: absolute;
+    max-width: 35vw;
 }
 
 .album_view_track:hover {

@@ -1,50 +1,68 @@
-var songQueue = []
-var currentSong = null
+var songQueue = [];
+var currentSong = null;
+var playedQueue = [];
 
 function addToQueue(song) {
-    songQueue.push(song)
+  songQueue.push(song);
 }
 
 function getCurrentSong() {
-    return currentSong
+  return currentSong;
 }
 
-function removeFromQueue() {
-    currentSong = songQueue.shift()
-    console.log(currentSong)
-    return currentSong
+async function removeFromQueue() {
+  currentSong = await songQueue.shift();
+  console.log(currentSong);
+  return currentSong;
 }
 
 async function playQueue() {
-    var songQueueLength = songQueue.length
+  var songQueueLength = songQueue.length;
 
-    if (songQueueLength == 0) {
-        return
-    }
+  if (songQueueLength == 0) {
+    return;
+  }
 
-    if (songQueueLength > 0 && currentSong == null) {
-        var song = removeFromQueue()
-        console.log(song);
-        song.play()
-        sendNotification(song.getName(), song.getArtistsAsString())
-    }
+  if (songQueueLength > 0 && currentSong == null) {
+    var song = await removeFromQueue();
+    console.log(song.getName());
+    await song.play();
+    sendNotification(song.getName(), song.getArtistsAsString());
+  }
 }
 
 function skipQueue(song) {
-    songQueue.unshift(song)
-    playQueue()
+  songQueue.unshift(song);
+  playQueue();
 }
 
-function replaceQueue(song) {
-    songQueue = []
-    addToQueue(song)
-    playQueue()
+async function replaceQueue(song) {
+  songQueue = [];
+  finalSong = await song
+  addToQueue(finalSong);
+  playQueue();
 }
 
 function clearCurrentlyPlaying() {
-    currentSong = null
+  currentSong = null;
 }
 
 function clearQueue() {
-    songQueue = []
+  songQueue = [];
+}
+
+function getCurrentSong() {
+  return currentSong;
+}
+
+function getQueueLength() {
+  return songQueue.length;
+}
+
+function addToPlayedQueue(song) {
+  playedQueue.push(song);
+}
+
+function getPlayedQueue() {
+  return playedQueue;
 }

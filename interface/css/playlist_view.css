@@ -1,0 +1,112 @@
+#playlist_view {
+    display: none;
+}
+
+#playlist_image_background_container {
+    height: 40vh;
+    width: 100%;
+    padding-top: 60px;
+}
+
+#playlist_image_background {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.3;
+    filter: blur(5px);
+}
+
+#playlist_header_container {
+    position: absolute;
+    top: 60px;
+    height: 40vh;
+    width: 100%;
+    display: flex;
+    align-items: center;   
+}
+
+#playlist_header_image {
+    height: 80%;
+    border-radius: 20px;
+    margin-left: 4vh;   
+}
+
+#playlist_header_text_container {
+    color: white;
+    margin-left: 50px;
+}
+
+#playlist_header_text {
+    font-size: 40px;
+}
+
+#playlist_header_author {
+    color: grey;
+    font-size: 18px;   
+}
+
+.playlist_track_item {
+    display: flex;
+    flex-direction: row;
+    height: 6vh;
+    align-items: center;
+    margin-top: 4px;
+    margin-bottom: 4px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    width: calc(100% - 20px);
+    border-radius: 5px;
+    color: var(--contrast_bright);
+}
+
+.playlist_track_item:hover {
+    background-color: rgba(255, 255, 255, 0.3);
+    cursor: pointer;
+}
+
+.playlist_track_number_container {
+    height: 6vh;
+    width: 6vh;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+}
+
+.playlist_track_image {
+    height: 6vh;
+    border-radius: 5px;
+}
+
+.playlist_track_name {
+    margin-left: 20px;
+    color: var(--contrast_bright);
+}
+
+.playlist_track_artists {
+    left: 50vw;
+    position: absolute;
+    max-width: 35vw;
+}
+
+.playlists_track_duration {
+    right: 20px;
+    position: absolute;
+}
+
+.playlist_button {
+    margin-right: 20px;
+    margin-top: 2px;
+    padding: 8px;
+    padding-left: 20px;
+    padding-right: 20px;
+    border-radius: 18px;
+    background: var(--accentColor);
+    border: none;
+    pointer-events: all;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+#playlist_buttons {
+    margin-top: 20px;
+}

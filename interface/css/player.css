@@ -15,13 +15,14 @@
 #menu_player {
   height: 90px;
   margin: 15px;
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(0);
   animation-fill-mode: forwards;
   display: flex;
   align-items: center;
-  background: rgba(32,32,32,0.8);
+  background: rgba(32,32,32,0);
   border-radius: 30px;
-  width: 50vw;
+  width: 0;
+  opacity: 0;
 }
 
 #menu_player_content {
@@ -36,15 +37,17 @@
 #menu_player_cover_container {
   height: 80px;
   width: 80px;
-  border-radius: 25px;
   margin: 5px;
   overflow: hidden;
   pointer-events: none;
 }
 
 #menu_player_cover {
-  height: 100%;
-  width: 100%;
+  height: 50%;
+  width: 50%;
+  opacity: 0;
+  animation-fill-mode: forwards;
+  border-radius: 30%;
 }
 
 #menu_player_controls_container {
@@ -54,14 +57,16 @@
 }
 
 #menu_player_slider {
-  width: 100%;
-  opacity: 1;
+  width: 50%;
+  opacity: 0;
   margin-right: 10px;
+  animation-fill-mode: forwards;
 }
 
 .slider {
   pointer-events: all;
   animation-fill-mode: forwards;
+  opacity: 0.8;
 
 }
 
@@ -79,8 +84,14 @@
   width: 12px;
   height: 12px;
   border-radius: 25px;
-  background: var(--accentColor);
+  background: white;
   margin-top: -7px;
+  -webkit-appearance: none;
+  border: none;
+}
+
+.slider:focus {
+  outline: none;
 }
 
 #menu_player_music_controls_container {
@@ -95,7 +106,7 @@
   width: 24px;
   margin-left: 10px;
   margin-right: 10px;
-  opacity: 0.8;
+  opacity: 0;
   animation-fill-mode: forwards;
   pointer-events: all;
 }
@@ -207,19 +218,88 @@
   color: var(--contrast_bright);
   grid-column-gap: 10px;
   margin-left: 4px;
+  opacity: 0;
+  animation-fill-mode: forwards;
 }
 
 .menu_player_text {
   margin: 0;
 }
 
-.menu_player_volume_slider {
-  width: 120px;
-  opacity: 1;
+#menu_player_volume_slider {
+  width: 0;
+  opacity: 0;
   margin-left: 10px;
   margin-right: 10px;
+  animation-fill-mode: forwards;
 }
 
 #menu_player_icon1 {
   width: 20px;
+}
+
+
+/* player in animation */
+
+
+
+@keyframes playerImageIn {
+  0% {
+    opacity: 0;
+    height: 50%;
+    width: 50%;
+    transform: rotate(45deg);
+  }
+  100% {
+    opacity: 1;
+    width: 100%;
+    height: 100%;
+    transform: rotate(0deg);
+  }
+}
+
+@keyframes playerFadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes playerSliderBigIn {
+  0% {
+    width: 0;
+    opacity: 0;
+  }
+  100% {
+    width: 100%;
+    opacity: 1;
+  }
+} 
+
+@keyframes playerSliderVolumeIn {
+  0% {
+    width: 0;
+    opacity: 0;
+  }
+  100% {
+    width: 25%;
+    opacity: 1;
+  }
+}
+
+@keyframes playerBgIn {
+  0% {
+    width: 0;
+    opacity: 0;
+    background: rgba(32,32,32,0);
+    backdrop-filter: blur(0);
+  }
+  100% {
+    width: 50vw;
+    opacity: 1;
+    background: rgba(32,32,32,0.8);
+    backdrop-filter: blur(10px);
+  }
 }

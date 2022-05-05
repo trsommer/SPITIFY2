@@ -1,0 +1,81 @@
+#playlists_view {
+    display: none;
+}
+
+#playlists_container {
+    padding-top: 60px;
+    margin-left: 50px;
+    margin-right: 50px;
+}
+
+#playlists_heading {
+    color: white;
+}
+
+#playlists_items_container {
+    display: grid;
+    width: 100%;
+    grid-template-columns: repeat( auto-fit, minmax(200px, 205px));
+    align-content: center;
+    column-gap: 15px;
+    row-gap: 15px;
+}
+
+.playlists_item {
+    height: 250px;
+    background: var(--bg_dark);
+    border-radius: 20px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.playlist_item_image {
+    width: 80%;
+    margin-top: 10%;
+    border-radius: 15px;
+}
+
+.playlists_item_text_container {
+    margin-top: 10px;
+}
+
+.playlists_item_text {
+    color: white;
+    font-size: 18px;
+}
+
+#playlists_liked_songs {
+    height: 250px;
+    background: var(--bg_dark);
+    border-radius: 20px;
+    cursor: pointer;
+    grid-column-start: 1;
+    grid-column-end: 3;
+    background: linear-gradient(146deg, rgba(255,0,0,0.8) 0%, rgba(227,0,132,0.8) 100%);
+    overflow: hidden;
+}
+
+#playlists_liked_songs_text_Container {
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+}
+
+#playlists_liked_songs_text_Container p {
+    position: relative;
+    z-index: 2;
+    color: white;
+    top: 191px;
+    left: 20px;
+    font-size: 30px;
+}
+
+.playlists_plusButton {
+    fill: var(--accentColor);
+}
+
+.playlists_plusButton_background {
+    fill: #151616;
+}

@@ -6,6 +6,7 @@ function onLoad() {
     placeSettingsMenuItem()
     window.scrollTo({ top: 0, behavior: 'smooth' })
     document.getElementsByTagName("body")[0].classList.add("flatTop")
+    loadLastSearches()
 }
 
 
@@ -29,7 +30,7 @@ function menuAnimation(i) {
         menuTopIcon.style.animation = "logoTopColorChangeIn 0.25s forwards"
         topContainer.style.animation = "searchBoxIn 0.25s forwards"
         menuSlidePlayer("In")
-        addAnimations("menuTopTextIn 0.25s forwards", menuText, 50, 1)
+        addAnimations("menuTopTextIn 0.25s forwards", menuText, 0, 1)
     }
 
     if(i == 1) {
@@ -73,7 +74,7 @@ async function setDisplayMode(element, mode, delay){
 function placeSettingsMenuItem() {
     var menuLeft = document.getElementById("menu_left")
     var menuTop = document.getElementById("menu_topMenu")
-    var menuItem = document.getElementById("menu_topMenu_bottom")
+    var menuItem = document.getElementById("menu_settings_button")
 
     var marginTop = menuLeft.clientHeight - menuTop.clientHeight - menuItem.clientHeight - 60
     menuItem.style.marginTop = "" + marginTop + "px"
@@ -85,7 +86,6 @@ function placeSettingsMenuItem() {
 window.addEventListener('resize', function(event){
     placeSettingsMenuItem()
     scrollMaxY = document.documentElement.scrollHeight - 60
-
 });
 
 
@@ -118,32 +118,6 @@ async function toggleSearchView(query) {
     }
 }
 
-async function openArtist(id) {
-    spotifyID = 0
-
-
-    if (id == 0) {
-        spotifyID = spotifyIds["highlight"]
-    } else {
-        spotifyID = spotifyIds["otherArtists"][id-1]
-    }
-
-    console.log(spotifyID);
-
-    responseArtist = await getSpotifyArtist(spotifyID)
-
-    console.log(responseArtist);
-    await setContent(responseArtist)
-
-    switchView("artist_view")
-
-}
-
-
-function openHighlightArtist() {
-    openArtist(0)
-}
-
 function timeConvert(ms) {
     var seconds = Math.floor(ms/1000)
 
@@ -159,3 +133,4 @@ function timeConvert(ms) {
 
     return "" + minutes + ":" + remainingSecondsString
 }
+

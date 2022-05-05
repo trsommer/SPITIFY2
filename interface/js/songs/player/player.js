@@ -1,22 +1,31 @@
-playState = false
+var playState = false
 
-async function playSong(info) {
-    console.log(info)
-    song = new Song(info)
+async function playSongWithoutCover(info) {
+    song = await new Song(info)
+    console.log(song)
     addToQueue(song)
     playQueue()
 }
 
+async function likeCurrentSong() {
+    currentSong = getCurrentSong()
+    if(currentSong == null) return
+    currentSong.likeSong()
+}
+
 async function playSong(info, albumCover) {
-    song = new Song(info, albumCover)
+    song = await new Song(info, albumCover)
     addToQueue(song)
     playQueue()
 }
 
 function onEndPlay() {
+    var lastSong = getCurrentSong()
+    addToPlayedQueue(lastSong)
     clearCurrentlyPlaying()
     playQueue()
     changePlayState()
+    console.log(playedQueue)
 }
 
 function updatePlayerSlider(progress) {
@@ -25,10 +34,9 @@ function updatePlayerSlider(progress) {
 }
 
 function setProgress() {
-    var audioPlayer = document.getElementById('menu_player_audio')
-
-    var currentTime = audioPlayer.currentTime
-    var duration = audioPlayer.duration
+    const audioElement = document.getElementById('menu_player_audio')
+    var currentTime = audioElement.currentTime
+    var duration = audioElement.duration
 
     var progress = 100 * (currentTime / duration)
     updatePlayerSlider(progress)
@@ -36,29 +44,29 @@ function setProgress() {
 }
 
 function changePlayState() {
-    var audioPlayer = document.getElementById('menu_player_audio')
+    const audioElement = document.getElementById('menu_player_audio')
     var playPauseIcon = document.getElementById('menu_player_icon1')
 
     if (playState == true) {
-        audioPlayer.pause()
+        audioElement.pause()
         playState = false
         playPauseIcon.src = 'icons/play/play.svg'
     } else {
-        audioPlayer.play()
+        audioElement.play()
         playState = true
         playPauseIcon.src = 'icons/play/pause.svg'
     }
 }
 
 function skipTo(object) {
+    const audioElement = document.getElementById('menu_player_audio')
     value = object.value
     console.log(value);
-    var audioPlayer = document.getElementById('menu_player_audio')
-    var duration = audioPlayer.duration
+    var duration = audioElement.duration
 
     var newProgress = duration * value / 100
 
-    audioPlayer.currentTime = newProgress
+    audioElement.currentTime = newProgress
 }
 
 function getPlayerState() {
@@ -76,8 +84,29 @@ function setPlayerText(title, artistString) {
 function setVolume() {
     var volumeSlider = document.getElementById('menu_player_volume_slider')
     value = volumeSlider.value
-    var audio = document.getElementById('menu_player_audio')
+    const audioElement = document.getElementById('menu_player_audio')
     var newVolume = value / 100
 
-    audio.volume = newVolume
+    audioElement.volume = newVolume
+}
+
+function skipTrack() {
+    var paused
+    const audioElement = document.getElementById('menu_player_audio')
+    if(!audioElement.paused) paused = false
+    if(getQueueLength() == 0) return
+    
+    clearCurrentlyPlaying()
+    playQueue()
+
+    if(!paused) changePlayState()
+}
+
+function setLikeIcon(liked) {
+    let dislikeIcon = 'icons/play/hollowHeart.svg'
+    let likeIcon = 'icons/play/heart.svg'
+
+    let newLikeIcon = liked ? likeIcon : dislikeIcon
+
+    document.getElementById('menu_player_icon3').src = newLikeIcon
 }

@@ -1,3 +1,7 @@
+#artist_view {
+    display: none;
+}
+
 #av_bg_image {
     width: 100%;
     filter: opacity(0.8);

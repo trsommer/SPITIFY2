@@ -7,8 +7,43 @@ newOffset = null
 startDate = null
 currentPosition = "bottomLeft"
 currentPositionIndex = 2
+disabled = true
 
+// player in animation
+async function animatePlayerIn() {
+
+    playerBG = document.getElementById('menu_player')
+    playerImage = document.getElementById('menu_player_cover')
+    playerText = document.getElementById('menu_player_text_container')
+    sliderBig = document.getElementById('menu_player_slider')
+    sliderSmall = document.getElementById('menu_player_volume_slider')
+    button1 = document.getElementById('menu_player_icon0')
+    button2 = document.getElementById('menu_player_icon1')
+    button3 = document.getElementById('menu_player_icon2')
+    button4 = document.getElementById('menu_player_icon3')
+    sliderBig.progress = 0
+
+    playerBG.style.animation = "playerBgIn 0.4s forwards"
+    playerImage.style.animation = 'playerImageIn 0.6s forwards'
+    playerText.style.animation = 'playerFadeIn 0.5s forwards'
+    sliderBig.style.animation = 'playerSliderBigIn 0.5s forwards'
+    sliderSmall.style.animation = 'playerSliderVolumeIn 0.5s forwards'
+    button1.style.animation = 'playerFadeIn 0.5s forwards'
+    await sleep(100)
+    button2.style.animation = 'playerFadeIn 0.5s forwards'
+    await sleep(100)
+    button3.style.animation = 'playerFadeIn 0.5s forwards'
+    await sleep(100)
+    button4.style.animation = 'playerFadeIn 0.5s forwards'
+
+    disabled = false;
+}
+
+// player movement
 function startMovePlayer(e) {
+    if(disabled) {
+        return
+    }
     e = e || window.event
     e.preventDefault()
     mouseDown = true;
@@ -70,12 +105,8 @@ function endMovePlayer(e) {
     }
 
     velocity = getVelocity()
-    console.log(velocity)
     if (velocity > 500) {
         direction = getDirection(startCords, endCords)
-        console.log(direction);
-        console.log(currentPosition)
-        console.log(currentPositionIndex)
         if(direction != "neutral") {
             offset = getOffset(direction)
             currentPosition = direction
@@ -83,7 +114,6 @@ function endMovePlayer(e) {
         }
     }
 
-    console.log("go back")
     offset = getOffset(currentPosition)
     animationToPlayerPosition(offset)
     playerBg.classList.remove('mouseDownCursor')
@@ -103,7 +133,6 @@ function getVelocity() {
 
 function getTimeDifference(startDate, endDate) {
     timeDiff = (endDate.getTime() - startDate.getTime()) / 1000
-    console.log(timeDiff)
     return timeDiff
 }
 

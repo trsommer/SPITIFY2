@@ -2,24 +2,22 @@ var scrolledDown = false
 var scrollMaxY = document.documentElement.scrollHeight - 60
 var topSongs = []
 
+function artist_view() {}
+
 function scrollArtistView(scrollY) {
+    console.log(scrollY)
     if (scrollY > 72){
         toggleVisibility('av_artist_header_text', false)
         toggleVisibility('av_artist_header_gradient', false)
-
+        console.log("in");
         document.getElementById("top_container_alternativeTitle").style.animation = "alternativeTitleIn 0.25s forwards"
 
 
     } else {
         toggleVisibility('av_artist_header_text', true)
         toggleVisibility('av_artist_header_gradient', true)
-
+        console.log("out");
         document.getElementById("top_container_alternativeTitle").style.animation = "alternativeTitleOut 0.25s forwards"
-    }
-
-
-    if (scrollY <= scrollMaxY) {
-        expandBG(scrollY, scrollMaxY)
     }
 
     if (scrollY != 0 && scrolledDown == false) {
@@ -38,21 +36,6 @@ function toggleVisibility(id, bool) {
     }
 }
 
-
-
-function expandBG(size, maxYScroll) {
-    var percentValue = size / maxYScroll
-
-    bg_container = document.getElementById("av_header_container")
-    bg_gradient = document.getElementById("av_artist_header_gradient")
-
-
-    newHeight = 50 + 50 * percentValue
-
-    bg_container.style.height = "" + newHeight + "vh"
-    bg_gradient.style.opacity = 1 - percentValue
-}
-
 async function loadImage(url, elem) {
     return new Promise((resolve, reject) => {
       elem.onload = () => resolve(elem);
@@ -61,7 +44,7 @@ async function loadImage(url, elem) {
     });
   }
 
-async function setContent(content) {
+async function setContentArtist(content) {
     artistName = content["profile"]["name"]
     try {
         bgImage = content["visuals"]["headerImage"]["sources"]["0"]["url"]
@@ -155,3 +138,38 @@ function playTopSong(id) {
     console.log(topSongs);
     playSong(topSongs[id]["track"])
 }
+
+async function openArtist(id) {
+    spotifyID = ""
+
+    if (isInt(id)) {
+        if (id == 0) {
+            spotifyID = spotifyIds["highlight"]
+        } else {
+            spotifyID = spotifyIds["otherArtists"][id-1]
+        }
+    } else {
+        spotifyID = id
+    }
+
+    responseArtist = await getSpotifyArtist(spotifyID)
+
+    await setContentArtist(responseArtist)
+
+    switchView("artist_view")
+    addLastSearch('artist', responseArtist["profile"]["name"], responseArtist["id"], responseArtist['visuals']['avatarImage']['sources'][0]['url'], "")
+}
+
+
+function openHighlightArtist() {
+    openArtist(0)
+}
+
+function isInt(value) {
+    var x;
+    if (isNaN(value)) {
+      return false;
+    }
+    x = parseFloat(value);
+    return (x | 0) === x;
+  }

@@ -1,8 +1,12 @@
 var tracks = []
 var info = []
 
+function album_view() {}
+
 async function setupAlbumView(id, additionalInfo) {
     var albumInfo = await getSpotifyAlbum(id)
+    console.log(additionalInfo);
+    console.log(albumInfo);
     tracks = albumInfo["data"]["album"]["tracks"]["items"]
     info = additionalInfo
     setContentArtists()
@@ -44,6 +48,15 @@ async function setContentArtists() {
     heading2 = artistString + " - " + info["date"]["year"]
 
     document.getElementById("album_view_2ndHeader").innerHTML = heading2
+
+    console.log(info);
+
+    let uri = info["uri"]
+    let id = uri.split(":")[2]
+
+    let jsonAddtitionalInfo = JSON.stringify(info)
+
+    addLastSearch('album', title, id, imageUrl, jsonAddtitionalInfo)
 }
 
 function addTracks() {
@@ -89,6 +102,7 @@ function addTracks() {
         trackDiv.appendChild(trackTime)
         document.getElementById("album_view_content").appendChild(trackDiv)
         trackDiv.addEventListener("click", function() {
+
             playSongAlbum(index)
         })
     }
@@ -109,8 +123,11 @@ function getArtistString(artists) {
 }
 
 function playSongAlbum(id) {
-    songInfo = tracks[id]["track"]
-    playSong(songInfo)
+    track = tracks[id]["track"]
+    if (track.album == undefined) {
+        track.album = {"name": info["name"], "coverArt": {"sources": info["coverArt"]["sources"]}}
+    }
+    playSong(track)
 }
 
 function getAlbumCover() {
@@ -118,22 +135,31 @@ function getAlbumCover() {
 
 }
 
-function playSongsAlbum() {
+async function playSongsAlbum() {
     clearQueue()
     for (let index = 0; index < tracks.length; index++) {
         const track = tracks[index];
-        playSong(track["track"])
+        console.log(track);
+        if (track.album == undefined) {
+            track.put("album", {"name": info["name"]})
+        }
+        console.log(track);
+        song = await new Song(track['track'])
+        addToQueue(song)
     }
+    playQueue();
 }
 
-function shuffleSongsAlbum() {
+async function shuffleSongsAlbum() {
     clearQueue()
     var shuffledArray = [...tracks]
     shuffleArray(shuffledArray)
     for (let index = 0; index < shuffledArray.length; index++) {
         const thisTrack = shuffledArray[index]
-        playSong(thisTrack["track"])
+        song = await new Song(thisTrack["track"])
+        addToQueue(song)
     }
+    playQueue();
 }
 
 function shuffleArray(array) {
