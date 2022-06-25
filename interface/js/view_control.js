@@ -17,6 +17,12 @@ function switchView(view) {
     return;
   }
 
+  if (altTitleState) {
+    document.getElementById("top_container_alternativeTitle").style.animation =
+    "alternativeTitleOut 0.25s forwards";
+    altTitleState = false;
+  }
+
   found = false;
 
   for (let index = 0; index < sideMenuViews.length; index++) {

@@ -19,11 +19,9 @@
 #last_searches_results_container {
     display: grid;
     width: 100%;
-    grid-template-columns: 24% 24% 24% 24%;
-    align-content: center;
-    justify-content: space-evenly;
-    column-gap: 1.33333%;
-    row-gap: 25px;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    column-gap: 12px;
+    row-gap: 12px;
 }
 
 .last_search_item {

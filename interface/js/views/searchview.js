@@ -2,9 +2,7 @@ spotifyIds = [];
 songInfo = [];
 var albums = [];
 
-function search_view() {
-
-}
+function search_view() {}
 
 function setContentSearch(content) {
   artists = content["artists"];
@@ -89,7 +87,7 @@ function setOtherArtistsContent(content) {
       .appendChild(artistContainer);
     console.log(index);
     artistContainer.addEventListener("click", function () {
-        openArtist(index + 1);
+      openArtist(index + 1);
     });
   }
 
@@ -163,10 +161,10 @@ function setSongsContent(content) {
       playSongSearchView(index);
     });
 
-    songContainer.addEventListener('contextmenu', (e) => {
+    songContainer.addEventListener("contextmenu", (e) => {
       setClickedSong(songInfo[index]);
       spawnSongMenu(e);
-    })
+    });
 
     document
       .getElementById("search_section_songs_result")
@@ -175,12 +173,11 @@ function setSongsContent(content) {
 }
 
 function setAlbumContent(content) {
-  data = content["items"];
-  albums = data;
+  albums = content["items"];
   document.getElementById("search_results_albums").innerHTML = "";
 
   for (let index = 0; index < 5; index++) {
-    albumData = data[index];
+    albumData = albums[index];
     if (albumData == undefined) break;
     albumName = albumData["name"];
     albumType = albumData["type"];
@@ -231,4 +228,7 @@ async function openAlbum(id) {
   var spotifyURI = album["uri"];
   var theSplit = spotifyURI.split(":");
   setupAlbumView(theSplit[2], album);
+
+  console.log(theSplit[2]);
+  console.log(album);
 }

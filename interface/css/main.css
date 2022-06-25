@@ -338,8 +338,9 @@ p {
     font-size: 24px;
     font-weight: 600;
     letter-spacing: 2px;
-    margin-left: -500px;
+    margin-left: -150px;
     animation-fill-mode: forwards;
+    opacity: 0;
 }
 
 #context_menu_container {

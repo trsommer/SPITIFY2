@@ -1,6 +1,7 @@
 var tracks = []
 var playlistName = ""
 var playlistId = 0;
+var playlistEdit = false;
 
 function playlist_view() {
 
@@ -100,7 +101,14 @@ function setSongsContentPlaylist(songData) {
         songContainer.appendChild(durationHTML);
 
         songContainer.addEventListener("click", function() {
-            playTrackPlaylist(index);
+            if (!playlistEdit) {
+                playTrackPlaylist(index);
+            }
+        })
+        songContainer.addEventListener("mousedown", function(e) {
+            if (playlistEdit) {
+                playlistMoveStart(index, e);
+            }
         })
         playlistContainer.appendChild(songContainer);
 
@@ -141,4 +149,125 @@ function playlistNameChange() {
     if (playlistNewName != playlistName) {
         changePlaylistName(playlistId, playlistNewName);
     }
+}
+
+function togglePlaylistEdit() {
+    let editModeIndicator = document.getElementById("playlist_editMode_indicator");
+
+    if (playlistEdit) {
+        editModeIndicator.style.animation = "editModeOff 0.3s forwards";
+        playlistEdit = false;
+    } else {
+        editModeIndicator.style.animation = "editModeOn 0.3s forwards";
+        playlistEdit = true;
+    }
+}
+
+// swap animation ------------------
+
+let startY = 0
+let startOffset = 0
+var dividersSpawned = false
+var dividerPositions = []
+var overDivider = null
+
+function playlistMoveStart(index, e) {
+    let children = document.getElementById('playlist_tracks_container').children;
+    let targetDiv = children.item(index);
+    targetDiv.id = 'playlistMove'
+    
+    e = e || window.event
+    e.preventDefault()
+    startY = e.clientY
+    startOffset = targetDiv.offsetTop
+
+    targetDiv.style.position = 'absolute'
+    targetDiv.style.zIndex = '1'
+    targetDiv.style.top = startOffset + "px"
+
+    document.onmousemove = playlistMove
+    document.onmouseup = playlistMoveEnd
+
+    spawnDropTargets(index)
+
+    let elements = document.getElementsByClassName('playlist_track_drop_target');
+
+    for (let index = 0; index < elements.length; index++) {
+        const element = elements[index];
+
+        let offsetTop = element.offsetTop;
+        let offsetTopPlusHeight = offsetTop + element.offsetHeight;
+
+        dividerPositions.push({html: element, offsetTop: offsetTop, offsetTopPlusHeight: offsetTopPlusHeight});
+    }
+    
+}
+
+function playlistMove(e) {
+    e = e || window.event
+    e.preventDefault()
+    let targetDiv = document.getElementById('playlistMove')
+    let cursorY = e.clientY
+    offsetY = startY - cursorY
+
+    targetDiv.style.top = (startOffset - offsetY) + "px";
+
+    if (overDivider == null) {
+        for (let i = 0; i < dividerPositions.length; i++) {
+            const divider = dividerPositions[i];
+
+            if (cursorY > divider.offsetTop && cursorY < divider.offsetTopPlusHeight) {
+                overDivider = divider;
+                divider.html.style.animate = "dividerScaleUp 0.3s forwards";
+                break;
+            }   
+        }
+    } else {
+        if (cursorY < overDivider.offsetTop || cursorY > overDivider.offsetTopPlusHeight) {
+            overDivider.divider.style.animate = "dividerScaleDown 0.3s forwards";
+            overDivider = null;
+        } else {
+            console.log("over divider");
+        }
+    }
+}
+
+function playlistMoveEnd(e) {
+    e = e || window.event
+    e.preventDefault()
+
+    let targetDiv = document.getElementById('playlistMove')
+
+    document.onmousemove = null
+    document.onmouseup = null
+    targetDiv.id = ''
+}
+
+Element.prototype.appendAfter = function (element) {
+    element.parentNode.insertBefore(this, element.nextSibling);
+  },false;
+
+Element.prototype.appendBefore = function (element) {
+    element.parentNode.insertBefore(this, element);
+},false;
+
+function spawnDropTargets(index) {
+    if (dividersSpawned) {
+        return;
+    }
+
+    let children = document.getElementById('playlist_tracks_container').children;
+    let childrenLength = children.length;
+
+    for (let i = 0; i < childrenLength; i++) {
+        let child = children.item(2*i);
+        let newDiv = document.createElement("div");
+        newDiv.classList.add("playlist_track_drop_target");      
+        
+        newDiv.style.animation = "dividerIn 0.3s forwards";
+
+        newDiv.appendAfter(child);
+    }
+
+    dividersSpawned = true
 }

@@ -133,81 +133,57 @@
     <div id="viewport">
         <div id="artist_view">
             <div id="av_header_container">
-                <div id="av_bg_image_container">
-                    <img id="av_bg_image" src="standardImages/bgArtist.jpg" crossorigin="anonymous" onload="getColors()">
+                <div id="av_header_image_container">
+                    <img id="av_header_image" src="standardImages/bgArtist.jpg" crossorigin="anonymous">
                 </div>
                 <div id="av_artist_header_text_container">
                     <div id="av_artist_header_gradient"></div>
                     <h1 id="av_artist_header_text">ARTIST</h1>
                 </div>
             </div>
+            <div id="av_background_container">
+                <div id="av_backgroundImage_blur"></div>
+                <img id="av_backgroundImage" src="standardImages/bgArtist.jpg" alt="">
+            </div>
             <div id="av_content">
                 <div id="av_music_preview_container">
-                    <div id="av_music_preview_newRelease">
-                        <h2 id="av_music_preview_heading">Latest Release</h2>
-                        <div id="av_music_preview_newRelease_content">
-                            <img class="av_music_cover_big" id="av_music_preview_newRelease_poster" src="standardImages/cover.jpg" alt="">
-                            <div id="av_music_cover_big_text">
-                                <h3 id="av_music_preview_newRelease_name">AlbumName</h3>
-                                <p id="av_music_preview_newRelease_nrSongs">x songs</p>
-                                <p id="av_music_preview_newRelease_date">releaseYear</p>
-                            </div>
+                </div>
+                <div id="av_albums_container">
+                    <div class="av_albums_header_container">
+                        <div class="av_albums_header_backgroumd_container">
+                            <h2 class="av_albums_header">ALBUMS</h2>
                         </div>
                     </div>
-                    <div id="av_music_preview_musicShowcase">
-                        <h2 id="av_music_preview_heading">Top Songs</h2>
-                        <div id="av_music_preview_musicShowcase_content">
-                            <div class="av_music_preview_musicShowcase_tracks">
-                                <div class="av_music_preview_musicShowcase_track" id="av_music_preview_musicShowcase_container_0" onclick="playTopSong(0)">
-                                    <img class="av_music_preview_musicShowcase_trackIMG" id="av_music_preview_musicShowcase_poster_0" src="standardImages/cover.jpg" alt="">
-                                    <div class="av_music_preview_musicShowcase_trackText">
-                                        <h4 id="av_music_preview_musicShowcase_0_text1">SongTitle</h4>
-                                        <p id="av_music_preview_musicShowcase_0_text2">Album - EP - 2021</p>
-                                    </div>
-                                </div>
-                                <div class="av_music_preview_musicShowcase_track" id="av_music_preview_musicShowcase_container_1" onclick="playTopSong(1)">
-                                    <img class="av_music_preview_musicShowcase_trackIMG" id="av_music_preview_musicShowcase_poster_1" src="standardImages/cover.jpg" alt="">
-                                    <div class="av_music_preview_musicShowcase_trackText">
-                                        <h4 id="av_music_preview_musicShowcase_1_text1">SongTitle</h4>
-                                        <p id="av_music_preview_musicShowcase_1_text2">Album - EP - 2021</p>
-                                    </div>
-                                </div>
-                                <div class="av_music_preview_musicShowcase_track" id="av_music_preview_musicShowcase_container_2" onclick="playTopSong(2)">
-                                    <img class="av_music_preview_musicShowcase_trackIMG" id="av_music_preview_musicShowcase_poster_2" src="standardImages/cover.jpg" alt="">
-                                    <div class="av_music_preview_musicShowcase_trackText">
-                                        <h4 id="av_music_preview_musicShowcase_2_text1">SongTitle</h4>
-                                        <p id="av_music_preview_musicShowcase_2_text2">Album - EP - 2021</p>
-                                    </div>
-                                </div>
+                    <div id="av_albums_carousel">
+                    </div>
+                </div>
+                <div id="av_singles_EPs_container">
+                    <div class="av_albums_header_container">
+                        <div class="av_albums_header_backgroumd_container">
+                            <h2 class="av_albums_header">SINGLES & EPs</h2>
+                        </div>
+                    </div>
+                    <div id="av_singles_EPs_carousel">
+                    </div>
+                </div>
+                <div id="av_bio_container">
+                    <div id="av_bio_background_Image_container">
+                        <img id="av_bio_background_Image">
+                    </div>
+                    <div id="av_bio_header_container">
+                        <h2>Biography</h2>
+                    </div>
+                    <div id="av_bio_content_container">
+                        <div id="av_bio_gallery">
+                            <div id="av_bio_gallery_image_container">
+                                <img src="standardImages/cover.jpg" id="av_bio_gallery_image" alt="">
                             </div>
-                            <div class="av_music_preview_musicShowcase_tracks">
-                                <div class="av_music_preview_musicShowcase_track" id="av_music_preview_musicShowcase_container_3" onclick="playTopSong(3)">
-                                    <img class="av_music_preview_musicShowcase_trackIMG" id="av_music_preview_musicShowcase_poster_3" src="standardImages/cover.jpg" alt="">
-                                    <div class="av_music_preview_musicShowcase_trackText">
-                                        <h4 id="av_music_preview_musicShowcase_3_text1">SongTitle</h4>
-                                        <p id="av_music_preview_musicShowcase_3_text2">Album - EP - 2021</p>
-                                    </div>
-                                </div>
-                                <div class="av_music_preview_musicShowcase_track" id="av_music_preview_musicShowcase_container_4" onclick="playTopSong(4)">
-                                    <img class="av_music_preview_musicShowcase_trackIMG" id="av_music_preview_musicShowcase_poster_4" src="standardImages/cover.jpg" alt="">
-                                    <div class="av_music_preview_musicShowcase_trackText">
-                                        <h4 id="av_music_preview_musicShowcase_4_text1">SongTitle</h4>
-                                        <p id="av_music_preview_musicShowcase_4_text2">Album - EP - 2021</p>
-                                    </div>
-                                </div>
-                                <div class="av_music_preview_musicShowcase_track" id="av_music_preview_musicShowcase_container_5" onclick="playTopSong(5)">
-                                    <img class="av_music_preview_musicShowcase_trackIMG" id="av_music_preview_musicShowcase_poster_5" src="standardImages/cover.jpg" alt="">
-                                    <div class="av_music_preview_musicShowcase_trackText">
-                                        <h4 id="av_music_preview_musicShowcase_5_text1">SongTitle</h4>
-                                        <p id="av_music_preview_musicShowcase_5_text2">Album - EP - 2021</p>
-                                    </div>
-                                </div>
-                            </div>
+                        </div>
+                        <div id="av_bio_description">
+                            <div id="av_bio_description_text_container"></div>
                         </div>
                     </div>
                 </div>
-                <div id="av_albums_container"></div>
-                <div id="av_singles_EPs_container"></div>
             </div>
 
         </div>
@@ -249,41 +225,6 @@
                         </h2>
                         <div>
                             <div id="search_results_albums">
-                                <div class="search_results_album" id="search_results_album_0" onclick="openAlbum(0)">
-                                    <img src="standardImages/cover.jpg" class="search_results_album_image">
-                                    <div class="search_results_album_text">
-                                        <p class="search_results_album_text_title">Title</p>
-                                        <p class="search_results_album_text_type">Type</p>
-                                    </div>
-                                </div>
-                                <div class="search_results_album" id="search_results_album_1" onclick="openAlbum(1)">
-                                    <img src="standardImages/cover.jpg" class="search_results_album_image">
-                                    <div class="search_results_album_text">
-                                        <p class="search_results_album_text_title">Title</p>
-                                        <p class="search_results_album_text_type">Type</p>
-                                    </div>
-                                </div>
-                                <div class="search_results_album" id="search_results_album_2" onclick="openAlbum(2)">
-                                    <img src="standardImages/cover.jpg" class="search_results_album_image">
-                                    <div class="search_results_album_text">
-                                        <p class="search_results_album_text_title">Title</p>
-                                        <p class="search_results_album_text_type">Type</p>
-                                    </div>
-                                </div>
-                                <div class="search_results_album" id="search_results_album_3" onclick="openAlbum(3)">
-                                    <img src="standardImages/cover.jpg" class="search_results_album_image">
-                                    <div class="search_results_album_text">
-                                        <p class="search_results_album_text_title">Title</p>
-                                        <p class="search_results_album_text_type">Type</p>
-                                    </div>
-                                </div>
-                                <div class="search_results_album" id="search_results_album_4" onclick="openAlbum(4)">
-                                    <img src="standardImages/cover.jpg" class="search_results_album_image">
-                                    <div class="search_results_album_text">
-                                        <p class="search_results_album_text_title">Title</p>
-                                        <p class="search_results_album_text_type">Type</p>
-                                    </div>
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -344,6 +285,10 @@
         <div id="playlist_view">
             <div id="playlist_image_background_container">
                 <img id="playlist_image_background" src="">
+                <div id="playlist_background_gradient_container">
+                    <div id="playlist_background_gradient"></div>
+                    <div id="playlist_editMode_indicator"></div>
+                </div>
             </div>
             <div id="playlist_header_container">
                 <img id="playlist_header_image" src="standardImages/cover.jpg" alt="">
@@ -353,6 +298,7 @@
                     <div id="playlist_buttons">
                         <input type="button" value="play" class="playlist_button" onclick="playPlaylist()">
                         <input type="button" value="shuffle" class="playlist_button" onclick="shufflePlaylist()">
+                        <input type="button" value="edit" class="playlist_button" onclick="togglePlaylistEdit()">
                     </div>
                 </div>
             </div>

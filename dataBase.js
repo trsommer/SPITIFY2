@@ -80,6 +80,7 @@ async function insertSong(data) {
 
 async function addLastSearch(data) {
     db = await getDB();
+    
     const insert = db.prepare(
         `INSERT INTO lastSearches (type, name, spotifyId, imageUrl, additionalInfo) VALUES (?, ?, ?, ?, ?)`
     );

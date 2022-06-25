@@ -43,9 +43,17 @@ async function setContentArtists() {
     }
     header.innerHTML = title
 
-    artists = info["artists"]["items"]
-    artistString = getArtistString(artists)
-    heading2 = artistString + " - " + info["date"]["year"]
+    artists = ""
+    date = info["date"]["year"]
+    heading2 = ""
+
+    if (info.artists != undefined) {
+        artists = info["artists"]["items"]
+        artistString = getArtistString(artists)
+        heading2 = artistString + " - "
+    }
+
+    heading2 += date
 
     document.getElementById("album_view_2ndHeader").innerHTML = heading2
 
