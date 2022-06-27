@@ -16,7 +16,7 @@ async function getSpotifySearchResults(query) {
     return returnArray["data"]["search"]
 }
 
-async function getYoutubeUrl(query) {
+async function getYoutubeUrls(query) {
     returnArray = await window.electronAPI.searchYoutube(query)
 
     return returnArray

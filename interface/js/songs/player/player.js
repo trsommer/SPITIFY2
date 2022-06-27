@@ -1,5 +1,20 @@
 var playState = false
 
+async function play(song) {
+    const audio = document.getElementById("menu_player_audio");
+    audio.src = song.getSongStreamingUrl();
+    addInfoToPlayer(song);
+    setSpecificVolume(song.getSongPreferredVolume());
+    changePlayState();
+    animatePlayerIn();
+}
+
+async function addInfoToPlayer(song) {
+    const playerImage = document.getElementById("menu_player_cover");
+    playerImage.src = song.getSongImageUrl();
+    setPlayerText(song.getSongTitle(), song.getArtistsAsString())
+}
+
 async function playSongWithoutCover(info) {
     song = await new Song(info)
     console.log(song)
@@ -82,12 +97,17 @@ function setPlayerText(title, artistString) {
 }
 
 function setVolume() {
-    var volumeSlider = document.getElementById('menu_player_volume_slider')
-    value = volumeSlider.value
+    const volumeSlider = document.getElementById('menu_player_volume_slider')
+    const value = volumeSlider.value
     const audioElement = document.getElementById('menu_player_audio')
-    var newVolume = value / 100
+    const newVolume = value / 100
 
     audioElement.volume = newVolume
+}
+
+function setSpecificVolume(volume) {
+    const audioElement = document.getElementById('menu_player_audio')
+    audioElement.volume = volume;
 }
 
 function skipTrack() {

@@ -1,318 +1,422 @@
 class Song {
-  #id = "";
-  #name = "";
-  #artists = [];
-  #imageCoverUrl = "";
-  #url = "";
-  #youtubeId = "";
-  #playstate = false;
-  #length = 0;
-  #albumName = ""
-  #liked = false;
+  /*
+    This class represents a playable song. It combines the information gained from the spotify api (songInfo)
+    with the corresponding video from youtube music (songYoutube).
+    */
+
+  //Globals
+
+  #songSpotifyId = "";
+  #songTitle = "";
+  #songArtistArray = [];
+  #songType = "";
+  #songAlbum = {};
+  #songImageUrl = "";
+  #songDuration = "";
+  #songLyrics = ""; //not implemented yet but maybe in the future
+  #songStreamingUrl = "";
+  #songYoutubeId = "";
+  #songLikeStatus = false;
+  #songPreferredVolume = 0.5;
+  #songInfo = {};
+
+  //Constructor
 
   constructor(songInfo) {
     return this.#constructorFunction(songInfo);
   }
 
-  async #constructorFunction(songinfo) {
-    await this.#setupSong(songinfo);
-    console.log(songinfo);
-    return this
+  async #constructorFunction(songInfo) {
+    await this.#setup(songInfo);
+    return this;
   }
 
-  async #setupSong(songInfo) {
-    const streamingUrl = songInfo.streamingUrl;
+  //Setup
 
-    console.log(streamingUrl);
+  async #setup(songInfo) {
+    const id = songInfo.id;
 
-    if (streamingUrl != undefined) {
-      var expired = false;
-      expired = this.#checkIfUrlExpired(streamingUrl);
-      this.#setDBInfo(songInfo);
-      if (expired) {
-        console.log("expired: " + expired);
-        await this.#getYoutubeStreamingUrl(songInfo.youtubeID);
-        await this.#updateStreamingUrl();
-      }
-      this.#startPlaying();
-      return;
-    }
+    //get possible info of song from db
+    const databaseQueryResult = await this.#getInfoFromDB(id);
 
-    var id = songInfo.id;
-    if (id == undefined) {
-      var uri = songInfo["uri"];
-      var id = uri.split(":")[2];
-    }
-    this.#id = id
-
-    var expired = false
-    var dbInfo = await this.#getInfoFromDB();
-
-    if (dbInfo.length == 1) {
-      this.#setDBInfo(dbInfo[0]);
-      expired = this.#checkIfUrlExpired(dbInfo[0].streamingUrl);
-      if (expired) {
-        await this.#setURL();      }
+    //check if song is in db
+    if (databaseQueryResult.length == 1) {
+      //song is in db
+      await this.#setupSongDatabase(databaseQueryResult);
     } else {
-      await this.#setInfo(songInfo);
-      await this.#setURL();
-      await this.#addToDB();
-    } 
-
-    this.#startPlaying();
-  }
-
-  #startPlaying() {
-    if (this.#playstate) {
-      this.play();
+      //song is not in db
+      await this.#setupSongSpotify(songInfo);
     }
 
-    this.#getLikeStatusDb();
+    console.log(this);
+
+    return this;
+  }
+
+  async #setupSongDatabase(databaseQueryResult) {
+    const dbInfo = databaseQueryResult[0];
+
+    //set song info from db
+    this.#setDBInfo(dbInfo);
+
+    //get if the url is expired
+    const expired = this.#checkIfUrlExpired(this.#songStreamingUrl);
+
+    //if url is expired, get new url
+    if (expired) {
+      this.#songStreamingUrl = await this.#getStreamingUrl(
+        this.#songYoutubeId
+      );
+    }
+
+    //maybe update some things in db? later ...
+  }
+
+  async #setupSongSpotify(songInfo) {
+    //set globals for this song object from songinfo
+    await this.#setInfo(songInfo);
+
+    //get youtube url
+    const youtubeSong = await this.#getYoutubeSong();
+    const youtubeSongId = youtubeSong.youtubeId;
+
+    //set youtube url in globals
+    this.#songYoutubeId = youtubeSongId;
+
+    //get streaming url
+    const streamingUrl = await this.#getStreamingUrl(youtubeSongId);
+
+    //set streaming url in globals
+    this.#songStreamingUrl = streamingUrl;
+
+    //add song to db
+    this.#addToDB();
+  }
+
+  //Databasee
+
+  async #getInfoFromDB(id) {
+    const sql = `SELECT * FROM songs WHERE id = '${id}'`;
+    console.log("sql: " + sql);
+    const result = await getFromDB(sql);
+    return result;
   }
 
   #setDBInfo(dbInfo) {
-    this.#name = dbInfo["title"];
-    this.#artists = JSON.parse(dbInfo["artists"]);
-    this.#imageCoverUrl = dbInfo["imageUrl"];
-    this.#url = dbInfo["streamingUrl"];
-    this.#youtubeId = dbInfo["youtubeID"];
-    this.#length = dbInfo["duration"];
+    this.#songSpotifyId = dbInfo.id;
+
+    const songData = JSON.parse(dbInfo.info);
+    
+    this.#songTitle = songData.songTitle;
+    this.#songArtistArray = JSON.parse(songData.songArtistArray);
+    //this.#songType = songInfo.type;
+    this.#songDuration = songData.songDuration;
+    this.#songAlbum = songData.songAlbum;
+    this.#songImageUrl = songData.songImageUrl;
+    this.#songStreamingUrl = songData.songStreamingUrl;
+    this.#songYoutubeId = songData.songYoutubeId;
+    this.#songLikeStatus = songData.songLikeStatus;
+    this.#songPreferredVolume = songData.songPreferredVolume;
+    this.#songInfo = songData.songInfo;
+
+  }
+
+  async #addToDB() {
+    const artistsJson = JSON.stringify(this.#songArtistArray);
+    const dbData = {
+      id: this.#songSpotifyId,
+      songData: {
+        songTitle: this.#songTitle,
+        songArtistArray: artistsJson,
+        //songType: this.#songType,
+        songAlbum: this.#songAlbum,
+        songImageUrl: this.#songImageUrl,
+        songDuration: this.#songDuration,
+        //songLyrics: this.#songLyrics,
+        songStreamingUrl: this.#songStreamingUrl,
+        songYoutubeId: this.#songYoutubeId,
+        songLikeStatus: this.#songLikeStatus,
+        songPreferredVolume: this.#songPreferredVolume,
+        songInfo: this.#songInfo,
+      },
+    };
+
+    insertSong(dbData);
+  }
+
+  //
+
+  #setInfo(songInfo) {
+    //sets the globals for this song object from songinfo
+    this.#songSpotifyId = songInfo.id;
+    this.#songTitle = songInfo.name;
+    this.#songArtistArray = songInfo.artists;
+    //this.#songType = songInfo.type;
+    this.#songDuration = songInfo.duration.totalMilliseconds;
+    this.#songAlbum = songInfo.album;
+    this.#songImageUrl = this.#getImageCoverUrl(songInfo);
+    this.#songLikeStatus = false;
+    this.#songInfo = songInfo;
+  }
+
+  #getImageCoverUrl(songInfo) {
+    //searches the cover images from spotify for the best resolution
+    const images = songInfo.album.coverArt.sources;
+    let bestResolution = 0;
+    let bestImageUrl = "";
+
+    for (let i = 0; i < images.length; i++) {
+      const image = images[i];
+      if (image.width > bestResolution) {
+        bestResolution = image.width;
+        bestImageUrl = image.url;
+      }
+    }
+
+    return bestImageUrl;
   }
 
   #checkIfUrlExpired(url) {
-    var split = url.split("videoplayback?");
-    let params = new URLSearchParams(split[1]);
-    var expired = params.get("expire");
-    var currentTime = new Date().getTime() / 1000;
-    var timeDelta = expired - currentTime;
+    //TODO: add comments for explanation
+    const split = url.split("videoplayback?");
+    const params = new URLSearchParams(split[1]);
+    const expired = params.get("expire");
+    const currentTime = new Date().getTime() / 1000;
+    const timeDelta = expired - currentTime;
     if (timeDelta < 0) {
       return true;
     }
     return false;
   }
 
-  async #getInfoFromDB() {
-    var sql = `SELECT * FROM songs WHERE id = '${this.#id}'`;
-    console.log("sql: " + sql);
-    var result = await getFromDB(sql);
-    return result;
+  async #getYoutubeSong() {
+    //construct search input for youtube search
+    const searchInput = this.#songTitle + " by " + this.getArtistsAsString();
+
+    //get different youtube results for search input
+    const apiResponse = await getYoutubeUrls(searchInput);
+
+    //get youtube url from api response
+    const song = await this.#chooseCorrectSong(apiResponse);
+
+    //return the (hopefully) correct youtube song
+    return song;
   }
 
-  async #setInfo(songInfo) {
-    console.log(songInfo);
-    console.log(songInfo["id"]);
-    this.#name = songInfo["name"];
-    this.#artists = songInfo["artists"];
+  async #chooseCorrectSong(apiResponse) {
+    //updated for every song in youtube if song is closer to spotify song
+    let closestMatchDeviation;
+    let closestMatch;
 
-    if (songInfo["album"] != undefined) {
-      this.#albumName = songInfo["album"]["name"];
-    } else {
-      this.#albumName = "";
-    }
-    if (!("album" in songInfo)) {
-      this.#imageCoverUrl = getAlbumCover();
-      return;
-    }
-    this.#imageCoverUrl = songInfo["album"]["coverArt"]["sources"][0]["url"];
-  }
+    console.log(apiResponse);
+    console.log(this);
 
-  async #addToDB() {
-    var artistsJson = JSON.stringify(this.#artists);
-    data = {
-      id: this.#id,
-      title: this.#name,
-      artists: artistsJson,
-      album: "albumName",
-      albumID: "albumid",
-      youtubeID: this.#youtubeId,
-      duration: this.#length,
-      imageUrl: this.#imageCoverUrl,
-      streamingUrl: this.#url,
-    };
-    insertSong(data);
-  }
+    console.log("search: " + this.#songTitle);
 
-  async #updateStreamingUrl() {
-    var url = this.#url;
-    var id = this.#id;
-    await updateStreamingUrl(id, url);
-  }
+    for (let i = 0; i < apiResponse.length; i++) {
+      const song = apiResponse[i];
+      /*
+            comparisons:
+                1. artists
+                2. title
+                3. album
+                4. duration
+                5. content rating
+                6. ytResultPriority
+            */
 
-  async #setURL() {
-    var title = this.#name + " by " + this.getArtistsAsString();
+      //compare the artists (result is nr of found artists and a title that does not include featured artists)
+      const spotifyArtists = this.#songArtistArray.items;
+      const resultArtistComparison = await compareArtists(
+        spotifyArtists,
+        song.artists,
+        song.title
+      );
+      const foundArtists = resultArtistComparison.nrFound;
+      const artistNumberDeviation = Math.abs(
+        resultArtistComparison.nrFound - spotifyArtists.length
+      );
+      const newTitle = resultArtistComparison.newTitle;
 
-    console.log(title);
+      console.log("newTitle: " + newTitle);
 
-    var response = await getYoutubeUrl(title);
-    let song = await this.#getCurrectSong(response);
-    var id = song["youtubeId"];
-    console.log(id);
-    this.#youtubeId = id;
-    await this.#getYoutubeStreamingUrl(id);
-  }
+      //compare titles (result is deviation as Levenshtein distance)
+      const resultTitleComparison = await compareTitles(
+        this.#songTitle,
+        song.title //TODO: do sth with newtitle? not sure how ...
+      );
 
-  async #getYoutubeStreamingUrl(youtubeId) {
-    var url = "https://www.youtube.com/watch?v=" + youtubeId;
-    var streamingUrl = await getStreamingUrl(url);
+      //compare album titles (if song has album) (result is deviation as Levenshtein distance)
+      let resultAlbumComparison;
+      if (song.album != undefined && this.#songAlbum != undefined) {
+        resultAlbumComparison = await albumTitleComparison(
+          this.#songAlbum.name,
+          song.album
+        );
+      }
 
-    this.#url = streamingUrl;
-  }
+      //compare duration (result is deviation in seconds)
+      const timeDifference = compareSongDurations(
+        this.#songDuration,
+        song.duration.totalSeconds
+      );
 
-  async #getCurrectSong(searchResults) {
-    var closestMatchDeviation;
-    var closestMatch;
+      //compare content rating (result is bool if matches)
+      const resultContentRatingMatch = compareContentRatings(
+        this.#songInfo.contentRating.label,
+        song.isExplicit
+      );
 
-    console.log(searchResults);
-    console.log("searchResults");
+      //if content rating is not the same, the songs cant match
+      if (resultContentRatingMatch == false || foundArtists == 0) {
+        console.log("song does not match search criteria");
+        continue;
+      }
 
-    for(let i = 0; i < searchResults.length; i++) {
-      var searchResult = searchResults[i];
+      //check if the songs are a perfect match
+      if (
+        artistNumberDeviation == 0 &&
+        resultTitleComparison == 0 &&
+        resultAlbumComparison == 0 &&
+        timeDifference == 0 &&
+        resultContentRatingMatch == true
+      ) {
+        //song is a perfect match
+        return song;
+      }
 
-      let albumName = searchResult.album
-      let songName = searchResult.title
-      
-      let songNameDistance = await getLevenshteinDistance(this.#name, songName);
-      console.log(this.#name + " - " + songName + " " + songNameDistance);
+      //check if the song is a better match than the current closest match
+      const songDeviation =
+        i * 1 +
+        artistNumberDeviation * 3 +
+        resultTitleComparison * 4 +
+        resultAlbumComparison * 2 +
+        timeDifference * 0.5;
 
-      let albumNameDistance = await getLevenshteinDistance(this.#albumName, albumName)
-      console.log(this.#albumName + " - " + albumName + " " + albumNameDistance);
 
-      let deviation = i+1 + songNameDistance * 3 + albumNameDistance
-      console.log(deviation);
+      console.log("songDeviation: " + songDeviation);
+      console.log(song);
 
-      if (closestMatchDeviation == undefined || closestMatchDeviation > deviation) {
-        closestMatchDeviation = deviation
-        closestMatch = searchResult
+      if (
+        closestMatchDeviation == undefined ||
+        songDeviation < closestMatchDeviation
+      ) {
+        closestMatchDeviation = songDeviation;
+        closestMatch = song;
       }
     }
-
-    console.log(closestMatchDeviation + " " + closestMatch);
 
     return closestMatch;
   }
 
-  #timeConvert(ms) {
-    var seconds = Math.floor(ms / 1000);
-
-    //seconds to minutes
-    var minutes = Math.floor(seconds / 60);
-    var remainingSeconds = seconds % 60;
-
-    var remainingSecondsString = "" + remainingSeconds;
-
-    if (remainingSeconds.toString().length == 1) {
-      remainingSecondsString = "0" + remainingSeconds;
-    }
-
-    return "" + minutes + ":" + remainingSecondsString;
-  }
-
   async #getLikeStatusDb() {
-    var response = await getFromDB(`SELECT * FROM playlistLikes WHERE id = '${this.#id}'`);
+    const response = await getFromDB(
+      `SELECT * FROM playlistLikes WHERE id = '${this.#songSpotifyId}'`
+    );
     if (response.length == 1) {
-        this.#liked = true;
+      return true;
     }
-
-    setLikeIcon(this.#liked);
+    return false;
   }
 
-  getLikeStatus() {
-    return this.#liked;
+  async #getStreamingUrl(youtubeId) {
+    const youtubeUrl = "https://www.youtube.com/watch?v=" + youtubeId;
+    var streamingUrl = await getStreamingUrl(youtubeUrl);
+
+    return streamingUrl;
   }
 
   getArtistsAsString() {
-    var artists = this.#artists["items"];
+    const artists = this.#songArtistArray["items"];
 
     if (artists == []) {
       return null;
     }
 
-    var returnString = "";
+    let returnString = "";
 
     if (artists == null || artists == undefined) {
       return null;
     }
 
-    var artistsLength = Object.keys(artists).length;
+    const artistsLength = Object.keys(artists).length;
 
     console.log(artistsLength);
 
     for (let i = 0; i < artistsLength; i++) {
       const artist = artists[i];
-      var name = artist["profile"]["name"];
+      const artistName = artist["profile"]["name"];
       if (i == 0) {
-        returnString = name;
+        returnString = artistName;
       } else {
-        returnString += ", " + name;
+        returnString += ", " + artistName;
       }
     }
 
     return returnString;
   }
 
-  setUrl(url) {
-    this.#url = url;
-  }
-
-  getName() {
-    return this.#name;
-  }
-
-  getArtists() {
-    return this.#artists;
-  }
-
-  getUrl() {
-    return this.#url;
-  }
-
-  getImageCoverUrl() {
-    return this.#imageCoverUrl;
-  }
-
-  getLength() {
-    return this.#length;
-  }
-
-  addToQueue() {
-    addToQueue(this);
-  }
-
-  async play() {
-    console.log("play");
-    if (this.#url != "") {
-      var audio = document.getElementById("menu_player_audio");
-
-      audio.src = this.#url;
-      this.#addToPlayer();
-      setVolume();
-      changePlayState();
-      animatePlayerIn()
-    } else {
-      this.#playstate = true;
+  #getIdFromSongInfo(songInfo) {
+    let id = songInfo.id;
+    if (id == undefined) {
+      const uri = songInfo["uri"];
+      id = uri.split(":")[2];
     }
-  }
-
-  #addToPlayer() {
-    var playerImage = document.getElementById("menu_player_cover");
-    playerImage.src = this.#imageCoverUrl;
-    setPlayerText(this.#name, this.getArtistsAsString());
+    return id;
   }
 
   likeSong() {
-    switch(this.#liked) {
-        case true:
-          console.log("unliked the song");
-          this.#liked = false;
-          likeSongDb(this.#id, 1);
-          setLikeIcon(false);
-          break;
-        case false:
-          console.log("liked the song");
-          this.#liked = true;
-          likeSongDb(this.#id, 0);
-          setLikeIcon(true);
-          break;
+    switch (this.#songLikeStatus) {
+      case true:
+        //song was liked and is to be unliked
+        this.#songLikeStatus = false;
+        likeSongDb(this.#songSpotifyId, 1);
+        return false;
+      case false:
+        //song was not liked and is to be liked
+        this.#songLikeStatus = true;
+        likeSongDb(this.#songSpotifyId, 1);
+        return true;
     }
+  }
+
+  getSpotifySongInfo() {
+    return this.#songInfo;
+  }
+
+  getSongTitle() {
+    return this.#songTitle;
+  }
+
+  getSongArtistArray() {
+    return this.#songArtistArray;
+  }
+
+  getSongAlbum() {
+    return this.#songAlbum;
+  }
+
+  getSongImageUrl() {
+    return this.#songImageUrl;
+  }
+
+  getSongDuration() {
+    return this.#songDuration;
+  }
+
+  getSongStreamingUrl() {
+    return this.#songStreamingUrl;
+  }
+
+  getSongYoutubeId() {
+    return this.#songYoutubeId;
+  }
+
+  getSongLikeStatus() {
+    return this.#songLikeStatus;
+  }
+
+  getSongPreferredVolume() {
+    return this.#songPreferredVolume;
   }
 }

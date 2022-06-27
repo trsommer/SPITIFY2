@@ -25,9 +25,9 @@ async function playQueue() {
 
   if (songQueueLength > 0 && currentSong == null) {
     var song = await removeFromQueue();
-    console.log(song.getName());
-    await song.play();
-    sendNotification(song.getName(), song.getArtistsAsString());
+    console.log(song.getSongTitle());
+    await play(song);
+    sendNotification(song.getSongTitle(), song.getArtistsAsString());
   }
 }
 

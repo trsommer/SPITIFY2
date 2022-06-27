@@ -39,7 +39,7 @@ async function createTables() {
   dbPath = path.join(documentsPath, "Spitify", "music.sqlite");
 
   var sql =
-    "CREATE TABLE songs (id TEXT PRIMARY KEY, title TEXT, artists TEXT, album TEXT, albumID TEXT, youtubeID TEXT, duration INTEGER, imageUrl TEXT, streamingUrl TEXT)";
+    "CREATE TABLE songs (id TEXT PRIMARY KEY, info TEXT)";
   var sql2 =
     "CREATE TABLE lastSearches (id INTEGER PRIMARY KEY AUTOINCREMENT, type TEXT, name TEXT, spotifyId TEXT, imageUrl TEXT, additionalInfo TEXT)";
 
@@ -61,20 +61,14 @@ async function createTables() {
 }
 
 async function insertSong(data) {
+  console.log(data);
   db = await getDB();
   const insert = db.prepare(
-    `INSERT INTO songs (id, title, artists, album, albumID, youtubeID, duration, imageUrl, streamingUrl) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
+    `INSERT INTO songs (id, info) VALUES (?, ?)`
   );
   insert.run(
     data.id,
-    data.title,
-    data.artists,
-    data.album,
-    data.albumID,
-    data.youtubeID,
-    data.duration,
-    data.imageUrl,
-    data.streamingUrl
+    JSON.stringify(data.songData)
   );
 }
 
