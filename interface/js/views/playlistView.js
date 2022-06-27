@@ -53,10 +53,11 @@ function setSongsContentPlaylist(songData) {
 
     for (let index = 0; index < songData.length; index++) {
         const song = songData[index];
-        title = song.title
-        imageUrl = song.imageUrl
-        duration = song.duration
-        artistsText = getArtistString(JSON.parse(song.artists)["items"])
+        const songInfo = JSON.parse(song.info);
+        title = songInfo.songTitle;
+        imageUrl = songInfo.songImageUrl;
+        duration = songInfo.songDuration;
+        artistsText = getArtistString(JSON.parse(songInfo.songArtistArray)["items"])
 
         console.log(song);
 
