@@ -1,16 +1,20 @@
-
-
 async function addLastSearch(type, name, spotifyId, imageUrl, additionalInfo) {
     var lastSearches = await getLastSearches()
     var lastSearchesLength = Object.keys(lastSearches).length
 
-    if (lastSearchesLength == 16) {
-        deleteLastSearch()
-    }
+    deleteSpecificLastSearch(spotifyId);
 
-    for (let index = 0; index < lastSearches.length; index++) {
-        const lastSearch = lastSearches[index];
-        if (lastSearch.spotifyId == spotifyId) return;
+    if (lastSearchesLength == 16) {
+        found = false
+
+        for (let index = 0; index < lastSearches.length; index++) {
+            const lastSearch = lastSearches[index];
+            if (lastSearch.spotifyId == spotifyId) found = true;
+        }
+
+        if (!found) {
+            deleteLastSearch();
+        }
     }
 
     data = {

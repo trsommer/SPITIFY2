@@ -27,6 +27,7 @@ async function playQueue() {
     var song = await removeFromQueue();
     console.log(song.getSongTitle());
     await play(song);
+    updateVolumeSlider(song.getSongPreferredVolume() * 100); //update preferred volume
     sendNotification(song.getSongTitle(), song.getArtistsAsString());
   }
 }

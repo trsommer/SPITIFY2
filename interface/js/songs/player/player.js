@@ -13,6 +13,8 @@ async function addInfoToPlayer(song) {
     const playerImage = document.getElementById("menu_player_cover");
     playerImage.src = song.getSongImageUrl();
     setPlayerText(song.getSongTitle(), song.getArtistsAsString())
+
+    setLikeIcon(song.getSongLikeStatus());
 }
 
 async function playSongWithoutCover(info) {
@@ -26,6 +28,7 @@ async function likeCurrentSong() {
     currentSong = getCurrentSong()
     if(currentSong == null) return
     currentSong.likeSong()
+    setLikeIcon(currentSong.getSongLikeStatus())
 }
 
 async function playSong(info, albumCover) {
@@ -35,11 +38,12 @@ async function playSong(info, albumCover) {
 }
 
 function onEndPlay() {
-    var lastSong = getCurrentSong()
+    const lastSong = getCurrentSong()
     addToPlayedQueue(lastSong)
     clearCurrentlyPlaying()
     playQueue()
     changePlayState()
+    setSpecificVolume(getCurrentSong().getSongPreferredVolume());
     console.log(playedQueue)
 }
 
@@ -56,6 +60,11 @@ function setProgress() {
     var progress = 100 * (currentTime / duration)
     updatePlayerSlider(progress)
     //console.log(progress);
+}
+
+function updateVolumeSlider(volume) {
+    const audioSlider = document.getElementById('menu_player_volume_slider');
+    audioSlider.value = volume;
 }
 
 function changePlayState() {

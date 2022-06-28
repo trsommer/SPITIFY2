@@ -11,12 +11,14 @@ module.exports = {
   updateStreamingURL,
   addLastSearch,
   deleteLastSearch,
+  deleteSpecificLastSearch,
   createPlaylist,
   addSongToPlaylist,
   removeSongFromPlaylist,
   likeSong,
   getPlaylistSongs,
-  updatePlaylistName
+  updatePlaylistName,
+  updatePlaylistImageCover
 };
 
 async function accessDatabase(query) {
@@ -92,6 +94,13 @@ async function deleteLastSearch() {
     db.prepare(`DELETE FROM lastSearches ORDER BY id LIMIT 1;`).run();
 }
 
+async function deleteSpecificLastSearch(id) {
+  db = await getDB();
+  sql = `DELETE FROM lastSearches WHERE spotifyid = ?`
+  db.prepare(sql).run(id);
+}
+
+
 async function updateStreamingURL(id, streamingUrl) {
   db = await getDB();
   db.prepare(`UPDATE songs SET streamingUrl = ? WHERE id = ?`).run(
@@ -139,6 +148,7 @@ async function removeSongFromPlaylist(spotifyId, playlistId) {
 }
 
 async function likeSong(spotifyId, type) {
+    console.log(spotifyId, type);
     db = await getDB();
     switch (type) {
         case 0:
@@ -171,6 +181,16 @@ async function updatePlaylistName(playlistId, name) {
   db = await getDB();
   db.prepare(`UPDATE playlists SET name = ? WHERE id = ?`).run(
     name,
+    playlistId
+  );
+}
+
+async function updatePlaylistImageCover(playlistId, imageCoverUrl) {
+  console.log(playlistId, imageCoverUrl);
+
+  db = await getDB();
+  db.prepare(`UPDATE playlists SET imageUrl = ? WHERE id = ?`).run(
+    imageCoverUrl,
     playlistId
   );
 }

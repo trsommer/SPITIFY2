@@ -375,10 +375,12 @@ class Song {
       case false:
         //song was not liked and is to be liked
         this.#songLikeStatus = true;
-        likeSongDb(this.#songSpotifyId, 1);
+        likeSongDb(this.#songSpotifyId, 0);
         return true;
     }
   }
+
+  //getters
 
   getSpotifySongInfo() {
     return this.#songInfo;

@@ -13,6 +13,8 @@
     <link rel="stylesheet" href="css/last_searches_view.css">
     <link rel="stylesheet" href="css/playlists_view.css">
     <link rel="stylesheet" href="css/playlist_view.css">
+    <link rel="stylesheet" href="css/settings_view.css">
+    <link rel="stylesheet" href="css/downloads_view.css">
     <script src="js/color/colorThief.js"></script>
     <script src="js/songs/artists.js"></script>
     <!-- <script src="js/songs/song_old.js"></script> -->
@@ -34,6 +36,8 @@
     <script src="js/views/lastSearchesView.js"></script>
     <script src="js/views/playlistsView.js"></script>
     <script src="js/views/playlistView.js"></script>
+    <script src="js/views/settingsView.js"></script>
+    <script src="js/views/downloadsView.js"></script>
     <title>Spitify</title>
 </head>
 <body onload="onLoad()">
@@ -295,7 +299,7 @@
             <div id="playlist_header_container">
                 <img id="playlist_header_image" src="standardImages/cover.jpg" alt="">
                 <div id="playlist_header_text_container">
-                    <p id="playlist_header_text" onblur="playlistNameChange()" contenteditable="true">Playlist Name</p>
+                    <p id="playlist_header_text" spellcheck="false" onblur="playlistNameChange()" contenteditable="true">Playlist Name</p>
                     <p id="playlist_header_author">by you</p>
                     <div id="playlist_buttons">
                         <input type="button" value="play" class="playlist_button" onclick="playPlaylist()">
@@ -317,6 +321,9 @@
             </div>
         </div>
         <div id="settings_view">
+            <div id="settings_top_menubar">
+                
+            </div>
         </div>
         <div id="downloads_view">
         </div>

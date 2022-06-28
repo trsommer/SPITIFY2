@@ -47,7 +47,7 @@ async function openPlaylist(playlistId) {
     }
     result = await getPlaylistSongs(playlistName);
     switchView("playlist_view");
-    setContentPlaylist(data, result);
+    setContentPlaylist(data, result, playlistId);
 }
 
 function setContent(content) {

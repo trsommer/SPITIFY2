@@ -2,18 +2,20 @@ var tracks = []
 var playlistName = ""
 var playlistId = 0;
 var playlistEdit = false;
+let id;
 
 function playlist_view() {
 
 }
 
-function setContentPlaylist(playlistData, songData) {
+function setContentPlaylist(playlistData, songData, thisid) {
     clearPlaylistView();
     setHeaderContentPlaylist(playlistData);
     if (songData.length > 0) {
         setSongsContentPlaylist(songData)
         tracks = songData;
     }
+    id = thisid;
 }
 
 function setHeaderContentPlaylist(playlistData) {
@@ -24,7 +26,7 @@ function setHeaderContentPlaylist(playlistData) {
         namePlaylist = "Playlist" + playlistData.id;
     }
     playlistName = namePlaylist;
-    title.innerHTML = namePlaylist
+    title.innerHTML = namePlaylist;
 }
 
 async function setHeaderImage(url) {
@@ -35,6 +37,7 @@ async function setHeaderImage(url) {
 
     colorString = await getColors("playlist_header_image")
     document.documentElement.style.setProperty("--accentColor", colorString)
+    changePlaylistImage(id, url);
 }
 
 function clearPlaylistView() {
@@ -56,7 +59,7 @@ function setSongsContentPlaylist(songData) {
         const songInfo = JSON.parse(song.info);
         title = songInfo.songTitle;
         imageUrl = songInfo.songImageUrl;
-        duration = songInfo.songDuration;
+        duration = playlistTimeConvert(songInfo.songDuration);
         artistsText = getArtistString(JSON.parse(songInfo.songArtistArray)["items"])
 
         console.log(song);
@@ -164,18 +167,37 @@ function togglePlaylistEdit() {
     }
 }
 
+function playlistTimeConvert(ms) {
+    const seconds = Math.floor(ms / 1000);
+
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+
+    return `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
+}
+
 // swap animation ------------------
 
 let startY = 0
 let startOffset = 0
-var dividersSpawned = false
-var dividerPositions = []
-var overDivider = null
+let positions = []
+let movingElementIndex;
+let targetHeight;
 
 function playlistMoveStart(index, e) {
-    let children = document.getElementById('playlist_tracks_container').children;
-    let targetDiv = children.item(index);
+    savePlaylistPositions();
+    const children = document.getElementById('playlist_tracks_container').children;
+    const targetDiv = children.item(index);
+
+    //fixate element under target so it doesn't move
+    if (children.length > index + 1) {
+        const nextDiv = children.item(index + 1);
+        nextDiv.style.marginTop = "calc(6vh + 16px)";
+        
+    }
+
     targetDiv.id = 'playlistMove'
+    movingElementIndex = index;
     
     e = e || window.event
     e.preventDefault()
@@ -189,18 +211,10 @@ function playlistMoveStart(index, e) {
     document.onmousemove = playlistMove
     document.onmouseup = playlistMoveEnd
 
-    spawnDropTargets(index)
+    //spawnDropTargets(index)
 
-    let elements = document.getElementsByClassName('playlist_track_drop_target');
 
-    for (let index = 0; index < elements.length; index++) {
-        const element = elements[index];
-
-        let offsetTop = element.offsetTop;
-        let offsetTopPlusHeight = offsetTop + element.offsetHeight;
-
-        dividerPositions.push({html: element, offsetTop: offsetTop, offsetTopPlusHeight: offsetTopPlusHeight});
-    }
+    console.log(positions);
     
 }
 
@@ -213,24 +227,8 @@ function playlistMove(e) {
 
     targetDiv.style.top = (startOffset - offsetY) + "px";
 
-    if (overDivider == null) {
-        for (let i = 0; i < dividerPositions.length; i++) {
-            const divider = dividerPositions[i];
-
-            if (cursorY > divider.offsetTop && cursorY < divider.offsetTopPlusHeight) {
-                overDivider = divider;
-                divider.html.style.animate = "dividerScaleUp 0.3s forwards";
-                break;
-            }   
-        }
-    } else {
-        if (cursorY < overDivider.offsetTop || cursorY > overDivider.offsetTopPlusHeight) {
-            overDivider.divider.style.animate = "dividerScaleDown 0.3s forwards";
-            overDivider = null;
-        } else {
-            console.log("over divider");
-        }
-    }
+    isOver(targetDiv.offsetTop, targetDiv.offsetHeight);
+    //console.log(cursorY);
 }
 
 function playlistMoveEnd(e) {
@@ -244,31 +242,65 @@ function playlistMoveEnd(e) {
     targetDiv.id = ''
 }
 
-Element.prototype.appendAfter = function (element) {
-    element.parentNode.insertBefore(this, element.nextSibling);
-  },false;
-
-Element.prototype.appendBefore = function (element) {
-    element.parentNode.insertBefore(this, element);
-},false;
-
-function spawnDropTargets(index) {
-    if (dividersSpawned) {
-        return;
-    }
-
+function savePlaylistPositions() {
     let children = document.getElementById('playlist_tracks_container').children;
-    let childrenLength = children.length;
+    for (let index = 0; index < children.length; index++) {
+        const element = children[index];
 
-    for (let i = 0; i < childrenLength; i++) {
-        let child = children.item(2*i);
-        let newDiv = document.createElement("div");
-        newDiv.classList.add("playlist_track_drop_target");      
+        const position = {
+            currentPosition: index,
+            from: element.offsetTop,
+            to: element.offsetTop + element.offsetHeight
+        }
+
+        positions.push(position);
+
+    }
+    //changePlaylistPositions(playlistId, newPositions);
+}
+
+function isOver(targetOffsetTop, targetHeight) {
+    biggestOverlap = 0;
+    biggestOverlapIndex = -1;
+
+    for (let i = 0; i < positions.length; i++) {
+        const playlistElement = positions[i];
+
+        if (playlistElement.from > targetOffsetTop + targetHeight || playlistElement.to < targetOffsetTop) {
+            continue;
+        }
+
+        let overlap = 0
+
+        if (targetOffsetTop < playlistElement.from) {
+            overlap = Math.abs(targetOffsetTop + targetHeight - playlistElement.from);
+        } else {
+            overlap = Math.abs(playlistElement.to - targetOffsetTop);
+        }
+
+        if (overlap > biggestOverlap) {
+            biggestOverlap = overlap;
+            biggestOverlapIndex = i;
+        }
+    }
+    console.log(biggestOverlapIndex);
+}
+
+function changePosition(playlistEntry, index, directionTarget) {
+    const entryHeight = playlistEntry.offsetHeight;
+
+    switch (directionTarget) {
+        case up:
+            
+            break;
+        case up:
         
-        newDiv.style.animation = "dividerIn 0.3s forwards";
-
-        newDiv.appendAfter(child);
+        break;
+        default:
+            break;
     }
 
-    dividersSpawned = true
+
+
 }
+

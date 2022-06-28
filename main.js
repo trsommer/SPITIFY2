@@ -68,6 +68,9 @@ app.whenReady().then(() => {
   ipcMain.handle("delete:lastSearch", async (event) => {
     dataBase.deleteLastSearch();
   });
+  ipcMain.handle("delete:specificLastSearch", async (event, id) => {
+    dataBase.deleteSpecificLastSearch(id);
+  });
   ipcMain.handle("update:streamingUrl", async (event, id, streamingUrl) => {
     dataBase.updateStreamingURL(id, streamingUrl);
   });
@@ -80,15 +83,19 @@ app.whenReady().then(() => {
   ipcMain.handle("get:playlistSongs", async (event, playlistName) => {
     return dataBase.getPlaylistSongs(playlistName);
   });
-  ipcMain.handle("add:PlaylistSong", async (event, spotifyId, playlist) => {
+  ipcMain.handle("add:playlistSong", async (event, spotifyId, playlist) => {
     dataBase.addSongToPlaylist(spotifyId, playlist);
   })
-  ipcMain.handle("remove:PlaylistSong", async (event, spotifyId, playlist) => {
+  ipcMain.handle("remove:playlistSong", async (event, spotifyId, playlist) => {
     dataBase.removeSongFromPlaylist(spotifyId, playlist);
   })
-  ipcMain.handle("change:PlaylistName", async (event, playlistId, name) => {
+  ipcMain.handle("change:playlistName", async (event, playlistId, name) => {
     dataBase.updatePlaylistName(playlistId, name);
   })
+  ipcMain.handle("change:playlistImage", async (event, playlistId, url) => {
+    dataBase.updatePlaylistImageCover(playlistId, url);
+  })
+  
   createWindow();
   app.on("activate", function () {
     if (BrowserWindow.getAllWindows().length === 0) createWindow();

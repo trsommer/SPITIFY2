@@ -62,11 +62,16 @@ async function deleteLastSearch() {
     window.electronAPI.deleteLastSearch()
 }
 
+async function deleteSpecificLastSearch(id) {
+    window.electronAPI.deleteSpecificLastSearch(id)
+}
+
 async function createPlaylistDB(data) {
     return window.electronAPI.createPlaylist(data)
 }
 
 async function likeSongDb(spotifyId, type) {
+    console.log('like');
     window.electronAPI.likeSong(spotifyId, type)
 }
 
@@ -84,4 +89,8 @@ async function removePlaylistSong(spotifyId, playlistId) {
 
 async function changePlaylistName(playlistId, name) {
     window.electronAPI.changePlaylistName(playlistId, name)
+}
+
+async function changePlaylistImage(playlistId, url) {
+    window.electronAPI.changeImageCover(playlistId, url)
 }
