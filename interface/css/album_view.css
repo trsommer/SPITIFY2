@@ -151,18 +151,10 @@
     border-radius: 5px;
 }
 
-.album_view_track_number_container {
-    height: 6vh;
-    width: 6vh;
-    justify-content: center;
-    align-items: center;
-    display: flex;
-    color: var(--contrast_bright);
-}
-
 .album_view_track_image {
     height: 6vh;
     border-radius: 5px;
+    margin-left: 20px;
 }
 
 .album_view_track_text {

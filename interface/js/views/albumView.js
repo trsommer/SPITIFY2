@@ -83,13 +83,6 @@ function addTracks() {
 
         trackDiv = document.createElement("div")
         trackDiv.classList.add("album_view_track")
-        trackNumberDiv = document.createElement("div")
-        trackNumberDiv.classList.add("album_view_track_number_container")
-        trackNumber = document.createElement("p")
-        trackNumber.classList.add("album_view_track_number")
-        trackNumber.innerHTML = trackNumberint
-        trackNumberDiv.appendChild(trackNumber)
-        trackDiv.appendChild(trackNumberDiv)
         trackimage = document.createElement("img")
         trackimage.classList.add("album_view_track_image")
         trackimage.src = imageUrl
@@ -144,14 +137,18 @@ function getAlbumCover() {
 }
 
 async function playSongsAlbum() {
+    //self explanatory
     clearQueue()
     for (let index = 0; index < tracks.length; index++) {
         const track = tracks[index];
         console.log(track);
+
+        //adds the album name to the track object - temp solution
         if (track.album == undefined) {
-            track.put("album", {"name": info["name"]})
+            const uri = info["uri"]
+            const id = uri.split(":")[2]
+            track["track"]["album"] = {"name": info["name"], "id": id, "coverArt": info["coverArt"]}
         }
-        console.log(track);
         song = await new Song(track['track'])
         addToQueue(song)
     }

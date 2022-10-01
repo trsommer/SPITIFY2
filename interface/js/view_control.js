@@ -17,6 +17,8 @@ function switchView(view) {
     return;
   }
 
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+
   if (altTitleState) {
     document.getElementById("top_container_alternativeTitle").style.animation =
     "alternativeTitleOut 0.25s forwards";

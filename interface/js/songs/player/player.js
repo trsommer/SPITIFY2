@@ -1,6 +1,8 @@
 var playState = false
 
 async function play(song) {
+    //plays a song
+    setSpecificProgress(0);
     const audio = document.getElementById("menu_player_audio");
     audio.src = song.getSongStreamingUrl();
     addInfoToPlayer(song);
@@ -10,6 +12,7 @@ async function play(song) {
 }
 
 async function addInfoToPlayer(song) {
+    //adds information (cover image, title, artists) to the player
     const playerImage = document.getElementById("menu_player_cover");
     playerImage.src = song.getSongImageUrl();
     setPlayerText(song.getSongTitle(), song.getArtistsAsString())
@@ -18,6 +21,7 @@ async function addInfoToPlayer(song) {
 }
 
 async function playSongWithoutCover(info) {
+    //deprecated
     song = await new Song(info)
     console.log(song)
     addToQueue(song)
@@ -25,6 +29,7 @@ async function playSongWithoutCover(info) {
 }
 
 async function likeCurrentSong() {
+    //like or dislike the current song
     currentSong = getCurrentSong()
     if(currentSong == null) return
     currentSong.likeSong()
@@ -32,19 +37,22 @@ async function likeCurrentSong() {
 }
 
 async function playSong(info, albumCover) {
+    //deprecated
     song = await new Song(info, albumCover)
     addToQueue(song)
     playQueue()
 }
 
 function onEndPlay() {
+    //controls the transition between songs
     const lastSong = getCurrentSong()
+    lastSong.savePreferredVolume();
     addToPlayedQueue(lastSong)
     clearCurrentlyPlaying()
     playQueue()
-    changePlayState()
-    setSpecificVolume(getCurrentSong().getSongPreferredVolume());
-    console.log(playedQueue)
+    //changePlayState()
+    //setSpecificVolume(getCurrentSong().getSongPreferredVolume());
+    //console.log(playedQueue)
 }
 
 function updatePlayerSlider(progress) {
@@ -52,19 +60,31 @@ function updatePlayerSlider(progress) {
     slider.value = progress
 }
 
-function setProgress() {
+function getProgress() {
     const audioElement = document.getElementById('menu_player_audio')
     var currentTime = audioElement.currentTime
     var duration = audioElement.duration
 
-    var progress = 100 * (currentTime / duration)
+    return 100 * (currentTime / duration)
+}
+
+function setProgress() {
+    const progress = getProgress();
     updatePlayerSlider(progress)
-    //console.log(progress);
+}
+
+function setSpecificProgress(progress) {
+    updatePlayerSlider(progress)
 }
 
 function updateVolumeSlider(volume) {
     const audioSlider = document.getElementById('menu_player_volume_slider');
     audioSlider.value = volume;
+}
+
+function getCurrentVolume() {
+    const audioSlider = document.getElementById('menu_player_volume_slider');
+    return audioSlider.value;
 }
 
 function changePlayState() {
@@ -115,20 +135,48 @@ function setVolume() {
 }
 
 function setSpecificVolume(volume) {
+    if (volume == null) return
     const audioElement = document.getElementById('menu_player_audio')
-    audioElement.volume = volume;
+    audioElement.volume = volume
 }
 
 function skipTrack() {
-    var paused
-    const audioElement = document.getElementById('menu_player_audio')
-    if(!audioElement.paused) paused = false
-    if(getQueueLength() == 0) return
-    
-    clearCurrentlyPlaying()
-    playQueue()
+    if (getQueue().length == 0) return;
+    setSpecificProgress(0);
+    const audioElement = document.getElementById('menu_player_audio');
+    addToPlayedQueue(currentSong);
+    clearCurrentlyPlaying();
+    playQueue();
 
-    if(!paused) changePlayState()
+    changePlayState();
+}
+
+function goBackTrack() {
+    const audioElement = document.getElementById('menu_player_audio')
+    const progress = getProgress();
+    console.log(progress);
+    if(progress < 10 && getPlayedQueue().length > 0) {
+        //if the song is less than 10% played, go to the previous song
+        skipToPreviousTrack();
+
+    } else {
+        //if the song is more than 10% played, go back to the start of the song
+        setSpecificProgress(0);
+        audioElement.currentTime = 0;
+    }
+}
+
+function skipToPreviousTrack() {
+    console.log("skipping to previous track");
+    const previousSong = playedQueue.pop();
+
+    if(currentSong != null) {
+        addToPlayedQueue(currentSong)
+    }
+    clearCurrentlyPlaying();
+    currentSong = previousSong;
+    play(currentSong);
+    changePlayState();
 }
 
 function setLikeIcon(liked) {

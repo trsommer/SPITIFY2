@@ -221,6 +221,7 @@ function setAlbumContent(content) {
 
 function playSongSearchView(id) {
   playSongWithoutCover(songInfo[id]);
+  console.log(songInfo[id]);
 }
 
 async function openAlbum(id) {

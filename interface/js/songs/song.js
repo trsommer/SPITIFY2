@@ -5,7 +5,6 @@ class Song {
     */
 
   //Globals
-
   #songSpotifyId = "";
   #songTitle = "";
   #songArtistArray = [];
@@ -34,7 +33,15 @@ class Song {
   //Setup
 
   async #setup(songInfo) {
-    const id = songInfo.id;
+    let id = songInfo.id;
+
+    //check if id is valid
+
+    if (id == undefined) {
+      id = songInfo.uri.split(":")[2];
+    }
+
+    this.#songSpotifyId = id;
 
     //get possible info of song from db
     const databaseQueryResult = await this.#getInfoFromDB(id);
@@ -67,6 +74,9 @@ class Song {
       this.#songStreamingUrl = await this.#getStreamingUrl(
         this.#songYoutubeId
       );
+
+      //update db with new url
+      this.#updateDB();
     }
 
     //maybe update some things in db? later ...
@@ -121,7 +131,7 @@ class Song {
 
   }
 
-  async #addToDB() {
+  #compileDBData() {
     const artistsJson = JSON.stringify(this.#songArtistArray);
     const dbData = {
       id: this.#songSpotifyId,
@@ -141,14 +151,23 @@ class Song {
       },
     };
 
+    return dbData;
+  }
+
+  async #addToDB() {
+    const dbData = this.#compileDBData();
     insertSong(dbData);
+  }
+
+  async #updateDB() {
+    const dbData = this.#compileDBData();
+    updateSong(dbData);
   }
 
   //
 
   #setInfo(songInfo) {
     //sets the globals for this song object from songinfo
-    this.#songSpotifyId = songInfo.id;
     this.#songTitle = songInfo.name;
     this.#songArtistArray = songInfo.artists;
     //this.#songType = songInfo.type;
@@ -167,6 +186,11 @@ class Song {
 
     for (let i = 0; i < images.length; i++) {
       const image = images[i];
+
+      if (image.width == undefined) {
+        return images[2].url;
+      }
+
       if (image.width > bestResolution) {
         bestResolution = image.width;
         bestImageUrl = image.url;
@@ -177,7 +201,7 @@ class Song {
   }
 
   #checkIfUrlExpired(url) {
-    //TODO: add comments for explanation
+    //checks if a sreaming url is expired by comparing the timestamp in the url with the current time
     const split = url.split("videoplayback?");
     const params = new URLSearchParams(split[1]);
     const expired = params.get("expire");
@@ -232,6 +256,7 @@ class Song {
         song.artists,
         song.title
       );
+
       const foundArtists = resultArtistComparison.nrFound;
       const artistNumberDeviation = Math.abs(
         resultArtistComparison.nrFound - spotifyArtists.length
@@ -241,10 +266,17 @@ class Song {
       console.log("newTitle: " + newTitle);
 
       //compare titles (result is deviation as Levenshtein distance)
-      const resultTitleComparison = await compareTitles(
+      const normalTitleComparison = await compareTitles(
         this.#songTitle,
         song.title //TODO: do sth with newtitle? not sure how ...
       );
+
+      const reducedTitleComparison = await compareTitles(
+        newTitle,
+        song.title //TODO: do sth with newtitle? not sure how ...
+      );
+
+      const resultTitleComparison = Math.min(normalTitleComparison, reducedTitleComparison);
 
       //compare album titles (if song has album) (result is deviation as Levenshtein distance)
       let resultAlbumComparison;
@@ -268,17 +300,14 @@ class Song {
       );
 
       //if content rating is not the same, the songs cant match
-      if (resultContentRatingMatch == false || foundArtists == 0) {
+      if (resultContentRatingMatch == false || foundArtists == 0 && song.artists != 0) {
         console.log("song does not match search criteria");
         continue;
       }
 
       //check if the songs are a perfect match
       if (
-        artistNumberDeviation == 0 &&
         resultTitleComparison == 0 &&
-        resultAlbumComparison == 0 &&
-        timeDifference == 0 &&
         resultContentRatingMatch == true
       ) {
         //song is a perfect match
@@ -289,7 +318,7 @@ class Song {
       const songDeviation =
         i * 1 +
         artistNumberDeviation * 3 +
-        resultTitleComparison * 4 +
+        resultTitleComparison * 2 +
         resultAlbumComparison * 2 +
         timeDifference * 0.5;
 
@@ -378,6 +407,12 @@ class Song {
         likeSongDb(this.#songSpotifyId, 0);
         return true;
     }
+  }
+
+  savePreferredVolume() {
+    const currentVolume = getCurrentVolume() / 100;
+    this.#songPreferredVolume = currentVolume;
+    this.#updateDB(); //TODO: does not save
   }
 
   //getters

@@ -224,6 +224,9 @@
 
 .menu_player_text {
   margin: 0;
+  overflow: hidden;
+  max-width: 40%;
+  white-space: nowrap;
 }
 
 #menu_player_volume_slider {

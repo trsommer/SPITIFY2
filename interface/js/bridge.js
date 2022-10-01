@@ -10,6 +10,10 @@ async function getSpotifyAlbum(id) {
     return returnArray
 }
 
+async function getSongInfo(ids) {
+    return window.electronAPI.getSongInfo(ids)
+}
+
 async function getSpotifySearchResults(query) {
     returnArray = await window.electronAPI.searchSpotify(query)
 
@@ -32,10 +36,8 @@ async function getStreamingUrl(url) {
     return result
 }
 
-async function updateStreamingUrl(id, url) {
-    console.log('update')
-    console.log(id)
-    window.electronAPI.updateStreamingUrl(id, url)
+async function updateSong(data) {
+    window.electronAPI.updateSong(data)
 }
 
 async function sendNotification(title, body) {
@@ -93,4 +95,8 @@ async function changePlaylistName(playlistId, name) {
 
 async function changePlaylistImage(playlistId, url) {
     window.electronAPI.changeImageCover(playlistId, url)
+}
+
+async function updatePlaylist(playlistId, songData) {
+    window.electronAPI.updatePlaylist(playlistId, songData)
 }

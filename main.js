@@ -34,6 +34,10 @@ app.whenReady().then(() => {
     const response = await spotify.getArtistInfo(artistID);
     return response;
   });
+  ipcMain.handle("get:songInfo", async (event, songIDs) => {
+    const response = await spotify.addInfoArtistTracks(songIDs);
+    return response;
+  });
   ipcMain.handle("get:albumInfo", async (event, albumID) => {
     const response = await spotify.getAlbumInfo(albumID);
     return response;
@@ -71,8 +75,8 @@ app.whenReady().then(() => {
   ipcMain.handle("delete:specificLastSearch", async (event, id) => {
     dataBase.deleteSpecificLastSearch(id);
   });
-  ipcMain.handle("update:streamingUrl", async (event, id, streamingUrl) => {
-    dataBase.updateStreamingURL(id, streamingUrl);
+  ipcMain.handle("update:song", async (event, data) => {
+    dataBase.updateSong(data);
   });
   ipcMain.handle("create:playlist", async (event, data) => {
     return dataBase.createPlaylist(data);
@@ -95,6 +99,10 @@ app.whenReady().then(() => {
   ipcMain.handle("change:playlistImage", async (event, playlistId, url) => {
     dataBase.updatePlaylistImageCover(playlistId, url);
   })
+  ipcMain.handle("update:playlist", async (event, playlistId, songData) => {
+    dataBase.updatePlaylist(playlistId, songData);
+  })
+  
   
   createWindow();
   app.on("activate", function () {

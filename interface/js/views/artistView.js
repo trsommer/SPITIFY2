@@ -5,6 +5,8 @@ var altTitleState = false;
 var headerImageVisible = true;
 var albums = [];
 var singlesEps = [];
+var linkedArtists = [];
+var additionalSongInfo;
 
 function artist_view() {
 }
@@ -185,6 +187,18 @@ function spawnLatestRelease(content) {
 }
 
 function spawnPopularSongs(content, layout) {
+  topSongs = content;
+  songIds = [];
+  
+  for (let i = 0; i < topSongs.length; i++) {
+    const topSong = topSongs[i];
+    
+    id = topSong.track.id;
+    songIds.push(id);
+  }
+  
+  additionalSongInfo = getSongInfo(songIds);
+
   let container = document.createElement("div");
   container.id = "av_music_preview_musicShowcase_" + layout;
 
@@ -246,6 +260,10 @@ function spawnPopularSongs(content, layout) {
       let duration = parseInt(trackContent.duration.totalMilliseconds);
       let durationText = timeConvert(duration);
       trackDurationText.innerHTML = durationText;
+
+      thisTrackContainer.addEventListener("click", function () {
+        playArtistTopTrack(trackContent, j);
+      });
 
       trackTextContainer.appendChild(trackTitle);
       trackTextContainer.appendChild(trackDurationText);
@@ -400,7 +418,7 @@ function setArtistSinglesEpContent(content) {
   albumInfo.innerHTML = info.date.year + " - " + info.type;
 
   albumBackground.addEventListener("click", function () {
-    openArtistAlbum(i);
+    openArtistSingleEp(i);
   });
 
 
@@ -459,24 +477,33 @@ function replaceText(text) {
 
     split2 = splitString.split("</a>");
 
-    replacementTag = getReplacementTag(split2[0]);
+    replacementTag = getReplacementTag(split2[0], i);
 
     newText += replacementTag + split2[1];
   }
 
+  console.log(linkedArtists);
+
   return newText;
 }
 
-function getReplacementTag(str) {
+function getReplacementTag(str, index) {
 
   let firstQuotationMark = str.indexOf('"') + 1;
   let secondQuotationMark = nth_ocurrence(str, '"', 2);
-  let SpotifyURI = str.substring(firstQuotationMark, secondQuotationMark).split(":")[2];
+  let spotifyURI = str.substring(firstQuotationMark, secondQuotationMark).split(":")[2];
 
   let firstOcurrence = str.indexOf('>') + 1;
   let info = str.substring(firstOcurrence, str.length);
 
-  let replacementTag = `<div class="av_bio_button" onclick="console.log("${SpotifyURI}")">${info}</div>`;
+  console.log(str);
+
+  if (!str.includes('artist')) {
+    return info
+  }
+
+  let replacementTag = `<div class="av_bio_button" onclick="openArtist('${spotifyURI}')">${info}</div>`;
+  linkedArtists.push({id : spotifyURI, name : info});
 
   return replacementTag;
 }
@@ -516,6 +543,8 @@ function playTopSong(id) {
 async function openArtist(id) {
   spotifyID = "";
 
+  //window.scrollTo({ top: 0, behavior: 'smooth' });
+
   if (isInt(id)) {
     if (id == 0) {
       spotifyID = spotifyIds["highlight"];
@@ -553,9 +582,26 @@ function isInt(value) {
   return (x | 0) === x;
 }
 
+async function playArtistTopTrack(content, songNumber) {
+  const id = content.id;
+  const additionalInfo = await additionalSongInfo;  
+
+  content.album = additionalInfo.data.tracks[songNumber].albumOfTrack;
+  playNewSong(content);
+}
+
 function openArtistAlbum(id) {
   console.log(albums);
   info = albums[id]
+  console.log(info);
+  uri = info.uri;
+  id = uri.split(":")[2];
+  setupAlbumView(id, info);
+} 
+
+function openArtistSingleEp(id) {
+  console.log(singlesEps);
+  info = singlesEps[id]
   console.log(info);
   uri = info.uri;
   id = uri.split(":")[2];

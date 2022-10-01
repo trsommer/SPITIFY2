@@ -11,7 +11,6 @@ disabled = true
 
 // player in animation
 async function animatePlayerIn() {
-
     playerBG = document.getElementById('menu_player')
     playerImage = document.getElementById('menu_player_cover')
     playerText = document.getElementById('menu_player_text_container')

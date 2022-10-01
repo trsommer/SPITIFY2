@@ -8,7 +8,7 @@ module.exports = {
   getDB,
   createTables,
   insertSong,
-  updateStreamingURL,
+  updateSong,
   addLastSearch,
   deleteLastSearch,
   deleteSpecificLastSearch,
@@ -18,7 +18,8 @@ module.exports = {
   likeSong,
   getPlaylistSongs,
   updatePlaylistName,
-  updatePlaylistImageCover
+  updatePlaylistImageCover,
+  updatePlaylist
 };
 
 async function accessDatabase(query) {
@@ -101,11 +102,12 @@ async function deleteSpecificLastSearch(id) {
 }
 
 
-async function updateStreamingURL(id, streamingUrl) {
+async function updateSong(data) {
   db = await getDB();
-  db.prepare(`UPDATE songs SET streamingUrl = ? WHERE id = ?`).run(
-    streamingUrl,
-    id
+  console.log(data);
+  db.prepare(`UPDATE songs SET info = ? WHERE id = ?`).run(
+    JSON.stringify(data.songData),
+    data.id
   );
 }
 
@@ -127,8 +129,6 @@ async function createPlaylist(data) {
     var id = result[0]["MAX(id)"];
 
     sql = "CREATE TABLE playlist"+ id +" (id TEXT PRIMARY KEY)"
-
-    console.log(id);
 
     db.prepare(sql).run();
 
@@ -193,4 +193,19 @@ async function updatePlaylistImageCover(playlistId, imageCoverUrl) {
     imageCoverUrl,
     playlistId
   );
+}
+
+async function updatePlaylist(playlistId, songData) {
+
+  db = await getDB();
+  //removes all songs from playlist
+  const sql = `DELETE FROM playlist${playlistId}`;
+  console.log(sql);
+  db.prepare(sql).run();
+
+  for (let i = 0; i < songData.length; i++) {
+    const song = songData[i];
+    addSongToPlaylist(song, playlistId);
+  }
+
 }

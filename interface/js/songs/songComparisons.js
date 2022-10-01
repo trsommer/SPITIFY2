@@ -2,15 +2,17 @@ async function compareArtists(spotifyArtists, ytArtists, songTitle) {
     let nrFound = 0;
     let newTitle = songTitle;
 
-    
-
     for (let i = 0; i < spotifyArtists.length; i++) {
         const spotifyArtist = spotifyArtists[i];
         let found = false;
         for (let j = 0; j < ytArtists.length; j++) {
             const ytArtist = ytArtists[j];
             //check if artists name matches
-            if (spotifyArtist.profile.name == ytArtist.name) {
+
+            spotifyArtistName = spotifyArtist.profile.name.toLowerCase();
+            ytArtistName = ytArtist.name.toLowerCase();
+
+            if (spotifyArtistName.includes(ytArtistName) || ytArtistName.includes(spotifyArtistName)) {
                 nrFound++;
                 found = true;
             }

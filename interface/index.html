@@ -38,6 +38,8 @@
     <script src="js/views/playlistView.js"></script>
     <script src="js/views/settingsView.js"></script>
     <script src="js/views/downloadsView.js"></script>
+    <!-- libraries -->
+    <script src="js/libraries/sortable.js"></script>
     <title>Spitify</title>
 </head>
 <body onload="onLoad()">
@@ -124,7 +126,7 @@
                     </div>
                     <input type="range" min="1" max="100" value="0" id="menu_player_slider" class="slider" oninput="skipTo(this)">
                     <div id="menu_player_music_controls_container">
-                        <img src="icons/play/backward.svg" class="menu_player_music_control" id="menu_player_icon0" >
+                        <img src="icons/play/backward.svg" class="menu_player_music_control" id="menu_player_icon0" onclick="goBackTrack()">
                         <img src="icons/play/play.svg" class="menu_player_music_control" id="menu_player_icon1" onclick="changePlayState()">
                         <img src="icons/play/forward.svg" class="menu_player_music_control" id="menu_player_icon2" onclick="skipTrack()">
                         <input type="range" min="1" max="100" value="50" id="menu_player_volume_slider" class="slider" oninput="setVolume()">
@@ -304,23 +306,137 @@
                     <div id="playlist_buttons">
                         <input type="button" value="play" class="playlist_button" onclick="playPlaylist()">
                         <input type="button" value="shuffle" class="playlist_button" onclick="shufflePlaylist()">
-                        <input type="button" value="edit" class="playlist_button" onclick="togglePlaylistEdit()">
                     </div>
                 </div>
             </div>
             <div id="playlist_tracks_container">
-                <div class="playlist_track_item">
-                    <div class="playlist_track_number_container">
-                        <p class="playlist_track_number">1</p>
-                    </div>
-                    <img class="playlist_track_image" src="standardImages/cover.jpg" alt="">
-                    <p class="playlist_track_name">name</p>
-                    <p class="playlist_track_artists">artists</p>
-                    <p class="playlists_track_duration">duration</p>
-                </div>
             </div>
         </div>
         <div id="settings_view">
+            <div id="settings_container">
+                <div id="settings_heading">
+                    <h2>Settings</h2>
+                </div>
+                <div id="settings_content_container">
+                    <div id="settings_menu">
+                        <div class="settings_menu_item" onclick="scrollSettingsMenuItemIntoView('settings_general')">
+                            <div class="settings_menu_item_icon_container">
+                                <img src="icons/settings.svg" alt="">
+                            </div>
+                            <div class="settings_menu_item_text_container">
+                                <p>general</p>
+                            </div>
+                        </div>
+                        <div class="settings_menu_item" onclick="scrollSettingsMenuItemIntoView('settings_appearance')">
+                            <div class="settings_menu_item_icon_container">
+                                <img src="standardImages/cover.jpg" alt="">
+                            </div>
+                            <div class="settings_menu_item_text_container">
+                                <p>appearance</p>
+                            </div>
+                        </div>
+                        <div class="settings_menu_item" onclick="scrollSettingsMenuItemIntoView('settings_player')">
+                            <div class="settings_menu_item_icon_container">
+                                <img src="icons/settingsPlay.svg" alt="">
+                            </div>
+                            <div class="settings_menu_item_text_container">
+                                <p>player</p>
+                            </div>
+                        </div>
+                        <div class="settings_menu_item" onclick="scrollSettingsMenuItemIntoView('settings_search')">
+                            <div class="settings_menu_item_icon_container">
+                                <img src="icons/search.svg" alt="">
+                            </div>
+                            <div class="settings_menu_item_text_container">
+                                <p>search</p>
+                            </div>
+                        </div>
+                        <div class="settings_menu_item" onclick="scrollSettingsMenuItemIntoView('settings_playlistAlbum')">
+                            <div class="settings_menu_item_icon_container">
+                                <img src="icons/playlists.svg" alt="">
+                            </div>
+                            <div class="settings_menu_item_text_container">
+                                <p>playlist / album</p>
+                            </div>
+                        </div>
+                        <div class="settings_menu_item" onclick="scrollSettingsMenuItemIntoView('settings_download')">
+                            <div class="settings_menu_item_icon_container">
+                                <img src="icons/downloads.svg" alt="">
+                            </div>
+                            <div class="settings_menu_item_text_container">
+                                <p>download</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="settings_divider"></div>
+                    <div id="settings_content">
+                        <div class="settings_content_page" id="settings_general">
+                            <h1>General</h1>
+                            <div class="settings_setting_container">
+                                <div class="settings_setting_text_container">
+                                    <p class="settings_setting_text">TestSetting ToggleSwitch</p>
+                                </div>
+                                <div class="settings_setting_value_container">
+                                    <label class="toggle">
+                                        <input class="toggle-checkbox" type="checkbox" checked>
+                                        <div class="toggle-switch"></div>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="settings_setting_divider"> </div>
+                            <div class="settings_setting_container">
+                                <div class="settings_setting_text_container">
+                                    <p class="settings_setting_text">TestSetting Slider</p>
+                                </div>
+                                <div class="settings_setting_value_container">
+                                    <input type="range" name="" id="">
+                                </div>
+                            </div>
+                            <div class="settings_setting_divider"> </div>
+                            <div class="settings_setting_container">
+                                <div class="settings_setting_text_container">
+                                    <p class="settings_setting_text">TestSetting Selector</p>
+                                </div>
+                                <div class="settings_setting_value_container">
+                                    <select name="" id="">
+                                        <option value="">TestOption 1</option>
+                                        <option value="">TestOption 2</option>
+                                        <option value="">TestOption 3</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="settings_setting_divider"> </div>
+                            <div class="settings_setting_container">
+                                <div class="settings_setting_text_container">
+                                    <p class="settings_setting_text">TestSetting FileSelect</p>
+                                </div>
+                                <div class="settings_setting_value_container">
+                                    <input type="file" name="" id="">
+                                </div>
+                            </div>
+                            <div class="settings_setting_divider"> </div>
+                        </div>
+
+                        <div class="settings_content_page" id="settings_appearance">
+                            <h1>Appearance</h1>
+                        </div>
+                        <div class="settings_content_page" id="settings_player">
+                            <h1>Player</h1>
+                        </div>
+                        <div class="settings_content_page" id="settings_search">
+                            <h1>Search</h1>
+                        </div>
+                        <div class="settings_content_page" id="settings_playlistAlbum">
+                            <h1>Playlists and Albums</h1>
+                        </div>
+                        <div class="settings_content_page" id="settings_download">
+                            <h1>Downloads</h1>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
             <div id="settings_top_menubar">
                 
             </div>

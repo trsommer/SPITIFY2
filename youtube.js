@@ -10,11 +10,13 @@ module.exports = {
 
 //converts a youtube url to a streamable version that only contains an audio stream
 async function convertURL(url) {
+  console.log(url);
+
   var videoId = url.split("v=")[1];
 
   videoInfo = {
     id: videoId,
-    audioQuality: "AUDIO_QUALITY_MEDIUM",
+    audioQuality: 'highest',
     container: "webm",
   };
   start = new Date();
@@ -30,6 +32,8 @@ async function convertURL(url) {
   for (let index = 0; index < audioStreams.length; index++) {
     const audioStream = audioStreams[index];
 
+    console.log(audioStream);
+
     if (
       audioStream.type != "audio" ||
       audioStream.quality == "AUDIO_QUALITY_LOW"
@@ -44,7 +48,6 @@ async function convertURL(url) {
     bestStreamIndex = index;
     bestBitrate = audioStream.bitrate;
   }
-
   time = new Date() - start;
   return audioStreams[bestStreamIndex].url;
 }

@@ -1,5 +1,6 @@
 #playlist_view {
     display: none;
+    padding-bottom: 150px;
 }
 
 #playlist_image_background_container {
@@ -64,17 +65,10 @@
     cursor: pointer;
 }
 
-.playlist_track_number_container {
-    height: 6vh;
-    width: 6vh;
-    justify-content: center;
-    align-items: center;
-    display: flex;
-}
-
 .playlist_track_image {
     height: 6vh;
     border-radius: 5px;
+    margin-left: 20px;
 }
 
 .playlist_track_name {

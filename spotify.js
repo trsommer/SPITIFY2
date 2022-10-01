@@ -4,6 +4,7 @@ module.exports = {
   searchSpotify,
   getArtistInfo,
   getAlbumInfo,
+  addInfoArtistTracks,
 };
 
 async function getAccessToken() {
@@ -34,15 +35,15 @@ async function searchSpotify(query) {
 
 async function getArtistInfo(artistID) {
   //start = new Date()
-  accessToken = await getAccessToken();
-  testURL =
+  const accessToken = await getAccessToken();
+  const testURL =
     "https://api-partner.spotify.com/pathfinder/v1/query?operationName=queryArtistOverview&";
-  variables = '{"uri":"spotify:artist:' + artistID + '"}';
-  hash =
+    const variables = '{"uri":"spotify:artist:' + artistID + '"}';
+  const hash =
     '{"persistedQuery": {"version": 1, "sha256Hash": "d66221ea13998b2f81883c5187d174c8646e4041d67f5b1e103bc262d447e3a0"}}';
 
-  url = getEncodedURL(testURL, variables, hash);
-  response = await axios.get(url, {
+  const url = getEncodedURL(testURL, variables, hash);
+  let response = await axios.get(url, {
     headers: { authorization: "Bearer " + accessToken },
   });
   //time = new Date() - start
@@ -51,17 +52,34 @@ async function getArtistInfo(artistID) {
 }
 
 async function getAlbumInfo(albumID) {
-  accessToken = await getAccessToken();
-  urlStart =
+  const accessToken = await getAccessToken();
+  const urlStart =
     "https://api-partner.spotify.com/pathfinder/v1/query?operationName=queryAlbumTracks&";
-  variables = '{"uri":"spotify:album:' + albumID + '", "offset":0,"limit":300}';
-  hash =
+  const variables = '{"uri":"spotify:album:' + albumID + '", "offset":0,"limit":300}';
+  const hash =
     '{"persistedQuery": {"version": 1, "sha256Hash": "3ea563e1d68f486d8df30f69de9dcedae74c77e684b889ba7408c589d30f7f2e"}}';
 
-  url = getEncodedURL(urlStart, variables, hash);
-  response = await axios.get(url, {
+  const url = getEncodedURL(urlStart, variables, hash);
+  let response = await axios.get(url, {
     headers: { authorization: "Bearer " + accessToken },
   });
+  return response.data;
+}
+
+async function addInfoArtistTracks(songIds) {
+  const accessToken = await getAccessToken();
+  const url = 'https://api-partner.spotify.com/pathfinder/v1/query?operationName=decorateContextTracks&';
+  
+  spotifyURIs = songIds.map((id) => 'spotify:track:' + id);
+  const variables = '{"uris":' + JSON.stringify(spotifyURIs) + '}';
+  const hash = '{"persistedQuery":{"version":1,"sha256Hash":"d4e07a4541bb7594ce30a2eeaaf35a2d78733ef59d0f5c88bdf3dcc2579dc0b6"}}';
+
+  const encodedUrl = getEncodedURL(url, variables, hash);
+
+  let response = await axios.get(encodedUrl, {
+    headers: { authorization: "Bearer " + accessToken },
+  });
+
   return response.data;
 }
 

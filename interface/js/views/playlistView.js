@@ -4,8 +4,19 @@ var playlistId = 0;
 var playlistEdit = false;
 let id;
 
-function playlist_view() {
+async function playlist_view() {
+    //makes use of the sortable library
+    await Sortable.create(playlist_tracks_container, {
+        animation: 150,
+        group: "localStorage-example",
+        store: {
+            set: function (sortable) {
+                const newOrder = sortable.toArray();
+                updatePlaylist(playlistId, newOrder);
+            }
+        }
 
+    });
 }
 
 function setContentPlaylist(playlistData, songData, thisid) {
@@ -61,6 +72,7 @@ function setSongsContentPlaylist(songData) {
         imageUrl = songInfo.songImageUrl;
         duration = playlistTimeConvert(songInfo.songDuration);
         artistsText = getArtistString(JSON.parse(songInfo.songArtistArray)["items"])
+        id = song.id;
 
         console.log(song);
 
@@ -72,13 +84,7 @@ function setSongsContentPlaylist(songData) {
 
         songContainer = document.createElement("div");
         songContainer.classList.add("playlist_track_item");
-
-        numberContainer = document.createElement("div");
-        numberContainer.classList.add("playlist_track_number_container");
-
-        number = document.createElement("p");
-        number.classList.add("playlist_track_number");
-        number.innerHTML = index + 1;
+        songContainer.setAttribute("data-id", id);
 
         image = document.createElement("img");
         image.classList.add("playlist_track_image");
@@ -96,9 +102,6 @@ function setSongsContentPlaylist(songData) {
         durationHTML.classList.add("playlists_track_duration");
         durationHTML.innerHTML = duration;
 
-        numberContainer.appendChild(number);
-
-        songContainer.appendChild(numberContainer);
         songContainer.appendChild(image);
         songContainer.appendChild(songTitle);
         songContainer.appendChild(artists);
@@ -117,6 +120,7 @@ function setSongsContentPlaylist(songData) {
         playlistContainer.appendChild(songContainer);
 
     }
+
 }
 
 function playTrackPlaylist(id) {
@@ -175,132 +179,3 @@ function playlistTimeConvert(ms) {
 
     return `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
 }
-
-// swap animation ------------------
-
-let startY = 0
-let startOffset = 0
-let positions = []
-let movingElementIndex;
-let targetHeight;
-
-function playlistMoveStart(index, e) {
-    savePlaylistPositions();
-    const children = document.getElementById('playlist_tracks_container').children;
-    const targetDiv = children.item(index);
-
-    //fixate element under target so it doesn't move
-    if (children.length > index + 1) {
-        const nextDiv = children.item(index + 1);
-        nextDiv.style.marginTop = "calc(6vh + 16px)";
-        
-    }
-
-    targetDiv.id = 'playlistMove'
-    movingElementIndex = index;
-    
-    e = e || window.event
-    e.preventDefault()
-    startY = e.clientY
-    startOffset = targetDiv.offsetTop
-
-    targetDiv.style.position = 'absolute'
-    targetDiv.style.zIndex = '1'
-    targetDiv.style.top = startOffset + "px"
-
-    document.onmousemove = playlistMove
-    document.onmouseup = playlistMoveEnd
-
-    //spawnDropTargets(index)
-
-
-    console.log(positions);
-    
-}
-
-function playlistMove(e) {
-    e = e || window.event
-    e.preventDefault()
-    let targetDiv = document.getElementById('playlistMove')
-    let cursorY = e.clientY
-    offsetY = startY - cursorY
-
-    targetDiv.style.top = (startOffset - offsetY) + "px";
-
-    isOver(targetDiv.offsetTop, targetDiv.offsetHeight);
-    //console.log(cursorY);
-}
-
-function playlistMoveEnd(e) {
-    e = e || window.event
-    e.preventDefault()
-
-    let targetDiv = document.getElementById('playlistMove')
-
-    document.onmousemove = null
-    document.onmouseup = null
-    targetDiv.id = ''
-}
-
-function savePlaylistPositions() {
-    let children = document.getElementById('playlist_tracks_container').children;
-    for (let index = 0; index < children.length; index++) {
-        const element = children[index];
-
-        const position = {
-            currentPosition: index,
-            from: element.offsetTop,
-            to: element.offsetTop + element.offsetHeight
-        }
-
-        positions.push(position);
-
-    }
-    //changePlaylistPositions(playlistId, newPositions);
-}
-
-function isOver(targetOffsetTop, targetHeight) {
-    biggestOverlap = 0;
-    biggestOverlapIndex = -1;
-
-    for (let i = 0; i < positions.length; i++) {
-        const playlistElement = positions[i];
-
-        if (playlistElement.from > targetOffsetTop + targetHeight || playlistElement.to < targetOffsetTop) {
-            continue;
-        }
-
-        let overlap = 0
-
-        if (targetOffsetTop < playlistElement.from) {
-            overlap = Math.abs(targetOffsetTop + targetHeight - playlistElement.from);
-        } else {
-            overlap = Math.abs(playlistElement.to - targetOffsetTop);
-        }
-
-        if (overlap > biggestOverlap) {
-            biggestOverlap = overlap;
-            biggestOverlapIndex = i;
-        }
-    }
-    console.log(biggestOverlapIndex);
-}
-
-function changePosition(playlistEntry, index, directionTarget) {
-    const entryHeight = playlistEntry.offsetHeight;
-
-    switch (directionTarget) {
-        case up:
-            
-            break;
-        case up:
-        
-        break;
-        default:
-            break;
-    }
-
-
-
-}
-
