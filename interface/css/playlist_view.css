@@ -45,6 +45,11 @@
     font-size: 18px;   
 }
 
+#playlist_header_info {
+    color: grey;
+    font-size: 18px;   
+}
+
 .playlist_track_item {
     display: flex;
     flex-direction: row;

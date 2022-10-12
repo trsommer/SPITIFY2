@@ -11,9 +11,13 @@ async function loadLastSearches() {
   for (let index = 15; index >= 0; index--) {
     const lastSearch = lastSearches[index];
     if (lastSearch == undefined) continue;
+    const lastSearchId = lastSearch.spotifyId;
 
     var lastSearchItem = document.createElement("div");
     lastSearchItem.classList.add("last_search_item");
+
+    var lastSearchItemClickZone = document.createElement("div");
+    lastSearchItemClickZone.classList.add("last_search_item_click_zone");
 
     var lastSearchImage = document.createElement("img");
     lastSearchImage.classList.add("last_search_item_image");
@@ -30,13 +34,20 @@ async function loadLastSearches() {
     lastSearchTypeHTML.classList.add("last_search_item_text_type");
     lastSearchTypeHTML.innerHTML = lastSearch.type;
 
+    var lastSearchCloseButton = document.createElement("img");
+    lastSearchCloseButton.classList.add("last_search_item_close_button");
+    lastSearchCloseButton.src = "icons/close.svg";
+
     lastSearchTextContainer.appendChild(lastSearchTitle);
     lastSearchTextContainer.appendChild(lastSearchTypeHTML);
 
-    lastSearchItem.appendChild(lastSearchImage);
-    lastSearchItem.appendChild(lastSearchTextContainer);
+    lastSearchItemClickZone.appendChild(lastSearchImage);
+    lastSearchItemClickZone.appendChild(lastSearchTextContainer);
 
-    lastSearchItem.addEventListener("click", function () {
+    lastSearchItem.appendChild(lastSearchItemClickZone);
+    lastSearchItem.appendChild(lastSearchCloseButton);
+
+    lastSearchItemClickZone.addEventListener("click", function () {
         switch (lastSearch.type) {
           case "artist":
             openArtist(lastSearch.spotifyId);
@@ -52,8 +63,23 @@ async function loadLastSearches() {
         }
     });
 
-    document.getElementById('last_searches_results_container').appendChild(lastSearchItem);
+    lastSearchCloseButton.addEventListener("click", function () {
+        removeLastSearch(lastSearchId, index);
+    });
 
+    document.getElementById('last_searches_results_container').appendChild(lastSearchItem);
   }
 
+}
+
+function removeLastSearch(id, index) {
+  //remove from html
+  const lastSearchItems = document.getElementById('last_searches_results_container').childNodes;
+  const newIndex = lastSearchItems.length - index - 1;
+  const elemToBeRemoved = lastSearchItems[newIndex];
+
+  elemToBeRemoved.parentNode.removeChild(elemToBeRemoved)
+
+  //remove from db
+  deleteSpecificLastSearch(id);
 }

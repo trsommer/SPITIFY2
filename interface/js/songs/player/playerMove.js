@@ -16,6 +16,8 @@ async function animatePlayerIn() {
     playerText = document.getElementById('menu_player_text_container')
     sliderBig = document.getElementById('menu_player_slider')
     sliderSmall = document.getElementById('menu_player_volume_slider')
+    buttonSecondary0 = document.getElementById('menu_player_secondary_icon0')
+    buttonSecondary1 = document.getElementById('menu_player_secondary_icon1')
     button1 = document.getElementById('menu_player_icon0')
     button2 = document.getElementById('menu_player_icon1')
     button3 = document.getElementById('menu_player_icon2')
@@ -27,11 +29,16 @@ async function animatePlayerIn() {
     playerText.style.animation = 'playerFadeIn 0.5s forwards'
     sliderBig.style.animation = 'playerSliderBigIn 0.5s forwards'
     sliderSmall.style.animation = 'playerSliderVolumeIn 0.5s forwards'
+    buttonSecondary0.style.animation = 'playerFadeIn 0.5s forwards'
+    await sleep(100)
+
     button1.style.animation = 'playerFadeIn 0.5s forwards'
     await sleep(100)
     button2.style.animation = 'playerFadeIn 0.5s forwards'
     await sleep(100)
     button3.style.animation = 'playerFadeIn 0.5s forwards'
+    await sleep(100)
+    buttonSecondary1.style.animation = 'playerFadeIn 0.5s forwards'
     await sleep(100)
     button4.style.animation = 'playerFadeIn 0.5s forwards'
 

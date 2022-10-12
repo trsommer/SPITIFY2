@@ -12,6 +12,16 @@ async function getAccessToken() {
   return response.data["accessToken"];
 }
 
+async function getClientToken() {
+  response = await axios.get("https://clienttoken.spotify.com/v1/clienttoken", 
+  {
+    headers: {
+      Accept: 'application/json',
+    }
+  });
+  console.log(response);
+}
+
 async function searchSpotify(query) {
   //start = new Date()
   accessToken = await getAccessToken();
@@ -35,6 +45,7 @@ async function searchSpotify(query) {
 
 async function getArtistInfo(artistID) {
   //start = new Date()
+  getClientToken();
   const accessToken = await getAccessToken();
   const testURL =
     "https://api-partner.spotify.com/pathfinder/v1/query?operationName=queryArtistOverview&";
@@ -82,6 +93,31 @@ async function addInfoArtistTracks(songIds) {
 
   return response.data;
 }
+
+async function getSongLyrics(id, coverImage) {
+  const url = 'https://spclient.wg.spotify.com/color-lyrics/v2/track/' + id +'/image/' + coverImage + '?format=json&vocalRemoval=false&market=from_token';
+
+  const accessToken = await getAccessToken();
+
+  const clientToken = 'AACs6lv5IZUL62eq/qPcNcSi6r24yrzjqfZDXPIHX8zdTpds6/zIL+8cNpVgA/tKsTQTOud8YTIsksKDX6CAHjLs0Gygbrv2pBLGwND+RJCViJHmwLCBUCEoPtbWtHnMDa7Z+owHB9sw5x6dUi2DS2YPMC3Jt1NMw+C6haQ0uEEbi8iFvc2Uurw2Yl8r0XFWDa2V+3sai/85sGYqblc63be0VONhMCNR1zE0edlbKIvIzWPxExx0qU72y/NhjKjY3QpPZTdOlwZchmKkTi4WTha5Hgiax7pIw/mIbQ==';
+
+
+  console.log(url);
+  console.log(accessToken);
+
+  let response = await axios.get(url, {
+    headers: { 
+      authorization: "Bearer " + accessToken,
+      'client-token': clientToken
+  },  
+  });
+
+  console.log(response);
+
+}
+
+//getSongLyrics('3yfqSUWxFvZELEM4PmlwIR', 'https%3A%2F%2Fi.scdn.co%2Fimage%2Fab67616d0000b273dbb3dd82da45b7d7f31b1b42');
+//getClientToken();
 
 function getEncodedURL(url, variables, hash) {
   const params = new URLSearchParams();

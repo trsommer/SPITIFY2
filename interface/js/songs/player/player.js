@@ -1,5 +1,13 @@
 var playState = false
 
+async function manualPlay() {
+    if (getCurrentSong() == null) {
+        const info = getLastPlayedSongInfo();
+        const song = await new Song(info);
+        setCurrentSong(song);
+    }
+}
+
 async function play(song) {
     //plays a song
     setSpecificProgress(0);
@@ -50,7 +58,7 @@ function onEndPlay() {
     addToPlayedQueue(lastSong)
     clearCurrentlyPlaying()
     playQueue()
-    //changePlayState()
+    changePlayState()
     //setSpecificVolume(getCurrentSong().getSongPreferredVolume());
     //console.log(playedQueue)
 }
@@ -138,12 +146,15 @@ function setSpecificVolume(volume) {
     if (volume == null) return
     const audioElement = document.getElementById('menu_player_audio')
     audioElement.volume = volume
+
+    updateVolumeSlider(volume * 100)
 }
 
 function skipTrack() {
     if (getQueue().length == 0) return;
     setSpecificProgress(0);
     const audioElement = document.getElementById('menu_player_audio');
+    currentSong.savePreferredVolume();
     addToPlayedQueue(currentSong);
     clearCurrentlyPlaying();
     playQueue();
@@ -171,7 +182,7 @@ function skipToPreviousTrack() {
     const previousSong = playedQueue.pop();
 
     if(currentSong != null) {
-        addToPlayedQueue(currentSong)
+        getQueue().unshift(currentSong);
     }
     clearCurrentlyPlaying();
     currentSong = previousSong;

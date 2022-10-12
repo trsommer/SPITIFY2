@@ -112,6 +112,7 @@
 #av_music_cover_big_text {
     color: var(--contrast_bright);
     padding-left: 15px;
+    padding-right: 15px;
 }
 
 #av_music_cover_big_text h3 {
@@ -172,6 +173,7 @@
     margin-top: 5px;
     padding-top: 5px;
     padding-bottom: 5px;
+    padding-left: 5px;
     border-radius: 10px;
 }
 
@@ -181,20 +183,21 @@
 }
 
 .av_music_preview_musicShowcase_trackIMG {
-    width: 50px;
-    height: 50px;
+    max-width: 50px;
+    max-height: 50px;
     border-radius: 8px;
-    padding-left: 5px;
 }
 
 .av_music_preview_musicShowcase_trackText {
     color: var(--contrast_bright);
     margin-left: 10px;
+    overflow: hidden;
 }
 
 .av_music_preview_musicShowcase_trackText h4 {
     margin: 0;
     color: var(--accentColor);
+    white-space: nowrap;
 }
 
 .av_music_preview_musicShowcase_trackText p {
@@ -278,7 +281,8 @@
 }
 
 .av_album_cover_image {
-    width: 80%;
+    max-width: 80%;
+    max-height: 65%;
     margin-top: calc(35vh * 0.074);
     border-radius: 20px;
 }

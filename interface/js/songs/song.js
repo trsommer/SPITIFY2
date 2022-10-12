@@ -33,13 +33,7 @@ class Song {
   //Setup
 
   async #setup(songInfo) {
-    let id = songInfo.id;
-
-    //check if id is valid
-
-    if (id == undefined) {
-      id = songInfo.uri.split(":")[2];
-    }
+    let id = this.#getIdFromSongInfo(songInfo);
 
     this.#songSpotifyId = id;
 
@@ -265,15 +259,15 @@ class Song {
 
       console.log("newTitle: " + newTitle);
 
-      //compare titles (result is deviation as Levenshtein distance)
+      //compare titles (result#is deviation as Levenshtein distance)
       const normalTitleComparison = await compareTitles(
         this.#songTitle,
-        song.title //TODO: do sth with newtitle? not sure how ...
+        song.title 
       );
 
       const reducedTitleComparison = await compareTitles(
-        newTitle,
-        song.title //TODO: do sth with newtitle? not sure how ...
+        this.#songTitle,
+        newTitle 
       );
 
       const resultTitleComparison = Math.min(normalTitleComparison, reducedTitleComparison);
@@ -386,12 +380,11 @@ class Song {
   }
 
   #getIdFromSongInfo(songInfo) {
-    let id = songInfo.id;
-    if (id == undefined) {
-      const uri = songInfo["uri"];
-      id = uri.split(":")[2];
+    if (songInfo.id == undefined || songInfo.id == null) {
+      return songInfo.uri.split(":")[2];
     }
-    return id;
+
+    return songInfo.id;
   }
 
   likeSong() {
@@ -455,5 +448,9 @@ class Song {
 
   getSongPreferredVolume() {
     return this.#songPreferredVolume;
+  }
+
+  getSongInfo() {
+    return this.#songInfo;
   }
 }

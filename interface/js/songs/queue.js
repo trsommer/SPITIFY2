@@ -9,8 +9,25 @@ async function playNewSong(info) {
   playQueue()
 }
 
+async function playSongNow(info) {
+  //plays a song now
+  const song = await new Song(info)
+  //if there is no song currently playing, play the song
+  if (getCurrentSong() == null) {
+    addToQueue(song)
+    playQueue()
+  }
+  //if there is a song currently playing, add current song to played queue and play the new song
+  else {
+    const currentSong = getCurrentSong()
+    addToPlayedQueue(currentSong)
+    skipQueue(song)
+    clearCurrentlyPlaying()
+    changePlayState();
+    playQueue()
+  }
 
-
+}
 
 function addToQueue(song) {
   if (song == null) return;
@@ -32,7 +49,6 @@ async function playQueue() {
 
   //no song is in queue
   if (songQueueLength == 0) {
-    changePlayState();
     return;
   }
 
@@ -75,6 +91,10 @@ function getCurrentSong() {
   return currentSong;
 }
 
+function setCurrentSong(song) {
+  currentSong = song;
+}
+
 //returns, how many songs are in the queue
 function getQueueLength() {
   return songQueue.length;
@@ -93,4 +113,8 @@ function getPlayedQueue() {
 //returns the song queue
 function getQueue() {
   return songQueue;
+}
+
+function getLastPlayedSongInfo() {
+  return playedQueue[playedQueue.length - 1].getSongInfo();
 }

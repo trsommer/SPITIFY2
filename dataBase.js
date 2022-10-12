@@ -47,7 +47,7 @@ async function createTables() {
     "CREATE TABLE lastSearches (id INTEGER PRIMARY KEY AUTOINCREMENT, type TEXT, name TEXT, spotifyId TEXT, imageUrl TEXT, additionalInfo TEXT)";
 
   var sql3 =
-    "CREATE TABLE playlists (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, remote INTEGER, spotifyId TEXT, imageUrl TEXT)";
+    "CREATE TABLE playlists (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, remote INTEGER, locked INTEGER, spotifyId TEXT, imageUrl TEXT, author TEXT)";
 
   var sql4 = 
       "CREATE TABLE playlistLikes (id TEXT PRIMARY KEY)"
@@ -114,14 +114,16 @@ async function updateSong(data) {
 async function createPlaylist(data) {
     db = await getDB();
     const insert = db.prepare(
-        `INSERT INTO playlists (name, remote, spotifyId, imageUrl) VALUES (?, ?, ?, ?)`
+        `INSERT INTO playlists (name, remote, locked, spotifyId, imageUrl, author) VALUES (?, ?, ?, ?, ?, ?)`
     );
 
     insert.run(
         data.name,
         data.remote,
+        data.locked,
         data.spotifyId,
-        data.imageUrl
+        data.imageUrl,
+        data.author
     );
 
     result = await accessDatabase(`SELECT MAX(id) FROM playlists`);

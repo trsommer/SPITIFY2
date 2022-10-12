@@ -16,19 +16,42 @@ async function getPlaylistsFromDB() {
 
 }
 
+
+
 async function createPlaylist() {
     let playlists = getPlaylists();
 
     data = {
         name: "Your Playlist " + (playlists.length + 1),
         remote: 0,
+        locked: 0,
         spotifyId: "",
         imageUrl: "standardImages/cover.jpg",
+        author: "You"
     }
 
     id = await createPlaylistDB(data)
     console.log(id);
     updatePlaylists();
+
+    return id;
+}
+
+async function createSpecificPlaylist(name, author, imageUrl, locked) {
+    data = {
+        name: name,
+        remote: 0,
+        locked: locked,
+        spotifyId: "",
+        imageUrl: imageUrl,
+        author: author
+    }
+
+    id = await createPlaylistDB(data)
+    console.log(id);
+    updatePlaylists();
+
+    return id;
 }
 
 async function openPlaylist(playlistId) {
@@ -40,14 +63,15 @@ async function openPlaylist(playlistId) {
             imageUrl: "standardImages/cover.jpg",
             name: "Your Favourite Songs",
             remote: 0,
-            spotifyId: ""
+            spotifyId: "",
+            author: "You"
         }
     } else {
         data = playlists[playlistId - 1];
     }
     result = await getPlaylistSongs(playlistName);
     switchView("playlist_view");
-    setContentPlaylist(data, result, playlistId);
+    await setContentPlaylist(data, result, playlistId);
 }
 
 function setContent(content) {

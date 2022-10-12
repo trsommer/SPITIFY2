@@ -178,6 +178,11 @@ function spawnLatestRelease(content) {
   releaseContainer.appendChild(releaseImage);
   releaseContainer.appendChild(releaseTextContainer);
 
+  releaseContainer.addEventListener("click", function () {
+    id = content.id;
+    setupAlbumView(id, content);
+  });
+
   releaseCenterContainer.appendChild(releaseContainer);
 
   container.appendChild(heading);
@@ -491,7 +496,7 @@ function getReplacementTag(str, index) {
 
   let firstQuotationMark = str.indexOf('"') + 1;
   let secondQuotationMark = nth_ocurrence(str, '"', 2);
-  let spotifyURI = str.substring(firstQuotationMark, secondQuotationMark).split(":")[2];
+  let spotifyId = str.substring(firstQuotationMark, secondQuotationMark).split(":")[2];
 
   let firstOcurrence = str.indexOf('>') + 1;
   let info = str.substring(firstOcurrence, str.length);
@@ -502,8 +507,8 @@ function getReplacementTag(str, index) {
     return info
   }
 
-  let replacementTag = `<div class="av_bio_button" onclick="openArtist('${spotifyURI}')">${info}</div>`;
-  linkedArtists.push({id : spotifyURI, name : info});
+  let replacementTag = `<div class="av_bio_button" onclick="openArtist('${spotifyId}')">${info}</div>`;
+  linkedArtists.push({id : spotifyId, name : info});
 
   return replacementTag;
 }
@@ -587,7 +592,7 @@ async function playArtistTopTrack(content, songNumber) {
   const additionalInfo = await additionalSongInfo;  
 
   content.album = additionalInfo.data.tracks[songNumber].albumOfTrack;
-  playNewSong(content);
+  playSongNow(content);
 }
 
 function openArtistAlbum(id) {

@@ -128,7 +128,7 @@ function playSongAlbum(id) {
     if (track.album == undefined) {
         track.album = {"name": info["name"], "coverArt": {"sources": info["coverArt"]["sources"]}}
     }
-    playSong(track)
+    playSongNow(track)
 }
 
 function getAlbumCover() {
@@ -138,10 +138,10 @@ function getAlbumCover() {
 
 async function playSongsAlbum() {
     //self explanatory
-    clearQueue()
+
+
     for (let index = 0; index < tracks.length; index++) {
         const track = tracks[index];
-        console.log(track);
 
         //adds the album name to the track object - temp solution
         if (track.album == undefined) {
@@ -149,22 +149,43 @@ async function playSongsAlbum() {
             const id = uri.split(":")[2]
             track["track"]["album"] = {"name": info["name"], "id": id, "coverArt": info["coverArt"]}
         }
-        song = await new Song(track['track'])
-        addToQueue(song)
+
+        if (index == 0) {
+            playSongNow(track['track'])
+            clearQueue();
+        } else {
+            song = await new Song(track['track'])
+            addToQueue(song)
+        }
+
     }
-    playQueue();
 }
 
 async function shuffleSongsAlbum() {
-    clearQueue()
     var shuffledArray = [...tracks]
     shuffleArray(shuffledArray)
-    for (let index = 0; index < shuffledArray.length; index++) {
-        const thisTrack = shuffledArray[index]
-        song = await new Song(thisTrack["track"])
-        addToQueue(song)
+
+    for (let index = 0; index < tracks.length; index++) {
+        const track = shuffledArray[index];
+
+        //adds the album name to the track object - temp solution
+        if (track.album == undefined) {
+            const uri = info["uri"]
+            const id = uri.split(":")[2]
+            track["track"]["album"] = {"name": info["name"], "id": id, "coverArt": info["coverArt"]}
+        }
+
+        
+
+        if (index == 0) {
+            playSongNow(track['track'])
+            clearQueue();
+        } else {
+            song = await new Song(track['track'])
+            addToQueue(song)
+        }
+
     }
-    playQueue();
 }
 
 function shuffleArray(array) {
@@ -172,4 +193,40 @@ function shuffleArray(array) {
         const j = Math.floor(Math.random() * (i + 1));
         [array[i], array[j]] = [array[j], array[i]];
     }
+}
+
+async function importAlbumAsPlaylist() {
+
+    //TODO if songs are not fully loaded into db, things break - needs fixing
+
+    const albumName = info.name;
+    const author = getArtistString(info.artists.items)
+    const image = info.coverArt.sources[2].url
+
+    const playlistId = await createSpecificPlaylist(albumName, author, image, 1);
+
+    for (let i = 0; i < tracks.length; i++) {
+        const track = tracks[i].track;
+        const uri = track["uri"]
+        const songId = uri.split(":")[2]
+
+        addPlaylistSong(songId, playlistId)
+
+    }
+    
+    console.log(info);
+
+    //TODO move task out of main thread to prevent lag
+
+    for (let i = 0; i < tracks.length; i++) {
+        const track = tracks[i].track;
+        if (track.album == undefined) {
+            const uri = info["uri"]
+            const id = uri.split(":")[2]
+            track["album"] = {"name": info["name"], "id": id, "coverArt": info["coverArt"]}
+        }
+        song = await new Song(track)
+
+    }
+
 }

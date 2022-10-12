@@ -66,3 +66,32 @@
 .last_search_item_close img {
     width: 35%;
 }
+
+.last_search_item_click_zone {
+    display: flex;
+    width: calc(100% - 18px);
+    height: 100%;
+    align-items: center;
+}
+
+.last_search_item_close_button {
+    width: 18px;
+    height: 18px;
+    margin-top: -90px;
+    margin-right: 5px;
+    padding: 4px;
+    border-radius: 15px;
+    opacity: 0.3;
+    transition: 0.1s;
+}
+
+
+
+.last_search_item_close_button:hover {
+    width: 20px;
+    height: 20px;
+    background: #151616;
+    padding: 3px;
+    border-radius: 15px;
+    opacity: 1;
+}

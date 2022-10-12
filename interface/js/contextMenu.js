@@ -1,209 +1,470 @@
-var contextMenuShown = false
-var contextSubMenuShown = false
-var clickedSongInfo = []
+var contextMenuShown = false;
+var contextSubMenuShown = false;
+var clickedSongInfo = [];
+var clickedPlaylistSongInfo = [];
+var playlistId = 0;
 
-window.addEventListener('click', (e) => {
-    if (contextMenuShown) {
-        contextMenuShown = false
-        console.log('clicked')
-        document.getElementById("context_menu_container").innerHTML = "";
-        contextSubMenuShown = false
+window.addEventListener("click", (e) => {
+  //closes context menu on click outside of menu
+  if (contextMenuShown) {
+    contextMenuShown = false;
+    console.log("clicked");
+    document.getElementById("context_menu_container").innerHTML = "";
+    contextSubMenuShown = false;
+    enableScroll();
+  }
+});
+
+
+document.addEventListener('keyup', (e) => {
+  //closes context menu on esc
+    if (e.key == "Escape" && contextMenuShown) {
+      contextMenuShown = false;
+      document.getElementById("context_menu_container").innerHTML = "";
+      contextSubMenuShown = false;
+      removeSubMenu();
+      enableScroll();
     }
-})
+});
 
 function setClickedSong(info) {
-    clickedSongInfo = info
+  clickedSongInfo = info;
 }
 
+function setClickedPlaylistSong(info, id) {
+    clickedPlaylistSongInfo = info;
+    playlistId = id;
+}
 
 function spawnContextMenu(cursorX, cursorY, content) {
-    document.getElementById("context_menu_container").innerHTML = "";
-    var menu = document.createElement('div')
-    menu.classList.add('context_menu')
-    menu.id = 'context_main_menu'
-    menu.style.display = "block";
-    var menuWidth = 150
-    var windowWidth = window.innerWidth
-    var menuHeight = 250
-    var windowHeight = window.innerHeight
+  //spawns the context menu on given position with given content
+  document.getElementById("context_menu_container").innerHTML = "";
+  disableScroll();
+  var menu = document.createElement("div");
+  menu.classList.add("context_menu");
+  menu.id = "context_main_menu";
+  menu.style.display = "block";
+  var menuWidth = 150;
+  var windowWidth = window.innerWidth;
+  var menuHeight = 250;
+  var windowHeight = window.innerHeight;
 
-    var offsetLeft;
-    var offsetTop;
+  var offsetLeft;
+  var offsetTop;
 
-    if (menuWidth + cursorX + 50 > windowWidth) {
-        offsetLeft = cursorX - menuWidth;
+  if (menuWidth + cursorX + 50 > windowWidth) {
+    offsetLeft = cursorX - menuWidth;
+  } else {
+    offsetLeft = cursorX;
+  }
+
+  if (menuHeight + cursorY + 50 > windowHeight) {
+    offsetTop = cursorY - menuHeight + 20;
+  } else {
+    offsetTop = cursorY;
+  }
+
+  const scrollAmount = window.scrollY;
+  console.log(scrollAmount);
+
+  offsetTop = offsetTop + scrollAmount;
+
+  menu.style.left = offsetLeft + "px";
+  menu.style.top = offsetTop + "px";
+
+  for (let index = 0; index < content.length; index++) {
+    let buttonContent = content[index];
+    var subMenuButton = document.createElement("div");
+    subMenuButton.classList.add("context_menu_button");
+    subMenuButton.innerHTML = buttonContent.name;
+
+    if (buttonContent.subMenu != null) {
+      console.log("submenu");
+      subMenuButton.addEventListener("mouseover", (e) => {
+        removeSubMenu();
+        console.log("mouseover");
+        buttonContent.subMenu(offsetLeft, offsetTop, index, "right");
+      });
+
     } else {
-        offsetLeft = cursorX;
-    }
-    
-    if (menuHeight + cursorY + 50 > windowHeight) {
-        offsetTop = cursorY - menuHeight;
-    } else {
-        offsetTop = cursorY;
+      subMenuButton.addEventListener("mouseenter", (e) => {
+        removeSubMenu();
+      });
     }
 
-    menu.style.left = offsetLeft + "px";
-    menu.style.top = offsetTop + "px";
-
-    for (let index = 0; index < content.length; index++) {
-        let buttonContent = content[index]
-        var subMenuButton = document.createElement('div')
-        subMenuButton.classList.add('context_menu_button')
-        subMenuButton.innerHTML = buttonContent.name
-
-        if (buttonContent.subMenu != null) {
-            console.log("submenu");
-            subMenuButton.addEventListener('mouseover', (e) => {
-                console.log("mouseover");
-                buttonContent.subMenu(offsetLeft, offsetTop, index, "right")
-            })
-        } else {
-            subMenuButton.addEventListener('mouseenter', (e) => {
-                removeSubMenu()
-            })
-        }
-
-        if (buttonContent.action != null) {
-            subMenuButton.addEventListener('click', (e) => {
-                buttonContent.action()
-            })
-        }
-
-        menu.appendChild(subMenuButton)
+    if (buttonContent.action != null) {
+      subMenuButton.addEventListener("click", (e) => {
+        buttonContent.action();
+      });
     }
 
+    menu.appendChild(subMenuButton);
+  }
 
-    document.getElementById("context_menu_container").appendChild(menu);
-    contextMenuShown = true;
+  document.getElementById("context_menu_container").appendChild(menu);
+  contextMenuShown = true;
 }
 
 function spawnContextSubMenu(offsetLeft, OffsetTop, buttonIndex, content) {
-    removeSubMenu()
-    var subMenu = document.createElement('div')
-    subMenu.classList.add('context_menu')
-    subMenu.id = 'context_sub_menu'
+  //spawns the context menu relative to the button that spawned it
+  removeSubMenu();
+  var subMenu = document.createElement("div");
+  subMenu.classList.add("context_menu");
+  subMenu.id = "context_sub_menu";
 
-    subMenu.style.display = "block";
+  subMenu.style.display = "block";
 
-    var calculatedOffsetTop = OffsetTop + 5 + 16 + 32 * buttonIndex; //5 for top padding, 16 for middle of button, 32 for each button
+  var calculatedOffsetTop = OffsetTop + 5 + 16 + 32 * buttonIndex; //5 for top padding, 16 for middle of button, 32 for each button
 
-    var menuWidth = 160
-    var windowWidth = window.innerWidth
-    var calculatedOffsetLeft = 0;
+  var menuWidth = 150;
+  var subMenuWidth = 160;
+  var windowWidth = window.innerWidth;
+  var calculatedOffsetLeft = 0;
+  var menuHeight = 10 + 32 * content.length; //10 for top and bottom padding, 32 for each button
+  var bottomPossible = true;
 
-    if (offsetLeft + menuWidth + 2 + menuWidth + 50 > windowWidth) {
-        calculatedOffsetLeft = offsetLeft - menuWidth - 2;
-        subMenu.style.borderRadius = "20px 0 20px 20px";
+  totalHeight = calculatedOffsetTop + menuHeight;
+  totalWindowHeight = window.innerHeight + window.scrollY;
+
+
+  if (totalHeight > totalWindowHeight) {
+    bottomPossible = false;
+    calculatedOffsetTop = OffsetTop + 5 + 16 + 32 * buttonIndex - menuHeight;
+  }
+
+  if (offsetLeft + menuWidth + 2 + menuWidth + 50 > windowWidth) {
+    console.log("right");
+    calculatedOffsetLeft = offsetLeft - subMenuWidth - 2 - 10;
+    if (bottomPossible) {
+      subMenu.style.borderRadius = "20px 0 20px 20px";
     } else {
-        calculatedOffsetLeft = offsetLeft + menuWidth + 2;
-        subMenu.style.borderRadius = "0 20px 20px 20px";
+      subMenu.style.borderRadius = "20px 20px 0 20px";
+    }
+  } else {
+    console.log("left");
+    calculatedOffsetLeft = offsetLeft + menuWidth + 2 + 10;
+
+    if (bottomPossible) {
+    subMenu.style.borderRadius = "0 20px 20px 20px";
+    } else {
+      subMenu.style.borderRadius = "20px 20px 20px 0";
+    }
+  }
+
+  subMenu.style.left = calculatedOffsetLeft + "px";
+  subMenu.style.top = calculatedOffsetTop + "px";
+
+  for (let i = 0; i < content.length; i++) {
+    var subMenuButton = document.createElement("div");
+    subMenuButton.classList.add("context_menu_button");
+    subMenuButton.innerHTML = content[i].name;
+
+    if (content[i].action != null) {
+      subMenuButton.addEventListener("click", (e) => {
+        content[i].action(i);
+      });
     }
 
-    subMenu.style.left = calculatedOffsetLeft + "px";
-    subMenu.style.top = calculatedOffsetTop + "px"; 
+    subMenu.appendChild(subMenuButton);
+  }
 
-    console.log(content);
+  contextSubMenuShown = true;
 
-    for (let i = 0; i < content.length; i++) {
-        var subMenuButton = document.createElement('div')
-        subMenuButton.classList.add('context_menu_button')
-        subMenuButton.innerHTML = content[i].name
+  subMenu.addEventListener("mouseleave", (e) => {
+    removeSubMenu();
+  });
 
-        if (content[i].action != null) {
-            subMenuButton.addEventListener('click', (e) => {
-                content[i].action(i)
-            })
-        }
+  document.getElementById("context_menu_container").appendChild(subMenu);
+}
 
-        subMenu.appendChild(subMenuButton)        
-    }
+function removeSubMenu() {
+  //removes the submenu
+  var childCount = document.getElementById(
+    "context_menu_container"
+  ).childElementCount;
 
-    contextSubMenuShown = true;
+  if (childCount > 1) {
+    document
+      .getElementById("context_menu_container")
+      .removeChild(document.getElementById("context_menu_container").lastChild);
+    contextSubMenuShown = false;
+  }
+}
 
-    document.getElementById("context_menu_container").appendChild(subMenu);
+function disableScroll() {
+  // Get the current page scroll position
+  scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+  scrollLeft = window.pageXOffset || document.documentElement.scrollLeft,
+
+      // if any scroll is attempted, set this to the previous value
+      window.onscroll = function() {
+          window.scrollTo(scrollLeft, scrollTop);
+      };
+}
+
+function enableScroll() {
+  window.onscroll = function() {};
+}
+
+//search song menu
+
+async function spawnSongMenu(e) {
+  getPlaylistsFromDB();
+  let cursorX = e.clientX;
+  let cursorY = e.clientY;
+  let content = [
+    { name: "play", action: contextPlay, subMenu: null },
+    { name: "play next", action: contextPlayNext, subMenu: null },
+    { name: "play after queue", action: contextPlayAfterQueue, subMenu: null },
+    { name: "add to playlist", action: null, subMenu: contextPlaylists },
+    { name: "open Artist", action: contextOpenSingleArtist, subMenu: contextArtists },
+    { name: "download", action: contextDownload, subMenu: null },
+  ];
+
+  spawnContextMenu(cursorX, cursorY, content);
 }
 
 function contextPlaylists(offsetLeft, OffsetTop, buttonIndex, side) {
-    let playlists = getPlaylists()
-    let content = []
-
+    let playlists = getPlaylists();
+    let content = [];
+  
     for (let i = 0; i < playlists.length; i++) {
-        let playlist = playlists[i];
-        let newPlaylistContent = {
-            name: playlist.name,
-            action: contextAddToPlaylist,
-            subMenu: null
-        }
-
-        content.push(newPlaylistContent)
+      let playlist = playlists[i];
+      let newPlaylistContent = {
+        name: playlist.name,
+        action: contextAddToPlaylist,
+        subMenu: null,
+      };
+  
+      content.push(newPlaylistContent);
     }
-
+  
     content.push({
-        name: "new playlist",
-        action: contextAddToNewPlaylist,
-        subMenu: null
-    })
-
+      name: "new playlist",
+      action: contextAddToNewPlaylist,
+      subMenu: null,
+    });
+  
     console.log(content);
-
-    spawnContextSubMenu(offsetLeft, OffsetTop, buttonIndex, content)
+  
+    spawnContextSubMenu(offsetLeft, OffsetTop, buttonIndex, content);
 }
 
+function contextArtists(offsetLeft, OffsetTop, buttonIndex, side) {
+    const artists = clickedSongInfo.artists.items;
 
-function removeSubMenu() {
-    var childCount = document.getElementById("context_menu_container").childElementCount;
-
-    if (childCount > 1) {
-        document.getElementById("context_menu_container").removeChild(document.getElementById("context_menu_container").lastChild);
-        contextSubMenuShown = false;
+    if (artists.length == 1) {
+        return;
     }
-}
 
-async function spawnSongMenu(e) {
-    getPlaylistsFromDB()
-    let cursorX = e.clientX
-    let cursorY = e.clientY
-    let content = [
-    {name: "play", action: contextPlay, subMenu: null},
-    {name: "play next", action: contextPlayNext, subMenu: null},
-    {name: "play after queue", action: contextPlayAfterQueue, subMenu: null},
-    {name: "add to playlist", action: null, subMenu: contextPlaylists},
-    {name: "open Artist", action: null, subMenu: null},
-    {name: "download", action: contextDownload, subMenu: null}
-    ]
+    content = [];
 
-    spawnContextMenu(cursorX, cursorY, content)
+    for (let i = 0; i < artists.length; i++) {
+        let artist = artists[i];
+        let newArtistContent = {
+            name: artist.profile.name,
+            action: contextOpenArtist,
+            subMenu: null,
+        };
+
+        content.push(newArtistContent);
+    }
+
+    spawnContextSubMenu(offsetLeft, OffsetTop, buttonIndex, content);
 }
 
 function contextPlay() {
-    playSongWithoutCover(clickedSongInfo)
+  playSongNow(clickedSongInfo);
 }
 
-function contextPlayNext() {
-    console.log("play next");
+async function contextPlayNext() {
+  const song = await new Song(clickedSongInfo);
+  skipQueue(song);
 }
 
-function contextPlayAfterQueue() {
-    console.log("play after queue");
-}
-
-async function contextLike() {
-    let song = await new Song(clickedSongInfo)
-    song.likeSong()
-}
-
-function contextDislike() {
+async function contextPlayAfterQueue() {
+  const song = await new Song(clickedSongInfo);
+  addToQueue(song);
 }
 
 function contextDownload() {
-    console.log("download");
+  console.log("download");
 }
 
 async function contextAddToPlaylist(index) {
-    let song = await new Song(clickedSongInfo)
-    addPlaylistSong(clickedSongInfo.id, index + 1)
+  let song = await new Song(clickedSongInfo);
+  addPlaylistSong(clickedSongInfo.id, index + 1);
 }
 
-function contextAddToNewPlaylist() {
-    createPlaylist()
+async function contextAddToNewPlaylist() {
+  let song = await new Song(clickedSongInfo);
+  await createPlaylist();
+  playlists = await getPlaylistsFromDB();
+  addPlaylistSong(clickedSongInfo.id, playlists.length - 1);
+  
 }
+
+function contextOpenSingleArtist() {
+    artists = clickedSongInfo.artists.items;
+
+    if (artists.length != 1) {
+        return; 
+    }
+
+    let artist = artists[0];
+    artistURI = artist.uri;
+    artistId = artistURI.split(":")[2];
+    openArtist(artistId);
+}
+
+function contextOpenArtist(i) {
+    artists = clickedSongInfo.artists.items;
+    artistURI = artists[i].uri;
+    artistId = artistURI.split(":")[2];
+
+    console.log(artistId);
+
+    openArtist(artistId);
+}
+
+//playlist context menu
+
+async function spawnPlaylistMenu(e, songInfo) {
+  let cursorX = e.clientX;
+  let cursorY = e.clientY;
+  console.log(songInfo);
+  let content = [
+    { name: "play", action: contextPlaylistPlay, subMenu: null },
+    { name: "play next", action: contextPlaylistPlayNext, subMenu: null },
+    { name: "play after queue", action: contextPlaylistPlayAfterQueue, subMenu: null },
+    { name: "add to playlist", action: null, subMenu: contextPlaylists },
+    { name: "open Artist", action: contextPlaylistOpenSingleArtist, subMenu: contextPlaylistArtists },
+    { name: "delete", action: contextPlaylistDelete, subMenu: null },
+    { name: "download", action: contextPlaylistDownload, subMenu: null },
+  ];
+
+  spawnContextMenu(cursorX, cursorY, content);
+}
+
+
+function contextPlaylistArtists(offsetLeft, OffsetTop, buttonIndex, side) {
+  const artists = JSON.parse(JSON.parse(clickedPlaylistSongInfo.info).songArtistArray).items;
+
+  console.log(artists);
+
+  if (artists.length == 1) {
+      return;
+  }
+
+  content = [];
+
+  for (let i = 0; i < artists.length; i++) {
+      let artist = artists[i];
+      let newArtistContent = {
+          name: artist.profile.name,
+          action: contextPlaylistOpenArtist,
+          subMenu: null,
+      };
+
+      content.push(newArtistContent);
+  }
+
+  spawnContextSubMenu(offsetLeft, OffsetTop, buttonIndex, content);
+}
+
+function contextPlaylistPlay() {
+  playSongNow(clickedPlaylistSongInfo);
+}
+
+async function contextPlaylistPlayNext() {
+    const song = await new Song(clickedPlaylistSongInfo);
+    skipQueue(song);
+}
+
+async function contextPlaylistPlayAfterQueue() {
+    const song = await new Song(clickedPlaylistSongInfo);
+    addToQueue(song);
+}
+
+function contextPlaylistOpenSingleArtist() {
+    const artists = JSON.parse(JSON.parse(clickedPlaylistSongInfo.info).songArtistArray).items;
+
+    if (artists.length != 1) {
+        return; 
+    }
+
+    const artist = artists[0];
+    const artistURI = artist.uri;
+    const artistId = artistURI.split(":")[2];
+    openArtist(artistId);
+}
+
+function contextPlaylistOpenArtist(index) {
+    const artists = JSON.parse(JSON.parse(clickedPlaylistSongInfo.info).songArtistArray).items;
+
+    const artistURI = artists[index].uri;
+    const artistId = artistURI.split(":")[2];
+
+    openArtist(artistId);
+}
+
+function contextPlaylistDelete() {
+    songID = clickedPlaylistSongInfo.id;
+    removeSongFromThisPlaylist(songID, playlistId);
+}
+
+function contextPlaylistDownload() {}
+
+/**
+
+  PLANNED FEATURES 
+  TODO
+
+//artist context menu
+
+async function spawnArtistMenu(e, songInfo) {
+  let cursorX = e.clientX;
+  let cursorY = e.clientY;
+  console.log(songInfo);
+  let content = [
+    { name: "play", action: contextArtistPlay, subMenu: null },
+    { name: "play next", action: contextArtistPlayNext, subMenu: null },
+    { name: "play after queue", action: contextArtistPlayAfterQueue, subMenu: null },
+    { name: "add to playlist", action: null, subMenu: none }, //  
+    { name: "download", action: contextArtistDownload, subMenu: null },
+  ];
+
+  spawnContextMenu(cursorX, cursorY, content);
+}
+
+function contextArtistPlay() {
+}
+
+function contextArtistPlayNext() {
+}
+
+function contextArtistPlayAfterQueue() {
+}
+
+function contextArtistDownload() {
+}
+
+//album context menu
+
+async function spawnAlbumMenu(e, songInfo) {
+
+  let cursorX = e.clientX;
+  let cursorY = e.clientY;
+  console.log(songInfo);
+  let content = [
+    { name: "play", action: contextAlbumPlay, subMenu: null },
+    { name: "play next", action: contextAlbumPlayNext, subMenu: null },
+    { name: "play after queue", action: contextAlbumtPlayAfterQueue, subMenu: null },
+    { name: "add to playlist", action: null, subMenu: context },
+    { name: "download", action: contextAlbumDownload, subMenu: null },
+  ];
+
+  spawnContextMenu(cursorX, cursorY, content);
+}
+
+*/

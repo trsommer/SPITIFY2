@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, Notification } = require("electron");
+const { app, BrowserWindow, ipcMain, Notification, globalShortcut } = require("electron");
 const path = require("path");
 const dataBase = require("./dataBase");
 const spotify = require("./spotify");

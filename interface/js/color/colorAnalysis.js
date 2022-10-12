@@ -80,3 +80,39 @@ function getBrightestColor(colors) {
     return brightestColor
 }
 
+function getBestColor(colorBestMatch, colors, darknessThreshold) {
+    const colorBestMatchHSL = colorHSLconversion(colorBestMatch)
+
+    if (colorBestMatchHSL[2] > darknessThreshold) {
+        return colorBestMatch;
+    }
+
+    var bestMatch = null;
+    var bestMatchDistance = 100000;
+
+
+    for (let i = 0; i < colors.length; i++) {
+        const color = colors[i];
+        const colorHSL = colorHSLconversion(color)
+        const lightness = colorHSL[2];
+
+        if (lightness < darknessThreshold) {
+            continue;
+        }
+
+        const distance = getColorDistance(colorBestMatch, color);
+
+        if (distance < bestMatchDistance) {
+            bestMatch = color;
+            bestMatchDistance = distance;
+        }
+
+    }
+
+    if (bestMatch != null) {
+        return bestMatch;
+    } else {
+        return [255, 255, 255];
+    }
+
+}

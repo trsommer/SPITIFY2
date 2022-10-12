@@ -5,10 +5,7 @@ async function getColors(id) {
     const colorThief = new ColorThief();
     colors = await colorThief.getPalette(img)
     primeColor = await colorThief.getColor(img)
-    primeColorInverse = getInverseColor(primeColor)
-    console.log("prime: rgb(" + primeColor[0] + ", " + primeColor[1] + ", " + primeColor[2] + ")")
-    console.log("inverseprime: rgb(" + primeColorInverse[0] + ", " + primeColorInverse[1] + ", " + primeColorInverse[2] + ")")
-    brightestColor = getBrightestColor([primeColor, primeColorInverse])
-    closestColor = getClosestColor(brightestColor, colors)
-    return getColorString(closestColor)
+    bestColor = getBestColor(primeColor, colors, 0.4)
+    console.log("rgb(" + bestColor[0] + ", " + bestColor[1] + ", " + bestColor[2] + ")"); 
+    return getColorString(bestColor)
 }

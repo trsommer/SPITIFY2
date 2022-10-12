@@ -126,14 +126,16 @@
                     </div>
                     <input type="range" min="1" max="100" value="0" id="menu_player_slider" class="slider" oninput="skipTo(this)">
                     <div id="menu_player_music_controls_container">
+                        <img src="icons/play/shuffle.svg" class="menu_player_music_control" id="menu_player_secondary_icon0">
                         <img src="icons/play/backward.svg" class="menu_player_music_control" id="menu_player_icon0" onclick="goBackTrack()">
                         <img src="icons/play/play.svg" class="menu_player_music_control" id="menu_player_icon1" onclick="changePlayState()">
                         <img src="icons/play/forward.svg" class="menu_player_music_control" id="menu_player_icon2" onclick="skipTrack()">
+                        <img src="icons/play/repeatOnce.svg" class="menu_player_music_control" id="menu_player_secondary_icon1">
                         <input type="range" min="1" max="100" value="50" id="menu_player_volume_slider" class="slider" oninput="setVolume()">
                         <img src="icons/play/heart.svg" class="menu_player_music_control" id="menu_player_icon3" onclick="likeCurrentSong()">
                     </div>
                 </div>
-                <audio src="" id="menu_player_audio" onended="onEndPlay()" ontimeupdate="setProgress()"></audio>
+                <audio src="" id="menu_player_audio" onended="onEndPlay()" ontimeupdate="setProgress()" onplay="manualPlay()"></audio>
             </div>
             
         </div>
@@ -265,6 +267,7 @@
                 <div id="album_view_header_buttton_container">
                     <input type="button" value="play" class="album_view_header_buttton" onclick="playSongsAlbum()">
                     <input type="button" value="shuffle" class="album_view_header_buttton" onclick="shuffleSongsAlbum()">
+                    <input type="button" value="import" class="album_view_header_buttton" onclick="importAlbumAsPlaylist()">
                 </div>
             </div>
             <div id="album_view_content">
@@ -302,10 +305,12 @@
                 <img id="playlist_header_image" src="standardImages/cover.jpg" alt="">
                 <div id="playlist_header_text_container">
                     <p id="playlist_header_text" spellcheck="false" onblur="playlistNameChange()" contenteditable="true">Playlist Name</p>
-                    <p id="playlist_header_author">by you</p>
+                    <p id="playlist_header_author">author</p>
+                    <p id="playlist_header_info">info</p>
                     <div id="playlist_buttons">
                         <input type="button" value="play" class="playlist_button" onclick="playPlaylist()">
                         <input type="button" value="shuffle" class="playlist_button" onclick="shufflePlaylist()">
+                        <input type="button" value="delete" class="playlist_button" onclick="shufflePlaylist()">
                     </div>
                 </div>
             </div>
