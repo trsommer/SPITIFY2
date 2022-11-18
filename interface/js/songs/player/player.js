@@ -1,5 +1,26 @@
 var playState = false
 
+document.addEventListener('keydown', (e) => {
+    //closes context menu on esc
+      if (e.key == " " && e.target == document.body) {
+        e.preventDefault();
+        changePlayState();
+    }
+});
+
+function onPlaystateChange() {
+    const audioElement = document.getElementById('menu_player_audio')
+    audioPaused = audioElement.paused
+    if (audioPaused == false) {
+        manualPlay();
+    }
+    if (audioPaused == playState) {
+        changePlayStateVariables(audioPaused)
+    }
+}
+
+  //event listener for change in playstate - check if missmatch between playstate and audio element
+
 async function manualPlay() {
     if (getCurrentSong() == null) {
         const info = getLastPlayedSongInfo();
@@ -10,6 +31,7 @@ async function manualPlay() {
 
 async function play(song) {
     //plays a song
+    await setMediaSessionAPI(song);
     setSpecificProgress(0);
     const audio = document.getElementById("menu_player_audio");
     audio.src = song.getSongStreamingUrl();
@@ -17,6 +39,7 @@ async function play(song) {
     setSpecificVolume(song.getSongPreferredVolume());
     changePlayState();
     animatePlayerIn();
+    sendNotification(song.getSongTitle(), song.getArtistsAsString());
 }
 
 async function addInfoToPlayer(song) {
@@ -26,6 +49,26 @@ async function addInfoToPlayer(song) {
     setPlayerText(song.getSongTitle(), song.getArtistsAsString())
 
     setLikeIcon(song.getSongLikeStatus());
+}
+
+async function setMediaSessionAPI(song) {
+    navigator.mediaSession.metadata = await new MediaMetadata({
+        title: song.getSongTitle(),
+        artist: song.getArtistsAsString(),
+        album: "Album",
+        artwork: [
+            { src: song.getSongImageUrl() }
+        ]
+    });
+
+    //TODO sometimes the information is not updated - NO IDEA WHY ..........
+
+    navigator.mediaSession.setActionHandler('previoustrack', () => {
+        //goBackTrack();
+    });
+    navigator.mediaSession.setActionHandler('nexttrack', () => {
+        //skipTrack();
+    });
 }
 
 async function playSongWithoutCover(info) {
@@ -58,7 +101,8 @@ function onEndPlay() {
     addToPlayedQueue(lastSong)
     clearCurrentlyPlaying()
     playQueue()
-    changePlayState()
+    setSpecificProgress(0);
+    //changePlayState()
     //setSpecificVolume(getCurrentSong().getSongPreferredVolume());
     //console.log(playedQueue)
 }
@@ -97,14 +141,23 @@ function getCurrentVolume() {
 
 function changePlayState() {
     const audioElement = document.getElementById('menu_player_audio')
-    var playPauseIcon = document.getElementById('menu_player_icon1')
+    if (audioElement.src == "") return;
 
     if (playState == true) {
         audioElement.pause()
+    } else {
+        audioElement.play()
+    }
+    changePlayStateVariables(playState)
+}
+
+function changePlayStateVariables(bool) {
+    var playPauseIcon = document.getElementById('menu_player_icon1')
+
+    if (bool == true) {
         playState = false
         playPauseIcon.src = 'icons/play/play.svg'
     } else {
-        audioElement.play()
         playState = true
         playPauseIcon.src = 'icons/play/pause.svg'
     }

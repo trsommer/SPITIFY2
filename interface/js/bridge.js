@@ -100,3 +100,15 @@ async function changePlaylistImage(playlistId, url) {
 async function updatePlaylist(playlistId, songData) {
     window.electronAPI.updatePlaylist(playlistId, songData)
 }
+
+async function downloadSongs(songs) {
+    return window.electronAPI.downloadSongs(songs)
+}
+
+async function addDownloadedSong(songId) {
+    window.electronAPI.addDownloadedSong(songId)
+}
+
+async function removeDownloadedSong(songId) {
+    window.electronAPI.removeDownloadedSong(songId)
+}

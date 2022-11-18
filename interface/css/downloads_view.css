@@ -1,0 +1,14 @@
+#downloads_view {
+    display: none;
+}
+
+#downloads_container {
+    padding-top: 60px;
+    margin-left: 25px;
+    height: calc(100vh - 60px);
+}
+
+#downloads_heading {
+    color: white;
+    position: fixed;
+}

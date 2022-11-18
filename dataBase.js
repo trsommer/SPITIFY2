@@ -19,7 +19,9 @@ module.exports = {
   getPlaylistSongs,
   updatePlaylistName,
   updatePlaylistImageCover,
-  updatePlaylist
+  updatePlaylist,
+  addDownloadedSong,
+  removeDownloadedSong
 };
 
 async function accessDatabase(query) {
@@ -52,12 +54,17 @@ async function createTables() {
   var sql4 = 
       "CREATE TABLE playlistLikes (id TEXT PRIMARY KEY)"
 
+  var sql5 = 
+      "CREATE TABLE downloadedSongs (id TEXT PRIMARY KEY)"
+
+
   if (!fs.existsSync(dbPath)) {
     db = await getDB();
     db.prepare(sql).run();
     db.prepare(sql2).run();
     db.prepare(sql3).run();
     db.prepare(sql4).run();
+    db.prepare(sql5).run();
     return;
   }
   db = await getDB();
@@ -210,4 +217,14 @@ async function updatePlaylist(playlistId, songData) {
     addSongToPlaylist(song, playlistId);
   }
 
+}
+
+async function addDownloadedSong(spotifyId) {
+  db = await getDB();
+  db.prepare(`INSERT INTO downloadedSongs (id) VALUES (?)`).run(spotifyId);
+}
+
+async function removeDownloadedSong(spotifyId) {
+  db = await getDB();
+  db.prepare(`DELETE FROM downloadedSongs WHERE id = ?`).run(spotifyId);
 }

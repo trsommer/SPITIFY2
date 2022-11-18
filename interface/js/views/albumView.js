@@ -106,6 +106,9 @@ function addTracks() {
 
             playSongAlbum(index)
         })
+        trackDiv.addEventListener("contextmenu", (e) => {
+            showAlbumContextMenu(index, e)
+        })
     }
 }
 
@@ -229,4 +232,14 @@ async function importAlbumAsPlaylist() {
 
     }
 
+}
+
+function showAlbumContextMenu(index, event) {
+    track = tracks[index]["track"]
+    if (track.album == undefined) {
+        track.album = {"name": info["name"], "coverArt": {"sources": info["coverArt"]["sources"]}}
+    }
+
+    setClickedAlbumSong(track)
+    spawnAlbumMenu(event)
 }

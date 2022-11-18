@@ -2,6 +2,8 @@ var contextMenuShown = false;
 var contextSubMenuShown = false;
 var clickedSongInfo = [];
 var clickedPlaylistSongInfo = [];
+var clickedArtistTopSong = [];
+var clickedAlbumSongInfo = [];
 var playlistId = 0;
 
 window.addEventListener("click", (e) => {
@@ -36,6 +38,14 @@ function setClickedPlaylistSong(info, id) {
     playlistId = id;
 }
 
+function setClickedArtistTopSong(info) {
+  clickedArtistTopSong = info;
+}
+
+function setClickedAlbumSong(info) {
+  clickedAlbumSongInfo = info;
+}
+
 function spawnContextMenu(cursorX, cursorY, content) {
   //spawns the context menu on given position with given content
   document.getElementById("context_menu_container").innerHTML = "";
@@ -46,7 +56,7 @@ function spawnContextMenu(cursorX, cursorY, content) {
   menu.style.display = "block";
   var menuWidth = 150;
   var windowWidth = window.innerWidth;
-  var menuHeight = 250;
+  var menuHeight = 10 + 32 * content.length; //10 for top and bottom padding, 32 for each button
   var windowHeight = window.innerHeight;
 
   var offsetLeft;
@@ -59,9 +69,12 @@ function spawnContextMenu(cursorX, cursorY, content) {
   }
 
   if (menuHeight + cursorY + 50 > windowHeight) {
-    offsetTop = cursorY - menuHeight + 20;
+    //on top of cursor
+    offsetTop = cursorY - menuHeight;
   } else {
+    //below cursor
     offsetTop = cursorY;
+    console.log(cursorY, menuHeight);
   }
 
   const scrollAmount = window.scrollY;
@@ -287,9 +300,11 @@ async function contextPlayAfterQueue() {
   addToQueue(song);
 }
 
-function contextDownload() {
-  console.log("download");
+async function contextDownload() {
+  const song = await new Song(clickedSongInfo, "download");
 }
+
+
 
 async function contextAddToPlaylist(index) {
   let song = await new Song(clickedSongInfo);
@@ -297,10 +312,9 @@ async function contextAddToPlaylist(index) {
 }
 
 async function contextAddToNewPlaylist() {
-  let song = await new Song(clickedSongInfo);
-  await createPlaylist();
-  playlists = await getPlaylistsFromDB();
-  addPlaylistSong(clickedSongInfo.id, playlists.length - 1);
+  new Song(clickedSongInfo);
+  const playlistId = await createPlaylist();
+  addPlaylistSong(clickedSongInfo.id, playlistId);
   
 }
 
@@ -337,7 +351,7 @@ async function spawnPlaylistMenu(e, songInfo) {
     { name: "play", action: contextPlaylistPlay, subMenu: null },
     { name: "play next", action: contextPlaylistPlayNext, subMenu: null },
     { name: "play after queue", action: contextPlaylistPlayAfterQueue, subMenu: null },
-    { name: "add to playlist", action: null, subMenu: contextPlaylists },
+    { name: "add to playlist", action: null, subMenu: contextPlaylistsAddToPlaylists },
     { name: "open Artist", action: contextPlaylistOpenSingleArtist, subMenu: contextPlaylistArtists },
     { name: "delete", action: contextPlaylistDelete, subMenu: null },
     { name: "download", action: contextPlaylistDownload, subMenu: null },
@@ -346,6 +360,43 @@ async function spawnPlaylistMenu(e, songInfo) {
   spawnContextMenu(cursorX, cursorY, content);
 }
 
+function contextPlaylistsAddToPlaylists(offsetLeft, OffsetTop, buttonIndex, side) {
+  let playlists = getPlaylists();
+  let content = [];
+
+  for (let i = 0; i < playlists.length; i++) {
+    let playlist = playlists[i];
+    let newPlaylistContent = {
+      name: playlist.name,
+      action: contextPlaylistAddToPlaylist,
+      subMenu: null,
+    };
+
+    content.push(newPlaylistContent);
+  }
+
+  content.push({
+    name: "new playlist",
+    action: contextPlaylistAddToNewPlaylist,
+    subMenu: null,
+  });
+
+  console.log(content);
+
+  spawnContextSubMenu(offsetLeft, OffsetTop, buttonIndex, content);
+}
+
+async function contextPlaylistAddToPlaylist(index) {
+  new Song(clickedPlaylistSongInfo);
+  addPlaylistSong(clickedPlaylistSongInfo.id, index + 1);
+}
+
+async function contextPlaylistAddToNewPlaylist() {
+  new Song(clickedPlaylistSongInfo);
+  const playlistId = await createPlaylist();
+  addPlaylistSong(clickedPlaylistSongInfo.id, playlistId);
+  
+}
 
 function contextPlaylistArtists(offsetLeft, OffsetTop, buttonIndex, side) {
   const artists = JSON.parse(JSON.parse(clickedPlaylistSongInfo.info).songArtistArray).items;
@@ -413,12 +464,9 @@ function contextPlaylistDelete() {
     removeSongFromThisPlaylist(songID, playlistId);
 }
 
-function contextPlaylistDownload() {}
-
-/**
-
-  PLANNED FEATURES 
-  TODO
+async function contextPlaylistDownload() {
+  const song = await new Song(clickedPlaylistSongInfo, "download");
+}
 
 //artist context menu
 
@@ -430,41 +478,228 @@ async function spawnArtistMenu(e, songInfo) {
     { name: "play", action: contextArtistPlay, subMenu: null },
     { name: "play next", action: contextArtistPlayNext, subMenu: null },
     { name: "play after queue", action: contextArtistPlayAfterQueue, subMenu: null },
-    { name: "add to playlist", action: null, subMenu: none }, //  
+    { name: "add to playlist", action: null, subMenu: contextArtistPlaylists },
+    { name: "open Artist", action: contextArtistOpenSingleArtist, subMenu: contextArtistOpenArtists },
     { name: "download", action: contextArtistDownload, subMenu: null },
   ];
 
   spawnContextMenu(cursorX, cursorY, content);
 }
 
+function contextArtistPlaylists(offsetLeft, OffsetTop, buttonIndex, side) {
+  let playlists = getPlaylists();
+  let content = [];
+
+  for (let i = 0; i < playlists.length; i++) {
+    let playlist = playlists[i];
+    let newPlaylistContent = {
+      name: playlist.name,
+      action: contextArtistAddToPlaylist,
+      subMenu: null,
+    };
+
+    content.push(newPlaylistContent);
+  }
+
+  content.push({
+    name: "new playlist",
+    action: contextArtistAddToNewPlaylist,
+    subMenu: null,
+  });
+
+  console.log(content);
+
+  spawnContextSubMenu(offsetLeft, OffsetTop, buttonIndex, content);
+}
+
+async function contextArtistAddToPlaylist(index) {
+  new Song(clickedArtistTopSong);
+  addPlaylistSong(clickedArtistTopSong.id, index + 1);
+}
+
+async function contextArtistAddToNewPlaylist() {
+  new Song(clickedArtistTopSong);
+  const playlistId = await createPlaylist();
+  addPlaylistSong(clickedArtistTopSong.id, playlistId);
+  
+}
+
+function contextArtistOpenArtists(offsetLeft, OffsetTop, buttonIndex, side) {
+  const artists = clickedArtistTopSong.artists.items;
+
+  if (artists.length == 1) {
+      return;
+  }
+
+  content = [];
+
+  for (let i = 0; i < artists.length; i++) {
+      let artist = artists[i];
+      let newArtistContent = {
+          name: artist.profile.name,
+          action: contextArtistOpenArtist,
+          subMenu: null,
+      };
+
+      content.push(newArtistContent);
+  }
+
+  spawnContextSubMenu(offsetLeft, OffsetTop, buttonIndex, content);
+}
+
+function contextArtistOpenSingleArtist() {
+  const artists = clickedArtistTopSong.artists.items;
+
+  if (artists.length != 1) {
+      return; 
+  }
+
+  const artist = artists[0];
+  const artistURI = artist.uri;
+  const artistId = artistURI.split(":")[2];
+  openArtist(artistId);
+}
+
+function contextArtistOpenArtist(i) {
+      artists = clickedArtistTopSong.artists.items;
+    artistURI = artists[i].uri;
+    artistId = artistURI.split(":")[2];
+
+    console.log(artistId);
+
+    openArtist(artistId);
+}
+
 function contextArtistPlay() {
+  playSongNow(clickedArtistTopSong);
 }
 
-function contextArtistPlayNext() {
+async function contextArtistPlayNext() {
+      const song = await new Song(clickedArtistTopSong);
+    skipQueue(song);
 }
 
-function contextArtistPlayAfterQueue() {
+async function contextArtistPlayAfterQueue() {
+  const song = await new Song(clickedArtistTopSong);
+  addToQueue(song);
 }
 
-function contextArtistDownload() {
+async function contextArtistDownload() {
+  const song = await new Song(clickedArtistTopSong, "download");
 }
 
 //album context menu
 
 async function spawnAlbumMenu(e, songInfo) {
-
   let cursorX = e.clientX;
   let cursorY = e.clientY;
   console.log(songInfo);
   let content = [
     { name: "play", action: contextAlbumPlay, subMenu: null },
     { name: "play next", action: contextAlbumPlayNext, subMenu: null },
-    { name: "play after queue", action: contextAlbumtPlayAfterQueue, subMenu: null },
-    { name: "add to playlist", action: null, subMenu: context },
+    { name: "play after queue", action: contextAlbumPlayAfterQueue, subMenu: null },
+    { name: "add to playlist", action: null, subMenu: contextAlbumPlaylists },
+    { name: "open Artist", action: contextAlbumOpenSingleArtist, subMenu: contextAlbumOpenArtists },
     { name: "download", action: contextAlbumDownload, subMenu: null },
   ];
 
   spawnContextMenu(cursorX, cursorY, content);
 }
 
-*/
+function contextAlbumPlaylists(offsetLeft, OffsetTop, buttonIndex, side) {
+  let playlists = getPlaylists();
+  let content = [];
+
+  for (let i = 0; i < playlists.length; i++) {
+    let playlist = playlists[i];
+    let newPlaylistContent = {
+      name: playlist.name,
+      action: contextAlbumAddToPlaylist,
+      subMenu: null,
+    };
+
+    content.push(newPlaylistContent);
+  }
+
+  content.push({
+    name: "new playlist",
+    action: contextAlbumAddToNewPlaylist,
+    subMenu: null,
+  });
+
+  console.log(content);
+
+  spawnContextSubMenu(offsetLeft, OffsetTop, buttonIndex, content);
+}
+
+function contextAlbumAddToPlaylist(index) {
+  new Song(clickedAlbumSongInfo);
+  addPlaylistSong(clickedAlbumSongInfo.id, index + 1);
+}
+
+async function contextAlbumAddToNewPlaylist() {
+  new Song(clickedAlbumSongInfo);
+  const playlistId = await createPlaylist();
+  addPlaylistSong(clickedAlbumSongInfo.id, playlistId);
+}
+
+function contextAlbumOpenArtists(offsetLeft, OffsetTop, buttonIndex, side) {
+  const artists = clickedAlbumSongInfo.artists.items;
+
+  if (artists.length == 1) {
+      return;
+  }
+
+  content = [];
+
+  for (let i = 0; i < artists.length; i++) {
+      let artist = artists[i];
+      let newArtistContent = {
+          name: artist.profile.name,
+          action: contextAlbumOpenArtist,
+          subMenu: null,
+      };
+
+      content.push(newArtistContent);
+  }
+
+  spawnContextSubMenu(offsetLeft, OffsetTop, buttonIndex, content);
+}
+
+function contextAlbumOpenSingleArtist() {
+  const artists = clickedAlbumSongInfo.artists.items;
+
+  if (artists.length != 1) {
+      return;
+  }
+
+  const artist = artists[0];
+  const artistURI = artist.uri;
+  const artistId = artistURI.split(":")[2];
+  openArtist(artistId);
+}
+
+function contextAlbumOpenArtist(i) {
+  const artists = clickedAlbumSongInfo.artists.items;
+  const artistURI = artists[i].uri;
+  const artistId = artistURI.split(":")[2];
+  openArtist(artistId);
+}
+
+async function contextAlbumPlay() {
+  playSongNow(clickedAlbumSongInfo);
+}
+
+async function contextAlbumPlayNext() {
+  const song = await new Song(clickedAlbumSongInfo);
+  skipQueue(song);
+}
+
+async function contextAlbumPlayAfterQueue() {
+  const song = await new Song(clickedAlbumSongInfo);
+  addToQueue(song);
+}
+
+async function contextAlbumDownload() {
+  const song = await new Song(clickedAlbumSongInfo, "download");
+}

@@ -14,6 +14,7 @@ class Song {
   #songDuration = "";
   #songLyrics = ""; //not implemented yet but maybe in the future
   #songStreamingUrl = "";
+  #songLocalLocation = "";
   #songYoutubeId = "";
   #songLikeStatus = false;
   #songPreferredVolume = 0.5;
@@ -21,48 +22,69 @@ class Song {
 
   //Constructor
 
-  constructor(songInfo) {
-    return this.#constructorFunction(songInfo);
+  constructor(songInfo, requestType) {
+    return this.#constructorFunction(songInfo, requestType);
   }
 
-  async #constructorFunction(songInfo) {
-    await this.#setup(songInfo);
+  async #constructorFunction(songInfo, requestType) {
+    await this.#setup(songInfo, requestType);
     return this;
   }
 
   //Setup
 
-  async #setup(songInfo) {
-    let id = this.#getIdFromSongInfo(songInfo);
-
-    this.#songSpotifyId = id;
+  async #setup(songInfo, requestType) {
+    //requestType is either "stream", "download" or "empty" - if empty, steam is default
+    this.#songSpotifyId = this.#getIdFromSongInfo(songInfo);
 
     //get possible info of song from db
-    const databaseQueryResult = await this.#getInfoFromDB(id);
+    const databaseQueryResult = await this.#getInfoFromDB(this.#songSpotifyId);
 
     //check if song is in db
     if (databaseQueryResult.length == 1) {
       //song is in db
-      await this.#setupSongDatabase(databaseQueryResult);
+      await this.#setupSongDatabase(databaseQueryResult, requestType);
     } else {
       //song is not in db
-      await this.#setupSongSpotify(songInfo);
+      await this.#setupSongSpotify(songInfo, requestType);
     }
-
-    console.log(this);
 
     return this;
   }
 
-  async #setupSongDatabase(databaseQueryResult) {
+  async #setupSongDatabase(databaseQueryResult, requestType) {
     const dbInfo = databaseQueryResult[0];
 
     //set song info from db
     this.#setDBInfo(dbInfo);
 
+    if (requestType == "download") {
+      //check if song is downloaded
+      if (this.#songLocalLocation == "") {
+        //song is not downloaded
+        const localLocation = await this.#downloadSong(); //TODO
+        //set local location in globals
+        this.#songLocalLocation = localLocation[0].filePath;
+
+        console.log("local location: " + this.#songLocalLocation);
+        //update db with local location
+        this.#updateDB();
+      } else {
+        //maybe send notification that song is already downloaded //TODO
+        console.log("song is already downloaded");
+      }
+
+      return
+    }
+
+    if (this.#songLocalLocation != "") {
+      //song is downloaded
+      return
+    }
+
+
     //get if the url is expired
     const expired = this.#checkIfUrlExpired(this.#songStreamingUrl);
-
     //if url is expired, get new url
     if (expired) {
       this.#songStreamingUrl = await this.#getStreamingUrl(
@@ -72,14 +94,11 @@ class Song {
       //update db with new url
       this.#updateDB();
     }
-
-    //maybe update some things in db? later ...
   }
 
-  async #setupSongSpotify(songInfo) {
+  async #setupSongSpotify(songInfo, requestType) {
     //set globals for this song object from songinfo
     await this.#setInfo(songInfo);
-
     //get youtube url
     const youtubeSong = await this.#getYoutubeSong();
     const youtubeSongId = youtubeSong.youtubeId;
@@ -87,12 +106,23 @@ class Song {
     //set youtube url in globals
     this.#songYoutubeId = youtubeSongId;
 
+    if (requestType == "download") {
+      //download song
+      const localLocation = await this.#downloadSong(); //TODO
+      //set local location in globals
+      this.#songLocalLocation = localLocation[0].filePath;
+
+      console.log("local location: " + this.#songLocalLocation);
+      //update db with local location
+      this.#addToDB();
+
+      return
+    }
+
     //get streaming url
     const streamingUrl = await this.#getStreamingUrl(youtubeSongId);
-
     //set streaming url in globals
     this.#songStreamingUrl = streamingUrl;
-
     //add song to db
     this.#addToDB();
   }
@@ -107,13 +137,13 @@ class Song {
   }
 
   #setDBInfo(dbInfo) {
-    this.#songSpotifyId = dbInfo.id;
-
     const songData = JSON.parse(dbInfo.info);
     
+    this.#songSpotifyId = dbInfo.id;
     this.#songTitle = songData.songTitle;
     this.#songArtistArray = JSON.parse(songData.songArtistArray);
     //this.#songType = songInfo.type;
+    this.#songLocalLocation = songData.songLocalLocation;
     this.#songDuration = songData.songDuration;
     this.#songAlbum = songData.songAlbum;
     this.#songImageUrl = songData.songImageUrl;
@@ -138,6 +168,7 @@ class Song {
         songDuration: this.#songDuration,
         //songLyrics: this.#songLyrics,
         songStreamingUrl: this.#songStreamingUrl,
+        songLocalLocation: this.#songLocalLocation,
         songYoutubeId: this.#songYoutubeId,
         songLikeStatus: this.#songLikeStatus,
         songPreferredVolume: this.#songPreferredVolume,
@@ -157,8 +188,6 @@ class Song {
     const dbData = this.#compileDBData();
     updateSong(dbData);
   }
-
-  //
 
   #setInfo(songInfo) {
     //sets the globals for this song object from songinfo
@@ -225,6 +254,7 @@ class Song {
     //updated for every song in youtube if song is closer to spotify song
     let closestMatchDeviation;
     let closestMatch;
+    let searchResults = [];
 
     console.log(apiResponse);
     console.log(this);
@@ -234,14 +264,14 @@ class Song {
     for (let i = 0; i < apiResponse.length; i++) {
       const song = apiResponse[i];
       /*
-            comparisons:
-                1. artists
-                2. title
-                3. album
-                4. duration
-                5. content rating
-                6. ytResultPriority
-            */
+      comparisons (not ordered by importance):
+        1. artists
+        2. title
+        3. album
+        4. duration
+        5. content rating
+        6. ytResultPriority
+      */
 
       //compare the artists (result is nr of found artists and a title that does not include featured artists)
       const spotifyArtists = this.#songArtistArray.items;
@@ -257,8 +287,6 @@ class Song {
       );
       const newTitle = resultArtistComparison.newTitle;
 
-      console.log("newTitle: " + newTitle);
-
       //compare titles (result#is deviation as Levenshtein distance)
       const normalTitleComparison = await compareTitles(
         this.#songTitle,
@@ -270,7 +298,27 @@ class Song {
         newTitle 
       );
 
-      const resultTitleComparison = Math.min(normalTitleComparison, reducedTitleComparison);
+      const bracketLess = getBracketlessTitle(newTitle);
+      let bracketLessComparison = 0;
+      let resultTitleComparison = 0;
+
+      if (!bracketLess) {
+        resultTitleComparison = Math.min(normalTitleComparison, reducedTitleComparison);
+
+      } else {
+        if (bracketLess.extractedText.includes(this.#songAlbum.name)) {
+          bracketLessComparison = await compareTitles(
+            this.#songTitle,
+            bracketLess.cleanText
+          );
+  
+          resultTitleComparison = Math.min(normalTitleComparison, reducedTitleComparison, bracketLessComparison);
+        } else {
+          resultTitleComparison = Math.min(normalTitleComparison, reducedTitleComparison);
+
+        }
+      }
+
 
       //compare album titles (if song has album) (result is deviation as Levenshtein distance)
       let resultAlbumComparison;
@@ -302,7 +350,8 @@ class Song {
       //check if the songs are a perfect match
       if (
         resultTitleComparison == 0 &&
-        resultContentRatingMatch == true
+        resultContentRatingMatch == true &&
+        artistNumberDeviation == 0
       ) {
         //song is a perfect match
         return song;
@@ -317,8 +366,18 @@ class Song {
         timeDifference * 0.5;
 
 
-      console.log("songDeviation: " + songDeviation);
-      console.log(song);
+      searchResults.push({
+        title: this.#songTitle,
+        ytTitle: song.title,
+        newTitle: newTitle,
+        normal: normalTitleComparison,
+        reduced: reducedTitleComparison,
+        bracketLess: bracketLessComparison,
+        exracted: bracketLess.extractedText,
+        album: this.#songAlbum.name,
+        derivation: songDeviation,
+
+      })
 
       if (
         closestMatchDeviation == undefined ||
@@ -328,6 +387,8 @@ class Song {
         closestMatch = song;
       }
     }
+
+    console.table(searchResults);
 
     return closestMatch;
   }
@@ -347,6 +408,18 @@ class Song {
     var streamingUrl = await getStreamingUrl(youtubeUrl);
 
     return streamingUrl;
+  }
+
+  async #downloadSong() {
+    const fullTitle = this.getSongFullTitle();
+    const youtubeId = this.#songYoutubeId;
+    const spotifyId = this.#songSpotifyId;
+    const songs = [{songName: fullTitle, youtubeId: youtubeId, spotifyId: spotifyId}];
+  
+    const location = await downloadSongs(songs);
+    addDownloadedSong(spotifyId);
+
+    return location;
   }
 
   getArtistsAsString() {
@@ -435,7 +508,11 @@ class Song {
   }
 
   getSongStreamingUrl() {
-    return this.#songStreamingUrl;
+    if (this.#songLocalLocation == "") {
+      return this.#songStreamingUrl;
+    }
+    return this.#songLocalLocation;
+
   }
 
   getSongYoutubeId() {
@@ -453,4 +530,13 @@ class Song {
   getSongInfo() {
     return this.#songInfo;
   }
+
+  getSongFullTitle() {
+    return this.#songTitle + " - " + this.getArtistsAsString();
+  }
+
+  getSongSpotifyId() {
+    return this.#songSpotifyId;
+  }
 }
+

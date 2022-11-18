@@ -22,5 +22,9 @@ contextBridge.exposeInMainWorld('electronAPI',{
   removeSongFromPlaylist: (spotifyId, playlist) => ipcRenderer.invoke('remove:playlistSong', spotifyId, playlist),
   changePlaylistName: (playlistId, name) => ipcRenderer.invoke('change:playlistName', playlistId, name),
   changeImageCover: (playlistId, url) => ipcRenderer.invoke('change:playlistImage', playlistId, url),
-  updatePlaylist: (playlistId, songData) => ipcRenderer.invoke('update:playlist', playlistId, songData)
+  updatePlaylist: (playlistId, songData) => ipcRenderer.invoke('update:playlist', playlistId, songData),
+  downloadSongs: (songs) => ipcRenderer.invoke('download:songs', songs),
+  updateDownloads: (progress, spotifyId) => ipcRenderer.on('update:downloads', progress, spotifyId),
+  addDownloadedSong: (songId) => ipcRenderer.invoke('add:downloadedSong', songId),
+  removeDownloadedSong: (songId) => ipcRenderer.invoke('remove:downloadedSong', songId)
 })

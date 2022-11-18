@@ -253,3 +253,7 @@ function updatePictureAfterSorting(newOrder) {
 
 
 }
+
+function openPlaylistContextMenu() {
+    //spawnPlaylistMenu();
+}

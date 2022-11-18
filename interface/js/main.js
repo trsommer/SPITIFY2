@@ -7,6 +7,12 @@ function onLoad() {
     window.scrollTo({ top: 0, behavior: 'smooth' })
     document.getElementsByTagName("body")[0].classList.add("flatTop")
     loadLastSearches()
+
+    window.electronAPI.updateDownloads((event, progress, spotifyId) => {
+        console.log(spotifyId + ": " + progress);
+
+        
+    });
 }
 
 

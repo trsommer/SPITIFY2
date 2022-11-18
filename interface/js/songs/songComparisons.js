@@ -1,33 +1,50 @@
 async function compareArtists(spotifyArtists, ytArtists, songTitle) {
     let nrFound = 0;
     let newTitle = songTitle;
+    let nrArtistsFoundInTitle = 0;
+    let artistsFoundInTitle = [];
+
 
     for (let i = 0; i < spotifyArtists.length; i++) {
         const spotifyArtist = spotifyArtists[i];
+        const spotifyArtistNameUppercase = spotifyArtist.profile.name;
+        const spotifyArtistNameLowercase = spotifyArtistNameUppercase.toLowerCase();
+
         let found = false;
         for (let j = 0; j < ytArtists.length; j++) {
             const ytArtist = ytArtists[j];
             //check if artists name matches
 
-            spotifyArtistName = spotifyArtist.profile.name.toLowerCase();
-            ytArtistName = ytArtist.name.toLowerCase();
+            const ytArtistName = ytArtist.name.toLowerCase();
 
-            if (spotifyArtistName.includes(ytArtistName) || ytArtistName.includes(spotifyArtistName)) {
+            if (spotifyArtistNameLowercase.includes(ytArtistName) || ytArtistName.includes(spotifyArtistNameLowercase)) {
                 nrFound++;
                 found = true;
             }
         }
 
         //check if the title containes featured artists
-        if(!found && songTitle.includes(spotifyArtist)) {
+
+        if(!found && songTitle.includes(spotifyArtistNameUppercase)) {
             nrFound++;
-            newTitle.replace(spotifyArtist, "");
+            artistsFoundInTitle.push(spotifyArtistNameUppercase);
+            newTitle = newTitle.replace(spotifyArtistNameUppercase, "");
         }
     }
 
-    returnObject = { nrFound: nrFound, newTitle: newTitle };
+    if (artistsFoundInTitle.length > 0) {
+        artistName = artistsFoundInTitle[0];
+        if (!isBracketed(artistName, songTitle)) {
+            return { nrFound: nrFound, newTitle: newTitle };
+        } else {
+            cleanTitle = getBracketlessTitle(newTitle);
 
-    return returnObject;
+            return { nrFound: nrFound, newTitle: cleanTitle.cleanText };
+
+        }
+    }
+
+    return { nrFound: nrFound, newTitle: newTitle };
 }
 
 async function compareTitles(spotifyTitle, ytTitle) {
@@ -67,4 +84,67 @@ function compareContentRatings(spotifyContentRating, ytContentRating) {
         }
         return false;
     }
+}
+
+//method that checks if a string contains any kind of opening and closing bracket
+
+function containsBrackets(string) {
+    if (string.includes("(") && string.includes(")")) {
+        return ['(', ')'];
+    }
+    if (string.includes("{") && string.includes("}")) {
+        return ['{', '}'];
+    }
+    if (string.includes("[") && string.includes("]")) {
+        return ['[', ']'];
+    }
+
+    return false;
+}
+
+function getBracketlessTitle(oldTitle) {
+    brackets = containsBrackets(oldTitle);
+    let extractedText = "";
+    let cleanText = oldTitle;
+
+    if (!brackets) {
+        return false;
+    }
+
+    //   \[(.*?)\]^
+
+    const regString = '\\' + brackets[0] + "(.*?)\\" + brackets[1];
+    const regex = new RegExp(regString);
+    const found = oldTitle.match(regex);
+
+    if (found) {
+        extractedText = found[1];
+        cleanText = oldTitle.replace(found[0], "").trim();
+    }
+
+    return { 
+        extractedText: extractedText, 
+        cleanText: cleanText 
+    };
+
+}
+
+//check if part of string is surrounded by brackets in original string
+
+function isBracketed(string, originalString) {
+    let brackets = containsBrackets(originalString);
+
+    if (!brackets) {
+        return false;
+    }
+
+    const regString = '\\' + brackets[0] + "(.*?)" + string + "(.*?)\\" + brackets[1];
+    const regex = new RegExp(regString);
+    const found = originalString.match(regex);
+
+    if (found) {
+        return true;
+    }
+
+    return false;
 }

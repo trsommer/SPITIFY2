@@ -135,7 +135,7 @@
                         <img src="icons/play/heart.svg" class="menu_player_music_control" id="menu_player_icon3" onclick="likeCurrentSong()">
                     </div>
                 </div>
-                <audio src="" id="menu_player_audio" onended="onEndPlay()" ontimeupdate="setProgress()" onplay="manualPlay()"></audio>
+                <audio src="" id="menu_player_audio" onended="onEndPlay()" ontimeupdate="setProgress()" onplay="onPlaystateChange()" onpause="onPlaystateChange()"></audio>
             </div>
             
         </div>
@@ -144,7 +144,7 @@
         <div id="artist_view">
             <div id="av_header_container">
                 <div id="av_header_image_container">
-                    <img id="av_header_image" src="standardImages/bgArtist.jpg" crossorigin="anonymous">
+                    <img id="av_header_image" class="av_header_image" src="standardImages/bgArtist.jpg" crossorigin="anonymous">
                 </div>
                 <div id="av_artist_header_text_container">
                     <div id="av_artist_header_gradient"></div>
@@ -303,14 +303,16 @@
             </div>
             <div id="playlist_header_container">
                 <img id="playlist_header_image" src="standardImages/cover.jpg" alt="">
-                <div id="playlist_header_text_container">
-                    <p id="playlist_header_text" spellcheck="false" onblur="playlistNameChange()" contenteditable="true">Playlist Name</p>
-                    <p id="playlist_header_author">author</p>
-                    <p id="playlist_header_info">info</p>
-                    <div id="playlist_buttons">
-                        <input type="button" value="play" class="playlist_button" onclick="playPlaylist()">
-                        <input type="button" value="shuffle" class="playlist_button" onclick="shufflePlaylist()">
-                        <input type="button" value="delete" class="playlist_button" onclick="shufflePlaylist()">
+                <div id="playlist_header_text_container_center">
+                    <div id="playlist_header_text_container">
+                        <p id="playlist_header_text" spellcheck="false" onblur="playlistNameChange()" contenteditable="true">Playlist Name</p>
+                        <p id="playlist_header_author">author</p>
+                        <p id="playlist_header_info">info</p>
+                        <div id="playlist_buttons">
+                            <input type="button" value="play" class="playlist_button" onclick="playPlaylist()">
+                            <input type="button" value="shuffle" class="playlist_button" onclick="shufflePlaylist()">
+                            <input type="button" value="delete" class="playlist_button" onclick="shufflePlaylist()">
+                        </div>
                     </div>
                 </div>
             </div>
@@ -447,6 +449,11 @@
             </div>
         </div>
         <div id="downloads_view">
+            <div id="downloads_container">
+                <div id="downloads_heading">
+                    <h2>Downloads</h2>
+                </div>
+            </div>
         </div>
     </div>
 

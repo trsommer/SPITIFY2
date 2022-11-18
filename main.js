@@ -3,13 +3,15 @@ const path = require("path");
 const dataBase = require("./dataBase");
 const spotify = require("./spotify");
 const youtube = require("./youtube");
+const downloader = require("./downloader");
+let mainWindow;
 
 function showNotification(title, body) {
   new Notification({ title: title, body: body }).show();
 }
 
 async function createWindow() {
-  const mainWindow = new BrowserWindow({
+  mainWindow = new BrowserWindow({
     width: 1350,
     height: 850,
     minWidth: 1250,
@@ -102,7 +104,15 @@ app.whenReady().then(() => {
   ipcMain.handle("update:playlist", async (event, playlistId, songData) => {
     dataBase.updatePlaylist(playlistId, songData);
   })
-  
+  ipcMain.handle("download:songs", async (event, songs) => {
+    return downloader.downloadSongs(songs, mainWindow);
+  })
+  ipcMain.handle("add:downloadedSong", async (event, songId) => {
+    dataBase.addDownloadedSong(songId);
+  })
+  ipcMain.handle("remove:downloadedSong", async (event, songId) => {
+    dataBase.removeDownloadedSong(songId);
+  })
   
   createWindow();
   app.on("activate", function () {
@@ -113,3 +123,4 @@ app.whenReady().then(() => {
 app.on("window-all-closed", function () {
   if (process.platform !== "darwin") app.quit();
 });
+

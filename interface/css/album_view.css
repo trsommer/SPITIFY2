@@ -149,21 +149,23 @@
     padding-bottom: 4px;
     width: calc(100% - 20px);
     border-radius: 5px;
+    padding-left: 20px;
 }
 
 .album_view_track_image {
     height: 6vh;
     border-radius: 5px;
-    margin-left: 20px;
 }
 
 .album_view_track_text {
     margin-left: 20px;
     color: var(--contrast_bright);
+    max-width: 30vw;
+    overflow: hidden;
 }
 
 .album_view_track_text_duration {
-    right: 20px;
+    right: 25px;
     position: absolute;
 }
 

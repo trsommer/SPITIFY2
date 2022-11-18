@@ -2,11 +2,17 @@
     display: none;
 }
 
-#av_header_image {
+.av_header_image {
     width: 100%;
     position: absolute;
     object-fit: cover;
     height: 100%;
+}
+
+.av_header_image_square {
+    width: 100%;
+    position: absolute;
+    margin-top: 320px;
 }
 
 #av_header_image_container {

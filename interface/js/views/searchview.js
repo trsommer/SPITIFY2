@@ -61,9 +61,14 @@ function setOtherArtistsContent(content) {
     artistContainer.classList.add("search_results_artist");
     artistContainer.id = id;
 
+    artistImageContainer = document.createElement("div");
+    artistImageContainer.classList.add("search_results_artist_image_container");
+
     artistImage = document.createElement("img");
     artistImage.classList.add("search_results_artist_image");
     artistImage.src = image;
+
+    artistImageContainer.appendChild(artistImage);
 
     artistText = document.createElement("div");
     artistText.classList.add("search_results_artist_text");
@@ -79,13 +84,12 @@ function setOtherArtistsContent(content) {
     artistText.appendChild(artistName);
     artistText.appendChild(artistType);
 
-    artistContainer.appendChild(artistImage);
+    artistContainer.appendChild(artistImageContainer);
     artistContainer.appendChild(artistText);
 
     document
       .getElementById("search_results_artists")
       .appendChild(artistContainer);
-    console.log(index);
     artistContainer.addEventListener("click", function () {
       openArtist(index + 1);
     });
@@ -129,9 +133,14 @@ function setSongsContent(content) {
     songNumber = document.createElement("p");
     songNumber.innerHTML = index + 1;
 
+    songImageContainer = document.createElement("div");
+    songImageContainer.classList.add("search_results_song_image_container");
+
     songImage = document.createElement("img");
     songImage.classList.add("search_result_track_image");
     songImage.src = trackImageUrl;
+
+    songImageContainer.appendChild(songImage);
 
     songTextContainer = document.createElement("div");
     songTextContainer.classList.add("search_results_song_text");
@@ -154,7 +163,7 @@ function setSongsContent(content) {
     songNumberContainer.appendChild(songNumber);
 
     songContainer.appendChild(songNumberContainer);
-    songContainer.appendChild(songImage);
+    songContainer.appendChild(songImageContainer);
     songContainer.appendChild(songTextContainer);
     songContainer.appendChild(songTime);
     songContainer.addEventListener("click", function () {

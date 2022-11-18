@@ -40,6 +40,7 @@
   margin: 5px;
   overflow: hidden;
   pointer-events: none;
+  border-radius: 30%;
 }
 
 #menu_player_cover {
@@ -47,7 +48,7 @@
   width: 50%;
   opacity: 0;
   animation-fill-mode: forwards;
-  border-radius: 30%;
+  object-fit: contain;
 }
 
 #menu_player_controls_container {
@@ -87,6 +88,7 @@
   background: white;
   margin-top: -7px;
   -webkit-appearance: none;
+  appearance: none;
   border: none;
 }
 

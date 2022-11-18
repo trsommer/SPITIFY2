@@ -65,11 +65,19 @@ async function loadImage(url, elem) {
 
 async function setContentArtist(content) {
   artistName = content["profile"]["name"];
-  try {
+  headerImage = document.getElementById("av_header_image");
+
+  if(content.visuals.headerImage != null) {
     bgImage = content["visuals"]["headerImage"]["sources"]["0"]["url"];
-  } catch (error) {
-    bgImage = "standardImages/bgArtist.jpg";
+    headerImage.classList.add("av_header_image");
+    headerImage.classList.remove("av_header_image_square");
+  } else {
+    bgImage = content["visuals"]["avatarImage"]["sources"]["0"]["url"];
+    headerImage.classList.add("av_header_image_square");
+    headerImage.classList.remove("av_header_image");
   }
+
+
   alternativeTitleElem = document.getElementById(
     "top_container_alternativeTitle"
   );
@@ -237,6 +245,7 @@ function spawnPopularSongs(content, layout) {
 
     for (let j = 0; j < trackNumber; j++) {
       let trackContent = content[currentTrack].track;
+      let realTrackNumber = 3 * i + j;
 
       console.log(trackContent);
 
@@ -267,7 +276,11 @@ function spawnPopularSongs(content, layout) {
       trackDurationText.innerHTML = durationText;
 
       thisTrackContainer.addEventListener("click", function () {
-        playArtistTopTrack(trackContent, j);
+        playArtistTopTrack(trackContent, realTrackNumber);
+      });
+
+      thisTrackContainer.addEventListener("contextmenu", (e) => {
+        openArtistContextMenu(trackContent, realTrackNumber, e);
       });
 
       trackTextContainer.appendChild(trackTitle);
@@ -445,7 +458,9 @@ function setArtistBiography(content) {
     text = "No biography found";
   }
     
-  let biographyTextContainer = document.getElementById("av_bio_description_text_container");
+  const biographyTextContainer = document.getElementById("av_bio_description_text_container");
+  const image = document.getElementById("av_bio_gallery_image");
+  const bgImage = document.getElementById("av_bio_background_Image");
   biographyTextContainer.innerHTML = replaceText(text);
 
   console.log(content.visuals.gallery);
@@ -453,9 +468,7 @@ function setArtistBiography(content) {
   if (content.visuals.gallery.items.length > 0) {
     document.getElementById("av_bio_gallery").style.display = "flex";
     document.getElementById("av_bio_description").style.width = "60%";
-    let image = document.getElementById("av_bio_gallery_image");
-    let bgImage = document.getElementById("av_bio_background_Image");
-    imageUrl = content.visuals.gallery.items[0].sources[0].url;
+    const imageUrl = content.visuals.gallery.items[0].sources[0].url;
 
     image.src = imageUrl;
     bgImage.src = imageUrl;
@@ -463,7 +476,8 @@ function setArtistBiography(content) {
   } else {
     document.getElementById("av_bio_gallery").style.display = "none";
     document.getElementById("av_bio_description").style.width = "100%";
-
+    image.src = "";
+    bgImage.src = "";
   }
 }
 
@@ -612,3 +626,11 @@ function openArtistSingleEp(id) {
   id = uri.split(":")[2];
   setupAlbumView(id, info);
 } 
+
+async function openArtistContextMenu(track, trackNr, event) {
+  const additionalInfo = await additionalSongInfo;  
+  track.album = additionalInfo.data.tracks[trackNr].albumOfTrack;
+
+  setClickedArtistTopSong(track);
+  spawnArtistMenu(event);
+}

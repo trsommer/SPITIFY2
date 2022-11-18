@@ -109,12 +109,20 @@
     cursor: pointer;
 }
 
-
+.search_results_artist_image_container {
+    height: 12vh;
+    width: 12vh;
+    margin-right: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 
 .search_results_artist img {
     height: 90%;
+    width: 90%;
     border-radius: 10px;
-    margin-left: 5px;
+    object-fit: contain;
 }
 
 .search_results_artist_text {
@@ -141,10 +149,6 @@
     height: calc(60vh - 60px);
     display: flex;
     flex-direction: row;
-}
-
-#search_results_artists {
-
 }
 
 #search_section_songs_result {
@@ -193,10 +197,21 @@
     cursor: pointer;
 }
 
-.search_results_song img {
+.search_results_song_image_container {
+    height: 5vh;
+    width: 5vh;
+    margin-right: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.search_results_song_image_container img {
     border-radius: 5px;
     height: 90%;
     margin-left: 5px;
+    width: 90%;
+    object-fit: contain;
 }
 
 .search_results_song p {
