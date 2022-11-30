@@ -19,11 +19,13 @@ function switchView(view) {
 
   window.scrollTo({ top: 0, behavior: 'smooth' });
 
+  /*
   if (altTitleState) {
     document.getElementById("top_container_alternativeTitle").style.animation =
     "alternativeTitleOut 0.25s forwards";
     altTitleState = false;
   }
+  */
 
   found = false;
 
@@ -38,7 +40,7 @@ function switchView(view) {
   console.log(view);
 
   if (!found && view != "playlist_view") {
-    clearSideMenuActiveButtons("");
+    //clearSideMenuActiveButtons("");
   }
 
   console.log("switched from " + currentView + " to " + view);
@@ -100,14 +102,8 @@ function setScrollBarShape(type) {
 }
 
 function toggleMenuView(view) {
-  document.getElementById("menu_" + view + "_icon").style.fill =
-    "var(--bg_dark)";
-  document.getElementById("menu_" + view + "_text").style.fill =
-    "var(--bg_dark)";
-  document.getElementById("menu_" + view + "_button").style.background =
-    "var(--accentColor)";
   currentButtonSideMenu = view;
-  clearSideMenuActiveButtons(view);
+  //clearSideMenuActiveButtons(view);
   switchView(view+"_view");
 }
 

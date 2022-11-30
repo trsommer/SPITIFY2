@@ -11,7 +11,7 @@ async function playlist_view() {
 async function setContentPlaylist(playlistData, songData, thisid) {
     clearPlaylistView();
     setHeaderContentPlaylist(playlistData);
-    setSongsContentPlaylist(songData)
+    await setSongsContentPlaylist(songData)
     tracks = songData;
     id = thisid;
 
@@ -68,11 +68,15 @@ function clearPlaylistView() {
     bgImage.src = "standardImages/cover.jpg";
 }
 
-function setSongsContentPlaylist(songData) {
+async function setSongsContentPlaylist(songData) {
     playlistContainer = document.getElementById("playlist_tracks_container");
     playlistContainer.innerHTML = "";
     var completeDuration = 0.0;
     var songNr = 0;
+
+    if (songData.length >= 4) {
+        await createQuadHeaderImage(songData)
+    }
 
     for (let index = 0; index < songData.length; index++) {
         const song = songData[index];
@@ -84,13 +88,16 @@ function setSongsContentPlaylist(songData) {
         artistsText = getArtistString(JSON.parse(songInfo.songArtistArray)["items"])
         id = song.id;
 
-        if (index == 0) {
+        if (index == 0 && songData.length < 4) {
             setHeaderImage(imageUrl);
         }
 
         songContainer = document.createElement("div");
         songContainer.classList.add("playlist_track_item");
         songContainer.setAttribute("data-id", id);
+
+        spacer = document.createElement("div");
+        spacer.classList.add("playlist_track_spacer");
 
         image = document.createElement("img");
         image.classList.add("playlist_track_image");
@@ -108,6 +115,7 @@ function setSongsContentPlaylist(songData) {
         durationHTML.classList.add("playlists_track_duration");
         durationHTML.innerHTML = duration;
 
+        songContainer.appendChild(spacer);
         songContainer.appendChild(image);
         songContainer.appendChild(songTitle);
         songContainer.appendChild(artists);
@@ -133,6 +141,47 @@ function setSongsContentPlaylist(songData) {
     }
 
     document.getElementById("playlist_header_info").innerHTML = infoString;
+}
+
+async function createQuadHeaderImage(songData) {
+    const quadImageContainer = document.getElementById('playlist_header_quadImage_container');
+    const quadImageBackgroundContainer = document.getElementById('playlist_image_quad_background_container');
+    quadImageContainer.innerHTML = "";
+    quadImageBackgroundContainer.innerHTML = "";
+    for (let i = 0; i < 4; i++) {
+        const song = songData[i];
+        const songInfo = JSON.parse(song.info);
+        const imageUrl = songInfo.songImageUrl;
+
+        //foreground
+
+        imageContainer = document.createElement("div");
+        imageContainer.classList.add("playlist_header_quadImage_image_container");
+
+        image = document.createElement("img");
+        image.classList.add("playlist_header_image_quad");
+        image.src = imageUrl;
+
+        if (i == 0) {
+            image.id = "playlist_header_quad_mainImage";
+        }
+
+        imageContainer.appendChild(image);
+
+        quadImageContainer.appendChild(imageContainer);
+
+        //background
+
+        image = document.createElement("img");
+        image.classList.add("playlist_header_background_image_quad");
+        image.src = imageUrl;
+
+        quadImageBackgroundContainer.appendChild(image);
+    }
+
+    colorString = await getColors("playlist_header_quad_mainImage")
+    document.documentElement.style.setProperty("--accentColor", colorString)
+
 }
 
 function playTrackPlaylist(id) {

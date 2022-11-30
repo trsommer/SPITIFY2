@@ -83,25 +83,36 @@ function addTracks() {
 
         trackDiv = document.createElement("div")
         trackDiv.classList.add("album_view_track")
+
+        trackSpacer = document.createElement("div")
+        trackSpacer.classList.add("album_view_track_spacer")
+
         trackimage = document.createElement("img")
         trackimage.classList.add("album_view_track_image")
         trackimage.src = imageUrl
-        trackDiv.appendChild(trackimage)
+
         trackName = document.createElement("p")
         trackName.classList.add("album_view_track_text")
         trackName.innerHTML = trackNameString
-        trackDiv.appendChild(trackName)
+
         trackArtists = document.createElement("p")
         trackArtists.classList.add("album_view_track_text")
         trackArtists.classList.add("album_view_track_text_artists") 
         trackArtists.innerHTML = artistString
-        trackDiv.appendChild(trackArtists)
+
         trackTime = document.createElement("p")
         trackTime.classList.add("album_view_track_text")
         trackTime.classList.add("album_view_track_text_duration")
         trackTime.innerHTML = trackTimeFormated
+
+        trackDiv.appendChild(trackSpacer)
+        trackDiv.appendChild(trackimage)
+        trackDiv.appendChild(trackName)
+        trackDiv.appendChild(trackArtists)
         trackDiv.appendChild(trackTime)
+
         document.getElementById("album_view_content").appendChild(trackDiv)
+
         trackDiv.addEventListener("click", function() {
 
             playSongAlbum(index)

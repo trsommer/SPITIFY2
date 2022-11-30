@@ -18,15 +18,13 @@ function scrollArtistView(scrollY) {
     toggleVisibility("av_artist_header_text", false);
     toggleVisibility("av_artist_header_gradient", false);
     console.log("in");
-    document.getElementById("top_container_alternativeTitle").style.animation =
-      "alternativeTitleIn 0.25s forwards";
+    //document.getElementById("top_container_alternativeTitle").style.animation = "alternativeTitleIn 0.25s forwards";
     altTitleState = true;
   } else if (scrollY <= 72 && altTitleState) {
     toggleVisibility("av_artist_header_text", true);
     toggleVisibility("av_artist_header_gradient", true);
     console.log("out");
-    document.getElementById("top_container_alternativeTitle").style.animation =
-      "alternativeTitleOut 0.25s forwards";
+    //document.getElementById("top_container_alternativeTitle").style.animation = "alternativeTitleOut 0.25s forwards";
     altTitleState = false;
   }
 
@@ -78,9 +76,7 @@ async function setContentArtist(content) {
   }
 
 
-  alternativeTitleElem = document.getElementById(
-    "top_container_alternativeTitle"
-  );
+  //alternativeTitleElem = document.getElementById("top_container_alternativeTitle");
 
   console.log(content);
 
@@ -88,16 +84,13 @@ async function setContentArtist(content) {
   console.log(bgImage);
 
   document.getElementById("av_artist_header_text").innerHTML = artistName;
-  alternativeTitleElem.innerHTML = artistName;
+  //alternativeTitleElem.innerHTML = artistName;
 
-  widthText = alternativeTitleElem.offsetWidth; //title top width
-  marginLeft = "-" + widthText + "px";
-  alternativeTitleElem.style.marginLeft = marginLeft;
+  //widthText = alternativeTitleElem.offsetWidth; //title top width
+  //marginLeft = "-" + widthText + "px";
+  //alternativeTitleElem.style.marginLeft = marginLeft;
 
-  document.documentElement.style.setProperty(
-    "--alternativeTitleMarginLeft",
-    marginLeft
-  );
+  //document.documentElement.style.setProperty("--alternativeTitleMarginLeft",marginLeft);
 
   bgImageElem = document.getElementById("av_header_image");
   await loadImage(bgImage, bgImageElem);
@@ -255,13 +248,13 @@ function spawnPopularSongs(content, layout) {
       let trackImage = document.createElement("img");
       trackImage.classList.add("av_music_preview_musicShowcase_trackIMG");
 
-      let imageUrl = trackContent.album.coverArt.sources[2].url;
+      let imageUrl = trackContent.albumOfTrack.coverArt.sources[2].url;
 
       if (imageUrl == undefined) {
         imageUrl = "standardImages/cover.jpg";
       }
 
-      trackImage.src = trackContent.album.coverArt.sources[2].url;
+      trackImage.src = trackContent.albumOfTrack.coverArt.sources[2].url;
       let trackTextContainer = document.createElement("div");
       trackTextContainer.classList.add(
         "av_music_preview_musicShowcase_trackText"

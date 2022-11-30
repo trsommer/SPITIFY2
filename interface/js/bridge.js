@@ -15,9 +15,7 @@ async function getSongInfo(ids) {
 }
 
 async function getSpotifySearchResults(query) {
-    returnArray = await window.electronAPI.searchSpotify(query)
-
-    return returnArray["data"]["search"]
+    window.electronAPI.searchSpotify(query)
 }
 
 async function getYoutubeUrls(query) {
@@ -40,8 +38,8 @@ async function updateSong(data) {
     window.electronAPI.updateSong(data)
 }
 
-async function sendNotification(title, body) {
-    window.electronAPI.sendNotification(title, body)
+async function sendNotification(data) {
+    window.electronAPI.sendNotification(data)
 }
 
 async function getLevenshteinDistance(origin, comparison) {

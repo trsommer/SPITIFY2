@@ -1,7 +1,7 @@
 #menu_player_container {
   position: absolute;
-  bottom: 0px;
-  left: 60px;
+  bottom: 0;
+  left: 0;
   top: inherit;
   right: auto;
   display: flex;

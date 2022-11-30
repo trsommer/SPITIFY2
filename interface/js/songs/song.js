@@ -416,6 +416,8 @@ class Song {
     const spotifyId = this.#songSpotifyId;
     const songs = [{songName: fullTitle, youtubeId: youtubeId, spotifyId: spotifyId}];
   
+    addDownloadToView(this);
+
     const location = await downloadSongs(songs);
     addDownloadedSong(spotifyId);
 
@@ -466,11 +468,13 @@ class Song {
         //song was liked and is to be unliked
         this.#songLikeStatus = false;
         likeSongDb(this.#songSpotifyId, 1);
+        this.#updateDB();
         return false;
       case false:
         //song was not liked and is to be liked
         this.#songLikeStatus = true;
         likeSongDb(this.#songSpotifyId, 0);
+        this.#updateDB();
         return true;
     }
   }
@@ -537,6 +541,10 @@ class Song {
 
   getSongSpotifyId() {
     return this.#songSpotifyId;
+  }
+
+  getAlbumName() {
+    return this.#songAlbum.name;
   }
 }
 

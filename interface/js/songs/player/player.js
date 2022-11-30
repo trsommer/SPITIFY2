@@ -39,7 +39,7 @@ async function play(song) {
     setSpecificVolume(song.getSongPreferredVolume());
     changePlayState();
     animatePlayerIn();
-    sendNotification(song.getSongTitle(), song.getArtistsAsString());
+    createNewNotification(song);
 }
 
 async function addInfoToPlayer(song) {
@@ -49,6 +49,17 @@ async function addInfoToPlayer(song) {
     setPlayerText(song.getSongTitle(), song.getArtistsAsString())
 
     setLikeIcon(song.getSongLikeStatus());
+}
+
+function createNewNotification(song) {
+    data = {
+        title: song.getSongTitle(),
+        subTitle: song.getArtistsAsString(),
+        body: song.getAlbumName(),
+        imageUrl: song.getSongImageUrl()
+    }
+
+    sendNotification(data)
 }
 
 async function setMediaSessionAPI(song) {
@@ -63,11 +74,15 @@ async function setMediaSessionAPI(song) {
 
     //TODO sometimes the information is not updated - NO IDEA WHY ..........
 
-    navigator.mediaSession.setActionHandler('previoustrack', () => {
-        //goBackTrack();
+    navigator.mediaSession.setActionHandler('previoustrack', async function () {
+        goBackTrack();
+        await setTimeout(function(){
+        }, 100);
     });
-    navigator.mediaSession.setActionHandler('nexttrack', () => {
-        //skipTrack();
+    navigator.mediaSession.setActionHandler('nexttrack', async function () {
+        await skipTrack();
+        await setTimeout(function(){
+        }, 100);
     });
 }
 

@@ -1,13 +1,19 @@
 const { app, BrowserWindow, ipcMain, Notification, globalShortcut } = require("electron");
-const path = require("path");
+const Path = require("path");
+const Fs = require('fs')  
+const Axios = require("axios");
 const dataBase = require("./dataBase");
 const spotify = require("./spotify");
 const youtube = require("./youtube");
 const downloader = require("./downloader");
 let mainWindow;
 
-function showNotification(title, body) {
-  new Notification({ title: title, body: body }).show();
+async function showNotification(data) {
+  imageUrl = data.imageUrl;
+  console.log(imageUrl);
+
+  await downloadImage(imageUrl)
+  new Notification({ title: data.title, subtitle: data.subTitle, body: data.body, icon: "notificationImage.jpg" }).show();
 }
 
 async function createWindow() {
@@ -17,10 +23,10 @@ async function createWindow() {
     minWidth: 1250,
     minHeight: 750,
     resizable: true,
-    icon: path.join(__dirname, "spitifyIcon.icns"),
+    icon: Path.join(__dirname, "spitifyIcon.icns"),
     titleBarStyle: "shown",
     webPreferences: {
-      preload: path.join(__dirname, "contextBridge.js"),
+      preload: Path.join(__dirname, "contextBridge.js"),
     },
   });
   mainWindow.loadFile("interface/index.html");
@@ -29,8 +35,7 @@ async function createWindow() {
 
 app.whenReady().then(() => {
   ipcMain.handle("searchSpotify:input", async (event, input) => {
-    const response = await spotify.searchSpotify(input);
-    return response;
+    spotify.searchSpotify(input, mainWindow);
   });
   ipcMain.handle("get:artistInfo", async (event, artistID) => {
     const response = await spotify.getArtistInfo(artistID);
@@ -58,8 +63,8 @@ app.whenReady().then(() => {
       return response;
     }
   );
-  ipcMain.handle("send:notification", async (event, title, body) => {
-    showNotification(title, body);
+  ipcMain.handle("send:notification", async (event, data) => {
+    showNotification(data);
   });
   ipcMain.handle("insert:song", async (event, data) => {
     dataBase.insertSong(data);
@@ -121,6 +126,23 @@ app.whenReady().then(() => {
 });
 
 app.on("window-all-closed", function () {
-  if (process.platform !== "darwin") app.quit();
+  app.quit();
 });
 
+async function downloadImage(url) {  
+  const filePath = Path.resolve(__dirname, 'notificationImage.jpg')
+  const writer = Fs.createWriteStream(filePath)
+
+  const response = await Axios({
+    url,
+    method: 'GET',
+    responseType: 'stream'
+  })
+
+  response.data.pipe(writer)
+
+  return new Promise((resolve, reject) => {
+    writer.on('finish', resolve)
+    writer.on('error', reject)
+  })
+}

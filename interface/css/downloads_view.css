@@ -10,5 +10,43 @@
 
 #downloads_heading {
     color: white;
-    position: fixed;
+}
+
+#downloads_tracks_container {
+}
+
+.downloads_track_item {
+    display: flex;
+    flex-direction: row;
+    height: 6vh;
+    align-items: center;
+    margin-top: 4px;
+    margin-bottom: 4px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    width: calc(100% - 20px);
+    border-radius: 5px;
+    color: var(--contrast_bright);
+    margin-left: 20px;
+}
+
+.downloads_track_image {
+    height: 6vh;
+    border-radius: 5px;
+}
+
+.downloads_track_name {
+    margin-left: 20px;
+    color: var(--contrast_bright);
+}
+
+.downloads_track_artist {
+    left: 50vw;
+    position: absolute;
+    max-width: 35vw;
+}
+
+.downloads_track_duration {
+    right: 25px;
+    position: absolute;
 }

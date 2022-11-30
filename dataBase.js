@@ -35,13 +35,13 @@ async function getDB() {
   folderPath = path.join(documentsPath, "Spitify")
 
   if (!fs.existsSync(folderPath)) fs.mkdirSync(folderPath);
-  dbPath = path.join(folderPath, "music.sqlite");
+  dbPath = path.join(folderPath, "spitifyDB.sqlite");
   db = new DataBase(dbPath);
   return db;
 }
 async function createTables() {
   documentsPath = app.getPath("documents");
-  dbPath = path.join(documentsPath, "Spitify", "music.sqlite");
+  dbPath = path.join(documentsPath, "Spitify", "spitifyDB.sqlite");
 
   var sql =
     "CREATE TABLE songs (id TEXT PRIMARY KEY, info TEXT)";

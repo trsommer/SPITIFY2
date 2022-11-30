@@ -149,7 +149,12 @@
     padding-bottom: 4px;
     width: calc(100% - 20px);
     border-radius: 5px;
-    padding-left: 20px;
+    margin-left: 20px;
+}
+
+.album_view_track_spacer {
+    height: 100%;
+    width: 4px;
 }
 
 .album_view_track_image {

@@ -7,7 +7,7 @@ contextBridge.exposeInMainWorld('electronAPI',{
   getAlbumInfo: (albumID) => ipcRenderer.invoke('get:albumInfo', albumID),
   convertURL: (url) => ipcRenderer.invoke('convert:url', url),
   searchYoutube: (input) => ipcRenderer.invoke('searchYoutube:input', input),
-  sendNotification: (title, body) => ipcRenderer.invoke('send:notification', title, body),
+  sendNotification: (data) => ipcRenderer.invoke('send:notification', data),
   insertSong: (data) => ipcRenderer.invoke('insert:song', data),
   getFromDB: (query) => ipcRenderer.invoke('get:Database', query),
   updateSong: (data) => ipcRenderer.invoke('update:song', data),
@@ -26,5 +26,6 @@ contextBridge.exposeInMainWorld('electronAPI',{
   downloadSongs: (songs) => ipcRenderer.invoke('download:songs', songs),
   updateDownloads: (progress, spotifyId) => ipcRenderer.on('update:downloads', progress, spotifyId),
   addDownloadedSong: (songId) => ipcRenderer.invoke('add:downloadedSong', songId),
-  removeDownloadedSong: (songId) => ipcRenderer.invoke('remove:downloadedSong', songId)
+  removeDownloadedSong: (songId) => ipcRenderer.invoke('remove:downloadedSong', songId),
+  updateSpotifySearch: (result) => ipcRenderer.on('searchSpotify:event', result)
 })

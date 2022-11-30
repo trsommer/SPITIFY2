@@ -153,7 +153,12 @@ function animationToPlayerPosition(newOffset) {
     var root = document.querySelector(':root')
     player = document.getElementById('menu_player_container')
     root.style.setProperty('--endOffsetTop', newOffset.y + "px")
-    root.style.setProperty('--endOffsetLeft', newOffset.x + "px")
+    console.log(newOffset);
+    if (Number.isInteger(newOffset.x)) {
+        root.style.setProperty('--endOffsetLeft', newOffset.x + "px")
+    } else {
+        root.style.setProperty('--endOffsetLeft', newOffset.x)
+    }
     player.style.animation = "movePlayer 0.4s forwards"
 }
 
@@ -162,7 +167,7 @@ function setPlayerPosition() {
     switch (currentPosition) {
         case "topLeft":
             player.style.top = "60px"
-            player.style.left = "60px"
+            player.style.left = "0"
             player.style.bottom = "inherit"
             player.style.right = "inherit"
             return
@@ -174,7 +179,7 @@ function setPlayerPosition() {
             return
         case "bottomLeft":
             player.style.bottom = "0"
-            player.style.left = "60px"
+            player.style.left = "0"
             player.style.top = "inherit"
             player.style.right = "inherit"
             return
@@ -302,7 +307,7 @@ function getDirection(startCords, endCords) {
 }
 
 function getOffset(direction) {
-    offsetLeft = 60
+    offsetLeft = 80
     offsetTop = 60
 
     switch(direction) {
@@ -311,11 +316,11 @@ function getOffset(direction) {
             offsetTop = 60
             break;
         case "topLeft":
-            offsetLeft = 60
+            offsetLeft = 0
             offsetTop = 60
             break;
         case "bottomLeft":
-            offsetLeft = 60
+            offsetLeft = 0
             offsetTop = window.innerHeight - document.getElementById('menu_player').offsetHeight - 30 //30 is margin around player
             break;
         case "bottomRight":

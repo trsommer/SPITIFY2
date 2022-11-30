@@ -2,7 +2,13 @@ spotifyIds = [];
 songInfo = [];
 var albums = [];
 
-function search_view() {}
+window.electronAPI.updateSpotifySearch((event, response) => {
+  result = response.data.search
+  setContentSearch(result)
+});
+
+function search_view() {
+}
 
 function setContentSearch(content) {
   artists = content["artists"];
@@ -190,7 +196,6 @@ function setAlbumContent(content) {
     if (albumData == undefined) break;
     albumName = albumData["name"];
     albumType = albumData["type"];
-    console.log(albumType);
     var imgUrl = albumData["coverArt"]["sources"]["0"]["url"];
     if (imgUrl == undefined) imgUrl = "standardImages/cover.jpg";
 
