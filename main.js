@@ -23,7 +23,7 @@ async function createWindow() {
     minWidth: 1250,
     minHeight: 750,
     resizable: true,
-    icon: Path.join(__dirname, "spitifyIcon.icns"),
+    icon: Path.join(__dirname, "spitifyIcon.png"),
     titleBarStyle: "shown",
     webPreferences: {
       preload: Path.join(__dirname, "contextBridge.js"),
