@@ -4,8 +4,8 @@
 
 #playlists_container {
     padding-top: 60px;
-    margin-left: 25px;
-    margin-right: 50px;
+    margin-left: 20px;
+    margin-right: 20px;
 }
 
 #playlists_heading {
@@ -15,14 +15,14 @@
 #playlists_items_container {
     display: grid;
     width: 100%;
-    grid-template-columns: repeat( auto-fit, minmax(200px, 205px));
+    grid-template-columns: repeat( auto-fit, 231.6px);
     align-content: center;
-    column-gap: 15px;
-    row-gap: 15px;
+    column-gap: 20px;
+    row-gap: 20px;
 }
 
 .playlists_item {
-    height: 250px;
+    height: 280px;
     background: var(--bg_dark);
     border-radius: 20px;
     cursor: pointer;
@@ -47,7 +47,7 @@
 }
 
 #playlists_liked_songs {
-    height: 250px;
+    height: 280px;
     background: var(--bg_dark);
     border-radius: 20px;
     cursor: pointer;

@@ -4,14 +4,12 @@
 
 .av_header_image {
     width: 100%;
-    position: absolute;
     object-fit: cover;
     height: 100%;
 }
 
 .av_header_image_square {
     width: 100%;
-    position: absolute;
     margin-top: 320px;
 }
 
@@ -39,14 +37,13 @@
 #av_header_container {
     width: 100%;
     height: 50vh;
-    position: fixed;
 }
 
 #av_artist_header_text {
     font-size: 65px;
     letter-spacing: 6px;
     color: var(--accentColor);
-    left: 60px;
+    left: 20px;
     margin: 0;
     position: absolute;
     bottom: 10px;
@@ -233,6 +230,7 @@
     width: 100%;
     height: 100vh;
     z-index: -5;
+    top: 0;
 }
 
 #av_backgroundImage {
@@ -376,8 +374,8 @@
     width: 40%;
     height: 100%;
     display: flex;
-    justify-content: center;
     align-items: center;
+    margin-left: 20px;
 }
 
 #av_bio_description {

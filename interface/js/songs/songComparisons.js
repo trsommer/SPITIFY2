@@ -148,3 +148,26 @@ function isBracketed(string, originalString) {
 
     return false;
 }
+
+function containsNonLatinCodepoints(s) {
+    return /[^\u0000-\u00ff]/.test(s);
+}
+
+function artistsContainNonLatinCharacters(spotifyArtists, ytArtists) {
+    
+    for (let i = 0; i < spotifyArtists.length; i++) {
+        const artist = spotifyArtists[i];
+        if (containsNonLatinCodepoints(artist.profile.name)) {
+            return true;
+        }
+    }
+
+    for (let i = 0; i < ytArtists.length; i++) {
+        const artist = ytArtists[i];
+        if (containsNonLatinCodepoints(artist.name)) {
+            return true;
+        }
+    }
+
+    return false;
+}

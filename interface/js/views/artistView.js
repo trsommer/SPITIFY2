@@ -12,30 +12,17 @@ function artist_view() {
 }
 
 function scrollArtistView(scrollY) {
-  //console.log(scrollY);
-
-  if (scrollY > 72 && !altTitleState) {
-    toggleVisibility("av_artist_header_text", false);
-    toggleVisibility("av_artist_header_gradient", false);
-    console.log("in");
-    //document.getElementById("top_container_alternativeTitle").style.animation = "alternativeTitleIn 0.25s forwards";
+  console.log(scrollY);
+  if (scrollY > 300 && !altTitleState) {
     altTitleState = true;
-  } else if (scrollY <= 72 && altTitleState) {
-    toggleVisibility("av_artist_header_text", true);
-    toggleVisibility("av_artist_header_gradient", true);
-    console.log("out");
-    //document.getElementById("top_container_alternativeTitle").style.animation = "alternativeTitleOut 0.25s forwards";
+    changeHiddenHeadingVisibility(true, "menu_top_heading");
+    changeHiddenHeadingVisibility(true, "menu_top_button_play");
+    changeHiddenHeadingVisibility(true, "menu_top_button_shuffle");
+  } else if (scrollY <= 300 && altTitleState) {
     altTitleState = false;
-  }
-
-  let mainContainerOffsetTop = window.innerHeight * 0.4 + 60;
-
-  if (scrollY > mainContainerOffsetTop && headerImageVisible) {
-    document.getElementById("av_header_image").style.opacity = '0'
-    headerImageVisible = false;
-  } else if (headerImageVisible == false && scrollY <= mainContainerOffsetTop) {
-    document.getElementById("av_header_image").style.opacity = '1'
-    headerImageVisible = true;
+    changeHiddenHeadingVisibility(false, "menu_top_heading");
+    changeHiddenHeadingVisibility(false, "menu_top_button_play");
+    changeHiddenHeadingVisibility(false, "menu_top_button_shuffle");
   }
 
   if (scrollY != 0 && scrolledDown == false) {
@@ -107,6 +94,8 @@ async function setContentArtist(content) {
   setArtistSinglesEpContent(content.discography)
 
   setArtistBiography(content);
+
+  detHiddenItems(artistName);
 }
 
 function setMusicPreviewContent(content) {
@@ -181,6 +170,7 @@ function spawnLatestRelease(content) {
 
   releaseContainer.addEventListener("click", function () {
     id = content.id;
+    setOpenedFrom('artist_view')
     setupAlbumView(id, content);
   });
 
@@ -355,6 +345,7 @@ function setArtistAlbumContent(content) {
       albumInfo.innerHTML = content.date.year;
 
       albumBackground.addEventListener("click", function () {
+        setOpenedFrom('artist_view')
         openArtistAlbum(i);
       });
 
@@ -429,6 +420,7 @@ function setArtistSinglesEpContent(content) {
   albumInfo.innerHTML = info.date.year + " - " + info.type;
 
   albumBackground.addEventListener("click", function () {
+    setOpenedFrom('artist_view')
     openArtistSingleEp(i);
   });
 

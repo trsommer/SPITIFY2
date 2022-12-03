@@ -102,10 +102,11 @@
     margin-bottom: 4px;
     padding-top: 4px;
     padding-bottom: 4px;
-    width: calc(100% - 20px);
+    width: calc(100% - 40px);
     border-radius: 5px;
     color: var(--contrast_bright);
     margin-left: 20px;
+    margin-right: 20px;
 }
 
 .playlist_track_item:hover {
@@ -135,7 +136,7 @@
 }
 
 .playlists_track_duration {
-    right: 25px;
+    right: 24px;
     position: absolute;
 }
 

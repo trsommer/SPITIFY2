@@ -1,4 +1,6 @@
 var currentView = "last_searches_view";
+var openedFrom = ""; 
+var backButtonVisibility = false;
 var views = [
   "search_view",
   "artist_view",
@@ -17,7 +19,27 @@ function switchView(view) {
     return;
   }
 
+  if (view != "artist_view") {
+    document.getElementById("menu_top_hidden_heading").style.width = null;
+    if (altTitleState == true) {
+      changeHiddenHeadingVisibility(false, "menu_top_heading");
+      changeHiddenHeadingVisibility(false, "menu_top_button_play");
+      changeHiddenHeadingVisibility(false, "menu_top_button_shuffle");
+    }
+  }
+
   window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  if (backButtonVisibility) {
+    openedFrom = "";
+    backButtonChangeVisibility(false);
+  }
+
+  if (openedFrom != "") {
+    backButtonChangeVisibility(true);
+  }
+
+
 
   /*
   if (altTitleState) {
@@ -129,4 +151,24 @@ function clearSideMenuActiveButtons(exclude) {
       .getElementById("menu_" + button + "_button")
       .style.removeProperty("background");
   }
+}
+
+function backButtonChangeVisibility(visibility) {
+  if (visibility) {
+    backButtonVisibility = true;
+    document.getElementById("menu_top_back_button").style.width = "45px";
+    document.getElementById("menu_top_back_button").style.opacity = "1";
+  } else {
+    backButtonVisibility = false;
+    document.getElementById("menu_top_back_button").style.width = "0px";
+    document.getElementById("menu_top_back_button").style.opacity = "0";  }
+}
+
+function setOpenedFrom(from) {
+  openedFrom = from;
+}
+
+function goBack() {
+  switchView(openedFrom);
+  openedFrom = "";
 }

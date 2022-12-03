@@ -341,8 +341,10 @@ class Song {
         song.isExplicit
       );
 
+      var artistsContainNonLatinChars = artistsContainNonLatinCharacters(spotifyArtists, song.artists);
+
       //if content rating is not the same, the songs cant match
-      if (resultContentRatingMatch == false || foundArtists == 0 && song.artists != 0) {
+      if (resultContentRatingMatch == false || foundArtists == 0 && song.artists != 0 && !artistsContainNonLatinChars) {
         console.log("song does not match search criteria");
         continue;
       }
@@ -359,11 +361,11 @@ class Song {
 
       //check if the song is a better match than the current closest match
       const songDeviation =
-        i * 1 +
+        i * i * 0.5 +
         artistNumberDeviation * 3 +
-        resultTitleComparison * 2 +
-        resultAlbumComparison * 2 +
-        timeDifference * 0.5;
+        resultTitleComparison * 1.5 +
+        resultAlbumComparison * 1.3 +
+        timeDifference * 0.2;
 
 
       searchResults.push({

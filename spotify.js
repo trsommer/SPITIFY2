@@ -20,11 +20,18 @@ async function refreshTokens() {
   await getClientToken(clientId);
 }
 
-
 async function getTokens() {
   if (tokens == null || tokens.accessTokenExpiration < Date.now()) {
-    response = await axios.get("https://open.spotify.com/get_access_token");
+    const response = await axios({
+      method: 'get',
+      url: 'https://open.spotify.com/get_access_token',
+      headers: {
+        'accept-encoding': 'application/json'
+      }
+    })
+
     console.log("refreshing tokens");
+
     tokens = {'clientId': response.data.clientId, 'accessToken': response.data.accessToken, 'accessTokenExpiration': response.data.accessTokenExpirationTimestampMs};
     return tokens
   }
@@ -41,6 +48,7 @@ async function getClientToken(clientId) {
       headers: { 
         'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:107.0) Gecko/20100101 Firefox/107.0',
         'Accept': 'application/json',
+        'accept-encoding': 'application/json',
         'Accept-Language': 'en-US,en;q=0.5',
         'Content-Type': 'application/json' 
       },
@@ -91,7 +99,10 @@ async function searchSpotify(query, mainWindow) {
 
   url = getEncodedURL(urlStart, variables, hash);
   axios.get(url, {
-    headers: { authorization: "Bearer " + accessToken },
+    headers: { 
+      authorization: "Bearer " + accessToken,
+      'accept-encoding': 'application/json'
+    },
     signal: controller.signal
   }).then(function(response) {
     abortController = null;
@@ -128,7 +139,8 @@ async function getArtistInfo(artistID) {
   let response = await axios.get(url, {
     headers: { 
     authorization: "Bearer " + accessToken,
-    'client-token': clientToken 
+    'client-token': clientToken,
+    'accept-encoding': 'application/json'
   },
   });
   //time = new Date() - start
@@ -147,7 +159,9 @@ async function getAlbumInfo(albumID) {
 
   const url = getEncodedURL(urlStart, variables, hash);
   let response = await axios.get(url, {
-    headers: { authorization: "Bearer " + accessToken },
+    headers: { authorization: "Bearer " + accessToken,
+    'accept-encoding': 'application/json' 
+  },
   });
   return response.data;
 }
@@ -164,7 +178,9 @@ async function addInfoArtistTracks(songIds) {
   const encodedUrl = getEncodedURL(url, variables, hash);
 
   let response = await axios.get(encodedUrl, {
-    headers: { authorization: "Bearer " + accessToken },
+    headers: { authorization: "Bearer " + accessToken,
+    'accept-encoding': 'application/json'
+  },
   });
 
   return response.data;
@@ -182,7 +198,8 @@ async function getSongLyrics(id, coverImage) {
   let response = await axios.get(url, {
     headers: { 
       authorization: "Bearer " + accessToken,
-      'client-token': clientToken
+      'client-token': clientToken,
+      'accept-encoding': 'application/json'
   },  
   });
 
@@ -190,7 +207,6 @@ async function getSongLyrics(id, coverImage) {
 
 }
 
-getSongLyrics('3yfqSUWxFvZELEM4PmlwIR', 'https%3A%2F%2Fi.scdn.co%2Fimage%2Fab67616d0000b273dbb3dd82da45b7d7f31b1b42');
 //getClientToken();
 
 function getEncodedURL(url, variables, hash) {
@@ -199,3 +215,5 @@ function getEncodedURL(url, variables, hash) {
   params.append("extensions", hash);
   return url + params.toString();
 }
+
+

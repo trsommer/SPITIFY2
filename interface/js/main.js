@@ -71,3 +71,25 @@ function timeConvert(ms) {
     return "" + minutes + ":" + remainingSecondsString
 }
 
+async function detHiddenItems(heading) {
+    document.getElementById("menu_top_heading").innerHTML = heading
+    var width = parseFloat(window.getComputedStyle(document.getElementById("menu_top_heading")).width);
+    intWidth = Math.floor(width)
+    document.getElementById("menu_top_hidden_heading").style.width = intWidth + "px"
+
+    document.getElementById("menu_top_heading").style.transform = "translateX(-20px)"
+
+    document.getElementById("menu_top_button_play").style.transform = "translateX(-20px)"
+
+    document.getElementById("menu_top_button_shuffle").style.transform = "translateX(-20px)"
+} 
+
+function changeHiddenHeadingVisibility(mode, id) {
+    if (!mode) {
+        document.getElementById(id).style.transform = "translateX(-20px)"
+        document.getElementById(id).style.opacity = 0
+    } else {
+        document.getElementById(id).style.transform = "translateX(0px)"
+        document.getElementById(id).style.opacity = 1
+    }
+}
