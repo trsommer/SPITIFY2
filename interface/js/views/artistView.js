@@ -12,7 +12,6 @@ function artist_view() {
 }
 
 function scrollArtistView(scrollY) {
-  console.log(scrollY);
   if (scrollY > 300 && !altTitleState) {
     altTitleState = true;
     changeHiddenHeadingVisibility(true, "menu_top_heading");
@@ -359,6 +358,46 @@ function setArtistAlbumContent(content) {
       albumCarousel.appendChild(albumContainer);
     }
 
+    const albumCarouselElement = document.getElementById("av_albums_carousel");
+    const navigatorContainer = document.getElementById("av_albums_navigation");
+    const albumNr = albumContent.length;
+    let nrBigNavigators = 0;
+    if (albumNr >= 4) {
+      nrBigNavigators = parseInt(albumNr / 4);
+    }
+
+
+
+    const widthSmallNavigator = 20 * (albumNr % 4);
+
+    navigatorContainer.innerHTML = "";
+
+    for (let i = 0; i < nrBigNavigators; i++) {
+      let bigNavigator = document.createElement("div");
+      bigNavigator.classList.add("av_album_navigator");
+
+      bigNavigator.addEventListener("click", function () {
+        scrollWidth = 231.6 * 4 * i;
+        albumCarouselElement.scrollTo({ left: scrollWidth, behavior: 'smooth' });
+      });
+
+      navigatorContainer.appendChild(bigNavigator);
+    }
+
+    if (albumNr % 4 != 0 && albumNr > 4) {
+      let smallNavigator = document.createElement("div");
+      smallNavigator.classList.add("av_album_navigator");
+      smallNavigator.style.width = widthSmallNavigator + "px";
+      
+      smallNavigator.addEventListener("click", function () {
+        albumCarouselElement.scrollTo({ left: 100000, behavior: 'smooth' });
+      });
+
+      navigatorContainer.appendChild(smallNavigator);
+    }
+
+    
+
 }
 
 function setArtistSinglesEpContent(content) {
@@ -433,6 +472,42 @@ function setArtistSinglesEpContent(content) {
 
   singlesEpCarousel.appendChild(albumContainer);
     
+  }
+
+  
+  const singlesEPsCarouselElement = document.getElementById("av_singles_EPs_carousel");
+  const navigatorContainer = document.getElementById("av_singles_navigation");
+  const singlesNr = singlesContainer.length;
+  let nrBigNavigators = 0;
+  if (singlesNr >= 4) {
+    nrBigNavigators = parseInt(singlesNr / 4);
+  }
+  const widthSmallNavigator = 20 * (singlesNr % 4);
+
+  navigatorContainer.innerHTML = "";
+
+  for (let i = 0; i < nrBigNavigators; i++) {
+    let bigNavigator = document.createElement("div");
+    bigNavigator.classList.add("av_singles_navigator");
+
+    bigNavigator.addEventListener("click", function () {
+      scrollWidth = 231.6 * 4 * i;
+      singlesEPsCarouselElement.scrollTo({ left: scrollWidth, behavior: 'smooth' });
+    });
+
+    navigatorContainer.appendChild(bigNavigator);
+  }
+
+  if (singlesNr % 4 != 0 && singlesNr > 4) {
+    let smallNavigator = document.createElement("div");
+    smallNavigator.classList.add("av_singles_navigator");
+    smallNavigator.style.width = widthSmallNavigator + "px";
+    
+    smallNavigator.addEventListener("click", function () {
+      singlesEPsCarouselElement.scrollTo({ left: 100000, behavior: 'smooth' });
+    });
+
+    navigatorContainer.appendChild(smallNavigator);
   }
 }
 

@@ -49,7 +49,7 @@ async function compareArtists(spotifyArtists, ytArtists, songTitle) {
 
 async function compareTitles(spotifyTitle, ytTitle) {
     //just a comparison of the Levenshtein distance for now
-    const distance =  await getLevenshteinDistance(spotifyTitle, ytTitle);
+    const distance =  await getLevenshteinDistance(spotifyTitle.toLowerCase(), ytTitle.toLowerCase());
 
     return distance;
 }   

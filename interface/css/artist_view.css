@@ -208,11 +208,12 @@
 }
 
 #av_albums_container {
-    height: 50vh;
     display: flex;
     justify-content: center;
     flex-direction: column;
     align-items: center;
+    margin-bottom: 20px;
+    margin-top: 20px;
 }
 
 @keyframes alternativeTitleIn {
@@ -257,6 +258,10 @@
     align-items: center;
 }
 
+#av_albums_carousel::-webkit-scrollbar {
+    display: none;
+}
+
 .av_album_container {
     width: 35vh;
     height: 35vh;
@@ -295,6 +300,7 @@
     color: white;
     font-size: 20px;
     margin-top: 5px;
+    white-space: nowrap;
 }
 
 .av_album_info {
@@ -303,7 +309,6 @@
 }
 
 .av_albums_header_container {
-    height: 80px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -334,12 +339,16 @@
     align-items: center;
 }
 
+#av_singles_EPs_carousel::-webkit-scrollbar {
+    display: none;
+}
+
 #av_singles_EPs_container {
-    height: 50vh;
     display: flex;
     justify-content: center;
     flex-direction: column;
     align-items: center;
+    margin-bottom: 20px;
 }
 
 #av_bio_container {
@@ -446,4 +455,59 @@
 
 .av_bio_button:hover {
     background-color: var(--accentColor);
+}
+
+#av_albums_naviagation_container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+#av_albums_navigation {
+    height: 22px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(0,0,0,0.5);
+    border-radius: 100px;
+}
+
+.av_album_navigator {
+    height: 6px;
+    width: 80px;
+    border-radius: 100px;
+    background: var(--contrast_bright);
+    margin-left: 10px;
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+#av_singles_naviagation_container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+#av_singles_navigation {
+    height: 22px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(0,0,0,0.5);
+    border-radius: 100px;
+}
+
+.av_singles_navigator {
+    height: 6px;
+    width: 80px;
+    border-radius: 100px;
+    background: var(--contrast_bright);
+    margin-left: 10px;
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+#av_content_spacer {
+    width: 100%;
+    height: 20px;
 }
