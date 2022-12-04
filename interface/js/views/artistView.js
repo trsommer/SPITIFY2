@@ -669,6 +669,24 @@ async function playArtistTopTrack(content, songNumber) {
   playSongNow(content);
 }
 
+async function playArtistTopSongs() {
+  //self explanatory
+
+  for (let index = 0; index < topSongs.length; index++) {
+      let track = topSongs[index].track;
+      const additionalInfo = await additionalSongInfo;  
+      track.album = additionalInfo.data.tracks[index].albumOfTrack;
+
+      if (index == 0) {
+          await playSongNow(track)
+      } else {
+          song = await new Song(track)
+          addToQueue(song)
+      }
+
+  }
+}
+
 function openArtistAlbum(id) {
   console.log(albums);
   info = albums[id]

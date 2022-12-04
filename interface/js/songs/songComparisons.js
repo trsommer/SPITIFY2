@@ -171,3 +171,16 @@ function artistsContainNonLatinCharacters(spotifyArtists, ytArtists) {
 
     return false;
 }
+
+function findTitleOverlap(spotifyTitle, ytTitle) {
+    if (spotifyTitle.includes(ytTitle)) {
+        return true;
+    }
+
+    if (ytTitle.includes(spotifyTitle)) {
+        return true;
+    }
+        
+    return false;
+}
+

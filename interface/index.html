@@ -144,7 +144,7 @@
                     <p id="menu_top_heading">heading</p>
                 </div>
                 <div id="menu_top_hidden_play_button">
-                    <button class="menu_top_button" id="menu_top_button_play">play</button>
+                    <button class="menu_top_button" id="menu_top_button_play" onclick="playArtistTopSongs()">play</button>
                 </div>
                 <div id="menu_top_hidden_play_button">
                     <button class="menu_top_button" id="menu_top_button_shuffle">shuffle</button>
@@ -164,9 +164,14 @@
                 <div id="av_header_image_container">
                     <img id="av_header_image" class="av_header_image" src="standardImages/bgArtist.jpg" crossorigin="anonymous">
                 </div>
-                <div id="av_artist_header_text_container">
+                <div id="av_artist_header_container">
                     <div id="av_artist_header_gradient"></div>
-                    <h1 id="av_artist_header_text">ARTIST</h1>
+                    <div id="av_artist_header_text_container">
+                        <h1 id="av_artist_header_text">ARTIST</h1>
+                        <div id="av_artist_header_playButton" onclick="playArtistTopSongs()">
+                            <img src="icons/play/play.svg">
+                        </div>
+                    </div>
                 </div>
             </div>
             <div id="av_background_container">

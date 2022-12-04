@@ -14,8 +14,8 @@ async function playSongNow(info) {
   const song = await new Song(info)
   //if there is no song currently playing, play the song
   if (getCurrentSong() == null) {
-    addToQueue(song)
-    playQueue()
+    await addToQueue(song)
+    await playQueue()
   }
   //if there is a song currently playing, add current song to played queue and play the new song
   else {

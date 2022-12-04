@@ -35,10 +35,11 @@ class Song {
 
   async #setup(songInfo, requestType) {
     //requestType is either "stream", "download" or "empty" - if empty, steam is default
-    this.#songSpotifyId = this.#getIdFromSongInfo(songInfo);
+    id = this.#getIdFromSongInfo(songInfo);
+    this.#songSpotifyId = id;
 
     //get possible info of song from db
-    const databaseQueryResult = await this.#getInfoFromDB(this.#songSpotifyId);
+    const databaseQueryResult = await this.#getInfoFromDB(id);
 
     //check if song is in db
     if (databaseQueryResult.length == 1) {
@@ -306,7 +307,16 @@ class Song {
         resultTitleComparison = Math.min(normalTitleComparison, reducedTitleComparison);
 
       } else {
-        if (bracketLess.extractedText.includes(this.#songAlbum.name)) {
+
+        if (bracketLess.cleanText == bracketLess.extractedText) {
+          bracketLessComparison = await compareTitles(
+            this.#songTitle,
+            bracketLess.cleanText
+          );
+
+          resultTitleComparison = Math.min(normalTitleComparison, reducedTitleComparison, bracketLessComparison);
+
+        } else if (bracketLess.extractedText.includes(this.#songAlbum.name)) {
           bracketLessComparison = await compareTitles(
             this.#songTitle,
             bracketLess.cleanText
@@ -318,6 +328,9 @@ class Song {
 
         }
       }
+
+      //check if one title includes the other
+      const titleOverlap = findTitleOverlap(this.#songTitle, song.title);
 
 
       //compare album titles (if song has album) (result is deviation as Levenshtein distance)
@@ -360,25 +373,26 @@ class Song {
       }
 
       //check if the song is a better match than the current closest match
-      const songDeviation =
+      let songDeviation =
         i * i * 0.5 +
         artistNumberDeviation * 3 +
         resultTitleComparison * 1.5 +
         resultAlbumComparison * 1.3 +
         timeDifference * 0.2;
 
+      if (titleOverlap) {
+        songDeviation = songDeviation * 0.5;
+      }
 
       searchResults.push({
         title: this.#songTitle,
         ytTitle: song.title,
-        newTitle: newTitle,
-        normal: normalTitleComparison,
-        reduced: reducedTitleComparison,
-        bracketLess: bracketLessComparison,
-        exracted: bracketLess.extractedText,
-        album: this.#songAlbum.name,
-        derivation: songDeviation,
-
+        artistNumberDeviation: artistNumberDeviation,
+        resultTitleComparison: resultTitleComparison,
+        titleOverlap: titleOverlap,
+        resultAlbumComparison: resultAlbumComparison,
+        timeDifference: timeDifference,
+        deviation: songDeviation
       })
 
       if (
@@ -457,7 +471,13 @@ class Song {
   }
 
   #getIdFromSongInfo(songInfo) {
-    if (songInfo.id == undefined || songInfo.id == null) {
+    //check if songinfo.id is undefined
+
+    if (songInfo["id"] == undefined) {
+      return songInfo.uri.split(":")[2];
+    }
+
+    if (songInfo.id == null) {
       return songInfo.uri.split(":")[2];
     }
 

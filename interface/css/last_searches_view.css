@@ -39,6 +39,8 @@
     margin-left: 18px;
     border-radius: 10px;
     margin-right: 12px;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
 }
 
 .last_search_item_text_title {

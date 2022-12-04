@@ -28,7 +28,8 @@ async function loadLastSearches() {
 
     var lastSearchTitle = document.createElement("p");
     lastSearchTitle.classList.add("last_search_item_text_title");
-    lastSearchTitle.innerHTML = lastSearch.name;
+    name = shortenString(lastSearch.name, 25);
+    lastSearchTitle.innerHTML = name;
 
     var lastSearchTypeHTML = document.createElement("p");
     lastSearchTypeHTML.classList.add("last_search_item_text_type");
@@ -82,4 +83,12 @@ function removeLastSearch(id, index) {
 
   //remove from db
   deleteSpecificLastSearch(id);
+}
+
+function shortenString(string, length) {
+  if (string.length > length) {
+    return string.substring(0, length) + "...";
+  } else {
+    return string;
+  }
 }
