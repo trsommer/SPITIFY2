@@ -312,7 +312,7 @@ function getOffset(direction) {
 
     switch(direction) {
         case "topRight":
-            offsetLeft = window.innerWidth - player.offsetWidth - 12 // 12 is width of scrollbar
+            offsetLeft = window.innerWidth - player.offsetWidth - 12 - 60 // 12 is width of scrollbar
             offsetTop = 60
             break;
         case "topLeft":
@@ -321,11 +321,11 @@ function getOffset(direction) {
             break;
         case "bottomLeft":
             offsetLeft = 0
-            offsetTop = window.innerHeight - document.getElementById('menu_player').offsetHeight - 30 //30 is margin around player
+            offsetTop = window.innerHeight - document.getElementById('menu_player').offsetHeight - 40 //30 is margin around player
             break;
         case "bottomRight":
-            offsetLeft = window.innerWidth - player.offsetWidth - 12 // 12 is width of scrollbar
-            offsetTop = window.innerHeight - document.getElementById('menu_player').offsetHeight - 30 //30 is margin around player
+            offsetLeft = window.innerWidth - player.offsetWidth - 12 - 60 // 12 is width of scrollbar
+            offsetTop = window.innerHeight - document.getElementById('menu_player').offsetHeight - 40 //30 is margin around player
             break;
         default:
             return null

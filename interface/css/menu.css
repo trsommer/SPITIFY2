@@ -31,11 +31,6 @@
     transition: 0.25s ease;
 }
 
-#menu_left:hover #menu_top_text_container {
-    background-color: aliceblue;
-    transition: 0.25s ease;
-}
-
 #menu_left:hover #menu_top_logo {
     fill: black;
     transition: 0.25s ease;

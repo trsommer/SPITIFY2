@@ -58,7 +58,6 @@ async function convertURL(url) {
     bestStreamIndex = index;
     bestBitrate = audioStream.bitrate;
   }
-  time = new Date() - start;
 
   return audioStreams[bestStreamIndex].url;
 }
