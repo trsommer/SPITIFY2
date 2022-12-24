@@ -8,6 +8,7 @@ window.electronAPI.updateSpotifySearch((event, response) => {
 });
 
 function search_view() {
+  stopMenuLogoColorChange(false)
 }
 
 function setContentSearch(content) {

@@ -2,6 +2,7 @@ var playlists = []
 
 function playlists_view() {
     updatePlaylists();
+    stopMenuLogoColorChange(false);
 }
 
 

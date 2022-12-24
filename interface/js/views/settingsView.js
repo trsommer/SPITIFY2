@@ -1,6 +1,6 @@
 function settings_view() {
-    console.log("settings_view");
-  }
+  stopMenuLogoColorChange(false);
+}
 
 function scrollSettingsMenuItemIntoView(id) {
   const element = document.getElementById(id);

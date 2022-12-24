@@ -303,6 +303,9 @@ class Song {
       let bracketLessComparison = 0;
       let resultTitleComparison = 0;
 
+
+      //this section of the code tries to work around issues with backets in the title - it tries to 
+      //extract the title without the brackets and compares it to the spotify title
       if (!bracketLess) {
         resultTitleComparison = Math.min(normalTitleComparison, reducedTitleComparison);
 

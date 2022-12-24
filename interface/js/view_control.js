@@ -1,5 +1,6 @@
 var currentView = "last_searches_view";
 var openedFrom = ""; 
+var lastViewInfo = "";
 var backButtonVisibility = false;
 var views = [
   "search_view",
@@ -21,7 +22,8 @@ function switchView(view) {
 
   if (view != "artist_view") {
     document.getElementById("menu_top_hidden_heading").style.width = null;
-    if (altTitleState == true) {
+    setTopMenuOpacity(0.95);
+    if (scrolledDown == true) {
       changeHiddenHeadingVisibility(false, "menu_top_heading");
       changeHiddenHeadingVisibility(false, "menu_top_button_play");
       changeHiddenHeadingVisibility(false, "menu_top_button_shuffle");
@@ -86,6 +88,9 @@ window.addEventListener("scroll", function (event) {
   bg_gradient = document.getElementById("av_artist_header_gradient");
   if (currentView == "artist_view") {
     scrollArtistView(scrollY);
+  }
+  if (currentView == "album_view") {
+    scrollAlbumView(scrollY);
   }
 
   var limit =
@@ -164,11 +169,19 @@ function backButtonChangeVisibility(visibility) {
     document.getElementById("menu_top_back_button").style.opacity = "0";  }
 }
 
-function setOpenedFrom(from) {
+function setOpenedFrom(from, info) {
   openedFrom = from;
+  lastViewInfo = info;
 }
 
 function goBack() {
+  document.documentElement.style.setProperty("--accentColor", lastViewInfo.accentColor);
+  document.getElementById("menu_top_heading").innerHTML = lastViewInfo.title
   switchView(openedFrom);
   openedFrom = "";
+  lastViewInfo = "";
+}
+
+function setTopMenuOpacity(opacity) {
+  document.getElementById("menu_top").style.opacity = opacity;
 }

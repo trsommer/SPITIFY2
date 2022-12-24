@@ -1,7 +1,21 @@
 var tracks = []
 var info = []
+var scrolledDown = false;
 
-function album_view() {}
+function album_view() {
+    setTopMenuOpacity(0);
+    stopMenuLogoColorChange(true);
+}
+
+function scrollAlbumView(scrollY) {
+    if (scrollY > 450 && !scrolledDown) {
+        scrolledDown = true;
+        changeMenuTopVisibility(false);
+    } else if (scrollY < 450 && scrolledDown) {
+        scrolledDown = false;
+        changeMenuTopVisibility(true);
+    }
+}
 
 async function setupAlbumView(id, additionalInfo) {
     var albumInfo = await getSpotifyAlbum(id)

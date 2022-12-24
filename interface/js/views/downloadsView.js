@@ -1,5 +1,8 @@
+downloadedSongs = [];
+
 function downloads_view() {
     console.log("downloads_view");
+    stopMenuLogoColorChange(false);
 }
 
 function addDownloadToView(song) {
@@ -8,8 +11,11 @@ function addDownloadToView(song) {
     const songDuration = song.getSongDuration();
     trackTimeFormated = timeConvert(songDuration)
     const songImage = song.getSongImageUrl();
+    const songId = song.getSongSpotifyId();
 
     const container = document.getElementById('downloads_tracks_container');
+
+    downloadedSongs[songId] = container;
 
     const track = document.createElement('div');
     track.classList.add('downloads_track_item');
@@ -36,4 +42,10 @@ function addDownloadToView(song) {
     track.appendChild(trackDuration);
 
     container.appendChild(track);
+}
+
+function updateDownloadProgress(songId, progress) {
+    const htmlElement = downloadedSongs[songId];
+    const progressElem = htmlElement.querySelector('.downloads_track_duration');
+    progressElem.innerText = progress;
 }

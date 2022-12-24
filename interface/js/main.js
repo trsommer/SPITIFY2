@@ -8,7 +8,7 @@ function onLoad() {
     loadLastSearches()
 
     window.electronAPI.updateDownloads((event, progress, spotifyId) => {
-        console.log(spotifyId + ": " + progress);
+        //updateDownloadProgress(spotifyId, progress)
     });
 }
 
@@ -28,15 +28,15 @@ async function setDisplayMode(element, mode, delay){
     }
 }
 
-
-
 async function search(query) {
     console.log("searching for:" + query + ".");
     query = query.trim()
     if (query == "") {
+        changeSearchClearVisibility(false)
         switchView("last_searches_view")
         return
     }
+    changeSearchClearVisibility(true)
     switchView("search_view")
 
     if (query == lastSearch) return
@@ -44,6 +44,11 @@ async function search(query) {
     lastSearch = query
 
     getSpotifySearchResults(query)
+}
+
+function clearSearchText() {
+    document.getElementById("top_search_input").value = ""
+    search("")
 }
 
 async function toggleSearchView(query) {
@@ -93,3 +98,48 @@ function changeHiddenHeadingVisibility(mode, id) {
         document.getElementById(id).style.opacity = 1
     }
 }
+
+function changeSearchClearVisibility(mode) {
+    if (!mode) {
+        document.getElementById("top_search_clear_container").style.opacity = 0
+    } else {
+        document.getElementById("top_search_clear_container").style.opacity = 1
+    }
+}
+
+function removeClass(id, className) {
+    document.getElementById(id).classList.remove(className)
+}
+
+function addClass(id, className) {
+    document.getElementById(id).classList.add(className)
+}
+
+function stopMenuLogoColorChange(mode) {
+    if (mode && !menuLogoColorChangeStopped) {
+      menuLogoColorChangeStopped = true;
+      removeClass('menu_top_logo', 'menu_top_logo')
+      removeClass('menu_top_text', 'menu_top_text')
+    }
+    if (!mode && menuLogoColorChangeStopped) {
+      menuLogoColorChangeStopped = false;
+      addClass('menu_top_logo', 'menu_top_logo')
+      addClass('menu_top_text', 'menu_top_text')
+    }
+  }
+
+  function changeMenuTopVisibility(mode) {
+    if (!mode) {
+        stopMenuLogoColorChange(false)
+        setTopMenuOpacity(0.95);
+        changeHiddenHeadingVisibility(true, "menu_top_heading");
+        changeHiddenHeadingVisibility(true, "menu_top_button_play");
+        changeHiddenHeadingVisibility(true, "menu_top_button_shuffle");
+    } else {
+        stopMenuLogoColorChange(true)
+        setTopMenuOpacity(0);
+        changeHiddenHeadingVisibility(false, "menu_top_heading");
+        changeHiddenHeadingVisibility(false, "menu_top_button_play");
+        changeHiddenHeadingVisibility(false, "menu_top_button_shuffle");
+    }
+  }

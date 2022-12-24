@@ -1,31 +1,26 @@
-var scrolledDown = false;
-var scrollMaxY = document.documentElement.scrollHeight - 60;
 var topSongs = [];
-var altTitleState = false;
+var scrolledDown = false;
 var headerImageVisible = true;
 var albums = [];
 var singlesEps = [];
 var linkedArtists = [];
 var additionalSongInfo;
+var menuLogoColorChangeStopped = false;
+var accentColor = "";
+var appropriateNrAlbumsCarousel = 4;
 
 function artist_view() {
+  setTopMenuOpacity(0);
+  stopMenuLogoColorChange(true);
 }
 
 function scrollArtistView(scrollY) {
-  if (scrollY > 300 && !altTitleState) {
-    altTitleState = true;
-    changeHiddenHeadingVisibility(true, "menu_top_heading");
-    changeHiddenHeadingVisibility(true, "menu_top_button_play");
-    changeHiddenHeadingVisibility(true, "menu_top_button_shuffle");
-  } else if (scrollY <= 300 && altTitleState) {
-    altTitleState = false;
-    changeHiddenHeadingVisibility(false, "menu_top_heading");
-    changeHiddenHeadingVisibility(false, "menu_top_button_play");
-    changeHiddenHeadingVisibility(false, "menu_top_button_shuffle");
-  }
-
-  if (scrollY != 0 && scrolledDown == false) {
+  if (scrollY > 300 && !scrolledDown) {
     scrolledDown = true;
+    changeMenuTopVisibility(false);
+  } else if (scrollY <= 300 && scrolledDown) {
+    scrolledDown = false;
+    changeMenuTopVisibility(true);
   }
 }
 
@@ -51,7 +46,7 @@ async function setContentArtist(content) {
   artistName = content["profile"]["name"];
   headerImage = document.getElementById("av_header_image");
 
-  if(content.visuals.headerImage != null) {
+  if (content.visuals.headerImage != null) {
     bgImage = content["visuals"]["headerImage"]["sources"]["0"]["url"];
     headerImage.classList.add("av_header_image");
     headerImage.classList.remove("av_header_image_square");
@@ -60,7 +55,6 @@ async function setContentArtist(content) {
     headerImage.classList.add("av_header_image_square");
     headerImage.classList.remove("av_header_image");
   }
-
 
   //alternativeTitleElem = document.getElementById("top_container_alternativeTitle");
 
@@ -86,11 +80,15 @@ async function setContentArtist(content) {
 
   document.documentElement.style.setProperty("--accentColor", colorString);
 
+  accentColor = colorString;
+
   setMusicPreviewContent(content.discography);
 
-  setArtistAlbumContent(content.discography)
+  carouselWidth = calculateAppropriateAlbumCarouselWidth();
 
-  setArtistSinglesEpContent(content.discography)
+  setArtistAlbumContent(content.discography, carouselWidth);
+
+  setArtistSinglesEpContent(content.discography, carouselWidth);
 
   setArtistBiography(content);
 
@@ -128,15 +126,20 @@ function spawnLatestRelease(content) {
   heading.id = "av_music_preview_heading";
 
   let releaseCenterContainer = document.createElement("div");
-  releaseCenterContainer.id = 'av_music_preview_newRelease_content_container';
+  releaseCenterContainer.id = "av_music_preview_newRelease_content_container";
 
   let releaseContainer = document.createElement("div");
   releaseContainer.id = "av_music_preview_newRelease_content";
+
+  let releaseImageContainer = document.createElement("div");
+  releaseImageContainer.id = "av_music_preview_newRelease_poster_container";
 
   let releaseImage = document.createElement("img");
   releaseImage.classList.add("av_music_cover_big");
   releaseImage.id = "av_music_preview_newRelease_poster";
   releaseImage.src = content.coverArt.sources[2].url;
+
+  releaseImageContainer.appendChild(releaseImage);
 
   let releaseTextContainer = document.createElement("div");
   releaseTextContainer.id = "av_music_cover_big_text";
@@ -164,12 +167,12 @@ function spawnLatestRelease(content) {
   releaseTextContainer.appendChild(releaseSongNumber);
   releaseTextContainer.appendChild(releaseYear);
 
-  releaseContainer.appendChild(releaseImage);
+  releaseContainer.appendChild(releaseImageContainer);
   releaseContainer.appendChild(releaseTextContainer);
 
   releaseContainer.addEventListener("click", function () {
     id = content.id;
-    setOpenedFrom('artist_view')
+    setArtistOpenedFrom();
     setupAlbumView(id, content);
   });
 
@@ -184,14 +187,14 @@ function spawnLatestRelease(content) {
 function spawnPopularSongs(content, layout) {
   topSongs = content;
   songIds = [];
-  
+
   for (let i = 0; i < topSongs.length; i++) {
     const topSong = topSongs[i];
-    
+
     id = topSong.track.id;
     songIds.push(id);
   }
-  
+
   additionalSongInfo = getSongInfo(songIds);
 
   let container = document.createElement("div");
@@ -285,24 +288,28 @@ function spawnPopularSongs(content, layout) {
   document.getElementById("av_music_preview_container").appendChild(container);
 }
 
-function setArtistAlbumContent(content) {
-    albums = [];
-    let albumCarousel = document.getElementById("av_albums_carousel");
-    albumCarousel.innerHTML = "";
+function setArtistAlbumContent(content, width) {
+  albums = [];
+  let albumCarousel = document.getElementById("av_albums_carousel");
+  albumCarousel.style.width = width + "px";
+  albumCarousel.innerHTML = "";
 
-    if (content.albums == undefined || content.albums.items.length == 0) {
-        console.log("No albums found");
-        document.getElementById("av_albums_container").style.display = "none";
-        return;
-    } else {
-        console.log("Albums found");
-        document.getElementById("av_albums_container").style.display = "flex";
-    }
-    
-    let albumContent = content.albums.items 
+  if (content.albums == undefined || content.albums.items.length == 0) {
+    console.log("No albums found");
+    document.getElementById("av_albums_container").style.display = "none";
+    return;
+  } else {
+    console.log("Albums found");
+    document.getElementById("av_albums_container").style.display = "flex";
+  }
 
+  let albumContent = content.albums.items;
 
-    /*
+  if (albumContent.length >= 4) {
+    albumCarousel.style.justifyContent = "left";
+  }
+
+  /*
       <div class="av_album_container">
         <div class="av_album_background">
             <img class="av_album_cover_image" src="standardImages/cover.jpg" alt="">
@@ -312,101 +319,98 @@ function setArtistAlbumContent(content) {
     </div>
     */
 
+  for (let i = 0; i < albumContent.length; i++) {
+    content = albumContent[i].releases.items[0];
+    albums.push(content);
 
-    for (let i = 0; i < albumContent.length; i++) {
+    let albumContainer = document.createElement("div");
+    albumContainer.classList.add("av_album_container");
 
-      content = albumContent[i].releases.items[0];
-      albums.push(content);
+    let albumBackground = document.createElement("div");
+    albumBackground.classList.add("av_album_background");
 
-      let albumContainer = document.createElement("div");
-      albumContainer.classList.add("av_album_container");
+    albumImageContainer = document.createElement("div");
+    albumImageContainer.classList.add("av_album_image_container");
 
-      let albumBackground = document.createElement("div");
-      albumBackground.classList.add("av_album_background");
+    let albumCoverImage = document.createElement("img");
+    albumCoverImage.classList.add("av_album_cover_image");
+    albumCoverImage.src = getAlbumImageCoverUrl(content);
 
-      let albumCoverImage = document.createElement("img");
-      albumCoverImage.classList.add("av_album_cover_image");
-      albumCoverImage.src = getAlbumImageCoverUrl(content);
+    albumImageContainer.appendChild(albumCoverImage);
 
-      let albumHeading = document.createElement("p");
-      albumHeading.classList.add("av_album_heading");
+    let albumHeading = document.createElement("p");
+    albumHeading.classList.add("av_album_heading");
 
-      albumName = content.name;
+    albumName = content.name;
 
-      if (albumName.length > 15) {
-        albumName = albumName.substring(0, 15) + "...";
-      }
-
-      albumHeading.innerHTML = albumName;
-
-      let albumInfo = document.createElement("p");
-      albumInfo.classList.add("av_album_info");
-      albumInfo.innerHTML = content.date.year;
-
-      albumBackground.addEventListener("click", function () {
-        setOpenedFrom('artist_view')
-        openArtistAlbum(i);
-      });
-
-
-      albumBackground.appendChild(albumCoverImage);
-      albumBackground.appendChild(albumHeading);
-      albumBackground.appendChild(albumInfo);
-
-      albumContainer.appendChild(albumBackground);
-
-      albumCarousel.appendChild(albumContainer);
+    if (albumName.length > 15) {
+      albumName = albumName.substring(0, 15) + "...";
     }
 
-    const albumCarouselElement = document.getElementById("av_albums_carousel");
-    const navigatorContainer = document.getElementById("av_albums_navigation");
-    const albumNr = albumContent.length;
-    let nrBigNavigators = 0;
-    if (albumNr >= 4) {
-      nrBigNavigators = parseInt(albumNr / 4);
-    }
+    albumHeading.innerHTML = albumName;
 
+    let albumInfo = document.createElement("p");
+    albumInfo.classList.add("av_album_info");
+    albumInfo.innerHTML = content.date.year;
 
+    albumBackground.addEventListener("click", function () {
+      setArtistOpenedFrom();
+      openArtistAlbum(i);
+    });
 
-    const widthSmallNavigator = 20 * (albumNr % 4);
+    albumBackground.appendChild(albumImageContainer);
+    albumBackground.appendChild(albumHeading);
+    albumBackground.appendChild(albumInfo);
 
-    navigatorContainer.innerHTML = "";
+    albumContainer.appendChild(albumBackground);
 
-    for (let i = 0; i < nrBigNavigators; i++) {
-      let bigNavigator = document.createElement("div");
-      bigNavigator.classList.add("av_album_navigator");
+    albumCarousel.appendChild(albumContainer);
+  }
 
-      bigNavigator.addEventListener("click", function () {
-        scrollWidth = 231.6 * 4 * i;
-        albumCarouselElement.scrollTo({ left: scrollWidth, behavior: 'smooth' });
-      });
+  const albumCarouselElement = document.getElementById("av_albums_carousel");
+  const navigatorContainer = document.getElementById("av_albums_navigation");
+  const albumNr = albumContent.length;
+  let nrBigNavigators = 0;
+  if (albumNr >= 4) {
+    nrBigNavigators = parseInt(albumNr / 4);
+  }
 
-      navigatorContainer.appendChild(bigNavigator);
-    }
+  const widthSmallNavigator = 20 * (albumNr % 4);
 
-    if (albumNr % 4 != 0 && albumNr > 4) {
-      let smallNavigator = document.createElement("div");
-      smallNavigator.classList.add("av_album_navigator");
-      smallNavigator.style.width = widthSmallNavigator + "px";
-      
-      smallNavigator.addEventListener("click", function () {
-        albumCarouselElement.scrollTo({ left: 100000, behavior: 'smooth' });
-      });
+  navigatorContainer.innerHTML = "";
 
-      navigatorContainer.appendChild(smallNavigator);
-    }
+  for (let i = 0; i < nrBigNavigators; i++) {
+    let bigNavigator = document.createElement("div");
+    bigNavigator.classList.add("av_album_navigator");
 
-    
+    bigNavigator.addEventListener("click", function () {
+      scrollWidth = 300 * appropriateNrAlbumsCarousel * i;
+      albumCarouselElement.scrollTo({ left: scrollWidth, behavior: "smooth" });
+    });
 
+    navigatorContainer.appendChild(bigNavigator);
+  }
+
+  if (albumNr % 4 != 0 && albumNr > 4) {
+    let smallNavigator = document.createElement("div");
+    smallNavigator.classList.add("av_album_navigator");
+    smallNavigator.style.width = widthSmallNavigator + "px";
+
+    smallNavigator.addEventListener("click", function () {
+      albumCarouselElement.scrollTo({ left: 100000, behavior: "smooth" });
+    });
+
+    navigatorContainer.appendChild(smallNavigator);
+  }
 }
 
-function setArtistSinglesEpContent(content) {
+function setArtistSinglesEpContent(content, width) {
   singlesEps = [];
   let singlesEpCarousel = document.getElementById("av_singles_EPs_carousel");
+  singlesEpCarousel.style.width = width + "px";
   singlesEpCarousel.innerHTML = "";
 
   console.log(content);
-
 
   let singlesContainer = content.singles.items;
 
@@ -415,6 +419,12 @@ function setArtistSinglesEpContent(content) {
     return;
   } else {
     document.getElementById("av_singles_EPs_container").style.display = "flex";
+  }
+
+  if (singlesContainer.length >= 4) {
+    singlesEpCarousel.style.justifyContent = "left";
+  } else {
+    singlesEpCarousel.style.justifyContent = "center";
   }
 
   for (let i = 0; i < singlesContainer.length; i++) {
@@ -430,52 +440,55 @@ function setArtistSinglesEpContent(content) {
             <p class="av_album_info"></p>
         </div>                            
     </div>
-    */    
-  
+    */
 
-  let albumContainer = document.createElement("div");
-  albumContainer.classList.add("av_album_container");
+    let albumContainer = document.createElement("div");
+    albumContainer.classList.add("av_album_container");
 
-  let albumBackground = document.createElement("div");
-  albumBackground.classList.add("av_album_background");
+    let albumBackground = document.createElement("div");
+    albumBackground.classList.add("av_album_background");
 
-  let albumCoverImage = document.createElement("img");
-  albumCoverImage.classList.add("av_album_cover_image");
-  albumCoverImage.src = getAlbumImageCoverUrl(info);
+    let albumImageContainer = document.createElement("div");
+    albumImageContainer.classList.add("av_album_image_container");
 
-  let albumHeading = document.createElement("p");
-  albumHeading.classList.add("av_album_heading");
+    let albumCoverImage = document.createElement("img");
+    albumCoverImage.classList.add("av_album_cover_image");
+    albumCoverImage.src = getAlbumImageCoverUrl(info);
 
-  albumName = info.name;
+    albumImageContainer.appendChild(albumCoverImage);
 
-  if (albumName.length > 15) {
-    albumName = albumName.substring(0, 15) + "...";
+    let albumHeading = document.createElement("p");
+    albumHeading.classList.add("av_album_heading");
+
+    albumName = info.name;
+
+    if (albumName.length > 15) {
+      albumName = albumName.substring(0, 15) + "...";
+    }
+
+    albumHeading.innerHTML = albumName;
+
+    let albumInfo = document.createElement("p");
+    albumInfo.classList.add("av_album_info");
+    albumInfo.innerHTML = info.date.year + " - " + info.type;
+
+    albumBackground.addEventListener("click", function () {
+      setOpenedFrom("artist_view");
+      openArtistSingleEp(i);
+    });
+
+    albumBackground.appendChild(albumImageContainer);
+    albumBackground.appendChild(albumHeading);
+    albumBackground.appendChild(albumInfo);
+
+    albumContainer.appendChild(albumBackground);
+
+    singlesEpCarousel.appendChild(albumContainer);
   }
 
-  albumHeading.innerHTML = albumName;
-
-  let albumInfo = document.createElement("p");
-  albumInfo.classList.add("av_album_info");
-  albumInfo.innerHTML = info.date.year + " - " + info.type;
-
-  albumBackground.addEventListener("click", function () {
-    setOpenedFrom('artist_view')
-    openArtistSingleEp(i);
-  });
-
-
-  albumBackground.appendChild(albumCoverImage);
-  albumBackground.appendChild(albumHeading);
-  albumBackground.appendChild(albumInfo);
-
-  albumContainer.appendChild(albumBackground);
-
-  singlesEpCarousel.appendChild(albumContainer);
-    
-  }
-
-  
-  const singlesEPsCarouselElement = document.getElementById("av_singles_EPs_carousel");
+  const singlesEPsCarouselElement = document.getElementById(
+    "av_singles_EPs_carousel"
+  );
   const navigatorContainer = document.getElementById("av_singles_navigation");
   const singlesNr = singlesContainer.length;
   let nrBigNavigators = 0;
@@ -491,8 +504,11 @@ function setArtistSinglesEpContent(content) {
     bigNavigator.classList.add("av_singles_navigator");
 
     bigNavigator.addEventListener("click", function () {
-      scrollWidth = 231.6 * 4 * i;
-      singlesEPsCarouselElement.scrollTo({ left: scrollWidth, behavior: 'smooth' });
+      scrollWidth = 300 * appropriateNrAlbumsCarousel * i;
+      singlesEPsCarouselElement.scrollTo({
+        left: scrollWidth,
+        behavior: "smooth",
+      });
     });
 
     navigatorContainer.appendChild(bigNavigator);
@@ -502,9 +518,9 @@ function setArtistSinglesEpContent(content) {
     let smallNavigator = document.createElement("div");
     smallNavigator.classList.add("av_singles_navigator");
     smallNavigator.style.width = widthSmallNavigator + "px";
-    
+
     smallNavigator.addEventListener("click", function () {
-      singlesEPsCarouselElement.scrollTo({ left: 100000, behavior: 'smooth' });
+      singlesEPsCarouselElement.scrollTo({ left: 100000, behavior: "smooth" });
     });
 
     navigatorContainer.appendChild(smallNavigator);
@@ -517,8 +533,10 @@ function setArtistBiography(content) {
   if (text == undefined || text == "") {
     text = "No biography found";
   }
-    
-  const biographyTextContainer = document.getElementById("av_bio_description_text_container");
+
+  const biographyTextContainer = document.getElementById(
+    "av_bio_description_text_container"
+  );
   const image = document.getElementById("av_bio_gallery_image");
   const bgImage = document.getElementById("av_bio_background_Image");
   biographyTextContainer.innerHTML = replaceText(text);
@@ -532,7 +550,6 @@ function setArtistBiography(content) {
 
     image.src = imageUrl;
     bgImage.src = imageUrl;
-
   } else {
     document.getElementById("av_bio_gallery").style.display = "none";
     document.getElementById("av_bio_description").style.width = "100%";
@@ -552,7 +569,7 @@ function replaceText(text) {
     if (i == 0) {
       newText += splitString;
       continue;
-    } 
+    }
 
     split2 = splitString.split("</a>");
 
@@ -567,22 +584,23 @@ function replaceText(text) {
 }
 
 function getReplacementTag(str, index) {
-
   let firstQuotationMark = str.indexOf('"') + 1;
   let secondQuotationMark = nth_ocurrence(str, '"', 2);
-  let spotifyId = str.substring(firstQuotationMark, secondQuotationMark).split(":")[2];
+  let spotifyId = str
+    .substring(firstQuotationMark, secondQuotationMark)
+    .split(":")[2];
 
-  let firstOcurrence = str.indexOf('>') + 1;
+  let firstOcurrence = str.indexOf(">") + 1;
   let info = str.substring(firstOcurrence, str.length);
 
   console.log(str);
 
-  if (!str.includes('artist')) {
-    return info
+  if (!str.includes("artist")) {
+    return info;
   }
 
   let replacementTag = `<div class="av_bio_button" onclick="openArtist('${spotifyId}')">${info}</div>`;
-  linkedArtists.push({id : spotifyId, name : info});
+  linkedArtists.push({ id: spotifyId, name: info });
 
   return replacementTag;
 }
@@ -593,7 +611,7 @@ function nth_ocurrence(str, char, n) {
       if (!--n) {
         return i;
       }
-    }    
+    }
   }
   return false;
 }
@@ -602,14 +620,14 @@ function getAlbumImageCoverUrl(albumContent) {
   if (albumContent.coverArt == undefined) {
     return "standardImages/cover.jpg";
   }
-  
+
   sources = albumContent.coverArt.sources;
 
   for (let i = 2; i > 0; i--) {
     if (sources[i].url != undefined) {
       return sources[i].url;
     }
-    return "standardImages/cover.jpg";    
+    return "standardImages/cover.jpg";
   }
 }
 
@@ -663,7 +681,7 @@ function isInt(value) {
 
 async function playArtistTopTrack(content, songNumber) {
   const id = content.id;
-  const additionalInfo = await additionalSongInfo;  
+  const additionalInfo = await additionalSongInfo;
 
   content.album = additionalInfo.data.tracks[songNumber].albumOfTrack;
   playSongNow(content);
@@ -673,42 +691,62 @@ async function playArtistTopSongs() {
   //self explanatory
 
   for (let index = 0; index < topSongs.length; index++) {
-      let track = topSongs[index].track;
-      const additionalInfo = await additionalSongInfo;  
-      track.album = additionalInfo.data.tracks[index].albumOfTrack;
+    let track = topSongs[index].track;
+    const additionalInfo = await additionalSongInfo;
+    track.album = additionalInfo.data.tracks[index].albumOfTrack;
 
-      if (index == 0) {
-          await playSongNow(track)
-      } else {
-          song = await new Song(track)
-          addToQueue(song)
-      }
-
+    if (index == 0) {
+      await playSongNow(track);
+    } else {
+      song = await new Song(track);
+      addToQueue(song);
+    }
   }
 }
 
 function openArtistAlbum(id) {
   console.log(albums);
-  info = albums[id]
+  info = albums[id];
   console.log(info);
   uri = info.uri;
   id = uri.split(":")[2];
   setupAlbumView(id, info);
-} 
+}
 
 function openArtistSingleEp(id) {
   console.log(singlesEps);
-  info = singlesEps[id]
+  info = singlesEps[id];
   console.log(info);
   uri = info.uri;
   id = uri.split(":")[2];
   setupAlbumView(id, info);
-} 
+}
 
 async function openArtistContextMenu(track, trackNr, event) {
-  const additionalInfo = await additionalSongInfo;  
+  const additionalInfo = await additionalSongInfo;
   track.album = additionalInfo.data.tracks[trackNr].albumOfTrack;
 
   setClickedArtistTopSong(track);
   spawnArtistMenu(event);
+}
+
+function setArtistOpenedFrom() {
+  info = {
+    accentColor: accentColor,
+    title: artistName,
+  };
+
+  setOpenedFrom("artist_view", info);
+}
+
+function calculateAppropriateAlbumCarouselWidth() {
+  const albumWidth = 300;
+  const contentWidth = window.innerWidth - 60 - 12; //60 = menuLeft, 12 = scrollBar
+  let nrAlbums = Math.floor((contentWidth - 50) / albumWidth);
+
+  appropriateNrAlbumsCarousel = nrAlbums;
+
+  const carouselWidth = nrAlbums * albumWidth;
+
+  return carouselWidth;
 }

@@ -31,7 +31,12 @@
     transition: 0.25s ease;
 }
 
-#menu_left:hover #menu_top_logo {
+#menu_left:hover .menu_top_logo {
+    fill: black;
+    transition: 0.25s ease;
+}
+
+#menu_left:hover .menu_top_text {
     fill: black;
     transition: 0.25s ease;
 }
@@ -63,7 +68,7 @@
     position: absolute;
     top: 0;
     margin-left: 60px;
-    transition: 0.25s ease;
+    transition: 0.175s linear;
     pointer-events: none;
     opacity: 0.95;
 }
@@ -141,6 +146,7 @@
     height: 0px;
     transition: 0.25s ease;
     pointer-events: none;
+    fill: var(--accentColor);
 }
 
 #menu_top_search_container {
@@ -162,6 +168,30 @@
     background-color: black;
     position: absolute;
     pointer-events: none;
+}
+
+#top_search_clear_container {
+    width: 16px;
+    height: 16px;
+    margin-right: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: 0.1s ease;
+    opacity: 0;
+}
+
+#top_search_clear_icon {
+    height: 12px;
+    opacity: 0.8;
+    aspect-ratio: 1/1;
+    transition: 0.1s ease;
+    cursor: pointer;
+}
+
+#top_search_clear_icon:hover {
+    opacity: 1;
+    transition: 0.1s ease;
 }
 
 .menu_left_item_icon {
@@ -202,13 +232,22 @@
 #top_search_container_box{
     width: 220px;
     height: 40px;
-    background-color: var(--bg_dark);
     border-radius:25px;
     display: flex;
     align-items: center;
     z-index: 3;
     position: absolute;
     margin-left: 20px;
+    overflow: hidden;
+}
+
+#top_search_container_box_bg {
+    width: 100%;
+    height: 100%;
+    background: var(--bg_dark);
+    position: absolute;
+    z-index: -5;
+    opacity: 0.95;
 }
 
 #top_search_icon{

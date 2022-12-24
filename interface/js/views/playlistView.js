@@ -5,7 +5,24 @@ let id;
 var playlistPictureSongId = "";
 
 async function playlist_view() {
+    await Sortable.create(playlist_tracks_container, {
+        animation: 150,
+        group: "localStorage-example",
+        store: {
+            set: function (sortable) {
+                console.log('test');
+                const newOrder = sortable.toArray();
+                updatePlaylist(playlistId, newOrder);
+                changeTrackListSorting(newOrder);
+                if (tracks.length >= 4) {
+                    createQuadHeaderImage(tracks)
+                } else {
+                    updatePictureAfterSorting(newOrder);
+                }
+            }
+        }
 
+    });
 }
 
 async function setContentPlaylist(playlistData, songData, thisid) {
@@ -18,18 +35,7 @@ async function setContentPlaylist(playlistData, songData, thisid) {
     //makes use of the sortable library
 
     if (playlistData.locked = 0) {
-        await Sortable.create(playlist_tracks_container, {
-            animation: 150,
-            group: "localStorage-example",
-            store: {
-                set: function (sortable) {
-                    const newOrder = sortable.toArray();
-                    updatePlaylist(playlistId, newOrder);
-                    updatePictureAfterSorting(newOrder);
-                }
-            }
-    
-        });
+
     }
 }
 
@@ -61,6 +67,12 @@ async function setHeaderImage(url, songId) {
 function clearPlaylistView() {
     playlistContainer = document.getElementById("playlist_tracks_container");
     playlistContainer.innerHTML = "";
+
+    playlistQuadImageBackgroundContainer = document.getElementById("playlist_image_quad_background_container");
+    playlistQuadImageBackgroundContainer.innerHTML = "";
+
+    playlistHeaderQuadImageContainer = document.getElementById("playlist_header_quadImage_container");
+    playlistHeaderQuadImageContainer.innerHTML = "";
 
     image = document.getElementById("playlist_header_image");
     bgImage = document.getElementById("playlist_image_background");
@@ -187,6 +199,14 @@ async function createQuadHeaderImage(songData) {
 function playTrackPlaylist(id) {
     songInfo = tracks[id];
     playSongNow(songInfo);
+
+    clearQueue();
+
+    for (let index = id + 1; index < tracks.length; index++) {
+        const track = tracks[index];
+        song = new Song(track);
+        addToQueue(song);
+    }
 }
 
 async function playPlaylist() {
@@ -222,6 +242,7 @@ function playlistNameChange() {
     let playlistNewName = document.getElementById("playlist_header_text").innerHTML;
     if (playlistNewName != playlistName) {
         changePlaylistName(playlistId, playlistNewName);
+        playlists[playlistId - 1].name = playlistNewName;
     }
 }
 
@@ -301,6 +322,24 @@ function updatePictureAfterSorting(newOrder) {
     }
 
 
+}
+
+function changeTrackListSorting(newOrder) {
+    //order the list of tracks with id in newOrder
+    var newTrackList = [];
+
+    for (let i = 0; i < newOrder.length; i++) {
+        const id = newOrder[i];
+        for (let j = 0; j < tracks.length; j++) {
+            const track = tracks[j];
+            if (track.id == id) {
+                newTrackList.push(track);
+                break;
+            }
+        }
+    }
+
+    tracks = newTrackList;
 }
 
 function openPlaylistContextMenu() {

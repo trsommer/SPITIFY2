@@ -2,6 +2,7 @@ var lastSearches = []
 
 function last_searches_view() {
   loadLastSearches();
+  stopMenuLogoColorChange(false);
 }
 
 async function loadLastSearches() {
