@@ -307,6 +307,8 @@ function setArtistAlbumContent(content, width) {
 
   if (albumContent.length >= 4) {
     albumCarousel.style.justifyContent = "left";
+  } else {
+    albumCarousel.style.justifyContent = "center";
   }
 
   /*
