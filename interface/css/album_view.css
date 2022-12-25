@@ -73,6 +73,7 @@
     margin: 0;
     color: var(--accentColor);
     max-width: 75%;
+    white-space: nowrap;
 }
 
 .album_view_header_big {
@@ -147,9 +148,11 @@
     margin-bottom: 4px;
     padding-top: 4px;
     padding-bottom: 4px;
-    width: calc(100% - 20px);
+    width: calc(100% - 32px);
     border-radius: 5px;
     margin-left: 20px;
+    margin-right: 8px;
+    cursor: pointer;
 }
 
 .album_view_track_spacer {
@@ -182,6 +185,9 @@
 
 .album_view_track:hover {
     background-color: rgba(255, 255, 255, 0.3);
-    cursor: pointer;
 }
 
+.album_view_track:hover p{
+    color: var(--bg_dark);
+    font-weight: 600;
+}

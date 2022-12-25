@@ -8,8 +8,9 @@ function last_searches_view() {
 async function loadLastSearches() {
   lastSearches = await getLastSearches();
   document.getElementById('last_searches_results_container').innerHTML = '';
+  let newIndex = 0;
 
-  for (let index = 15; index >= 0; index--) {
+  for (let index = lastSearches.length - 1; index >= 0; index--) {
     const lastSearch = lastSearches[index];
     if (lastSearch == undefined) continue;
     const lastSearchId = lastSearch.spotifyId;
@@ -64,23 +65,26 @@ async function loadLastSearches() {
             break;
         }
     });
-
+    const theIndex = newIndex;
     lastSearchCloseButton.addEventListener("click", function () {
-        removeLastSearch(lastSearchId, index);
+        removeLastSearch(lastSearchId, theIndex);
     });
 
     document.getElementById('last_searches_results_container').appendChild(lastSearchItem);
+
+    newIndex++;
   }
 
 }
 
 function removeLastSearch(id, index) {
   //remove from html
-  const lastSearchItems = document.getElementById('last_searches_results_container').childNodes;
-  const newIndex = lastSearchItems.length - index - 1;
-  const elemToBeRemoved = lastSearchItems[newIndex];
+  const lastSearchesContainer = document.getElementById('last_searches_results_container');
+  const lastSearchItems = lastSearchesContainer.childNodes;
+  const elemToBeRemoved = lastSearchItems[index];
 
-  elemToBeRemoved.parentNode.removeChild(elemToBeRemoved)
+
+  lastSearchesContainer.removeChild(elemToBeRemoved)
 
   //remove from db
   deleteSpecificLastSearch(id);
