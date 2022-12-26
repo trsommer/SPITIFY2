@@ -55,7 +55,7 @@ async function createTables() {
       "CREATE TABLE playlistLikes (id TEXT PRIMARY KEY)"
 
   var sql5 = 
-      "CREATE TABLE downloadedSongs (id TEXT PRIMARY KEY)"
+      "CREATE TABLE downloadedSongs (id TEXT PRIMARY KEY, timestamp TEXT)"
 
 
   if (!fs.existsSync(dbPath)) {
@@ -219,12 +219,12 @@ async function updatePlaylist(playlistId, songData) {
 
 }
 
-async function addDownloadedSong(spotifyId) {
+async function addDownloadedSong(spotifyId, timestamp) {
   db = await getDB();
-  db.prepare(`INSERT INTO downloadedSongs (id) VALUES (?)`).run(spotifyId);
+  db.prepare(`INSERT INTO downloadedSongs (id, timestamp) VALUES (?, ?)`).run(spotifyId, timestamp);
 }
 
 async function removeDownloadedSong(spotifyId) {
   db = await getDB();
-  db.prepare(`DELETE FROM downloadedSongs WHERE id = ?`).run(spotifyId);
+  db.prepare(`DELETE * FROM downloadedSongs WHERE id = ?`).run(spotifyId);
 }

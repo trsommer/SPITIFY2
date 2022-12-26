@@ -111,9 +111,14 @@ async function setSongsContentPlaylist(songData) {
         spacer = document.createElement("div");
         spacer.classList.add("playlist_track_spacer");
 
+        imageContainer = document.createElement("div");
+        imageContainer.classList.add("playlist_track_image_container");
+
         image = document.createElement("img");
         image.classList.add("playlist_track_image");
         image.src = imageUrl;
+
+        imageContainer.appendChild(image);
 
         songTitle = document.createElement("p");
         songTitle.classList.add("playlist_track_name");
@@ -128,7 +133,7 @@ async function setSongsContentPlaylist(songData) {
         durationHTML.innerHTML = duration;
 
         songContainer.appendChild(spacer);
-        songContainer.appendChild(image);
+        songContainer.appendChild(imageContainer);
         songContainer.appendChild(songTitle);
         songContainer.appendChild(artists);
         songContainer.appendChild(durationHTML);

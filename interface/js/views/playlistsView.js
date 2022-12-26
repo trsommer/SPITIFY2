@@ -14,7 +14,6 @@ async function updatePlaylists() {
 
 async function getPlaylistsFromDB() {
     playlists = await getFromDB("SELECT * FROM playlists")
-
 }
 
 

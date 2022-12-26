@@ -113,7 +113,8 @@ app.whenReady().then(() => {
     return downloader.downloadSongs(songs, mainWindow);
   })
   ipcMain.handle("add:downloadedSong", async (event, songId) => {
-    dataBase.addDownloadedSong(songId);
+    timestamp = new Date().getTime();
+    dataBase.addDownloadedSong(songId, timestamp);
   })
   ipcMain.handle("remove:downloadedSong", async (event, songId) => {
     dataBase.removeDownloadedSong(songId);
