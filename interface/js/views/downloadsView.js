@@ -119,12 +119,12 @@ function clearDownloadsView() {
 
 async function playDownloadedSong(id) {
     songInfo = downloadedSongInfo[id];
-    info = JSON.parse(songInfo.info);
-    convertedSongInfo = info.songInfo;
 
     if (songInfo.id == undefined) {
-        play(songInfo)
+        replaceQueue(songInfo)
     } else {
+        info = JSON.parse(songInfo.info);
+        convertedSongInfo = info.songInfo;
         playSongNow(convertedSongInfo)
     }
 }

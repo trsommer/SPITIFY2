@@ -2,6 +2,7 @@ var currentView = "last_searches_view";
 var openedFrom = ""; 
 var lastViewInfo = "";
 var backButtonVisibility = false;
+var artistResizeListener = false;
 var views = [
   "search_view",
   "artist_view",
@@ -21,6 +22,17 @@ function switchView(view) {
   }
 
   if (view != "artist_view") {
+    if (artistResizeListener) {
+      window.removeEventListener("resize", recalculateAlbumCarouselWidth);
+      artistResizeListener = false;
+    }
+      
+    } else {
+      //attach resize event listener
+      window.addEventListener("resize", recalculateAlbumCarouselWidth);
+      artistResizeListener = true;
+    }
+
     document.getElementById("menu_top_hidden_heading").style.width = null;
     setTopMenuOpacity(0.95);
     if (scrolledDown == true) {
@@ -28,7 +40,6 @@ function switchView(view) {
       changeHiddenHeadingVisibility(false, "menu_top_button_play");
       changeHiddenHeadingVisibility(false, "menu_top_button_shuffle");
     }
-  }
 
   window.scrollTo({ top: 0, behavior: 'smooth' });
 

@@ -24,7 +24,7 @@ async function playSongNow(info) {
     skipQueue(song)
     clearCurrentlyPlaying()
     playQueue()
-    changePlayState();
+    //changePlayState();
   }
 
 }

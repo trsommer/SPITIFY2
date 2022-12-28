@@ -84,7 +84,11 @@ async function setContentArtist(content) {
 
   setMusicPreviewContent(content.discography);
 
-  carouselWidth = calculateAppropriateAlbumCarouselWidth();
+  appropiateDims = calculateAppropriateAlbumCarouselWidth();
+
+  carouselWidth = appropiateDims.carouselWidth;
+
+  appropriateNrAlbumsCarousel = appropiateDims.nrAlbums;
 
   setArtistAlbumContent(content.discography, carouselWidth);
 
@@ -374,31 +378,38 @@ function setArtistAlbumContent(content, width) {
     albumCarousel.appendChild(albumContainer);
   }
 
+  spawnArtistAlbumNavigator(albumContent.length, appropriateNrAlbumsCarousel);
+}
+
+function spawnArtistAlbumNavigator(albumNr, albumAppropriateNr) {
   const albumCarouselElement = document.getElementById("av_albums_carousel");
   const navigatorContainer = document.getElementById("av_albums_navigation");
-  const albumNr = albumContent.length;
   let nrBigNavigators = 0;
-  if (albumNr >= appropriateNrAlbumsCarousel) {
-    nrBigNavigators = parseInt(albumNr / appropriateNrAlbumsCarousel);
+  if (albumNr >= albumAppropriateNr) {
+    nrBigNavigators = parseInt(albumNr / albumAppropriateNr);
+  } else {
+    return;
   }
 
-  const widthSmallNavigator = (80 / appropriateNrAlbumsCarousel) * (albumNr % appropriateNrAlbumsCarousel);
+  const widthSmallNavigator = (80 / albumAppropriateNr) * (albumNr % albumAppropriateNr);
 
   navigatorContainer.innerHTML = "";
 
   for (let i = 0; i < nrBigNavigators; i++) {
     let bigNavigator = document.createElement("div");
     bigNavigator.classList.add("av_album_navigator");
+    correctWidth = 20 * albumAppropriateNr;
+    bigNavigator.style.width = correctWidth + "px";
 
     bigNavigator.addEventListener("click", function () {
-      scrollWidth = 300 * appropriateNrAlbumsCarousel * i;
+      scrollWidth = 300 * albumAppropriateNr * i;
       albumCarouselElement.scrollTo({ left: scrollWidth, behavior: "smooth" });
     });
 
     navigatorContainer.appendChild(bigNavigator);
   }
 
-  if (albumNr % appropriateNrAlbumsCarousel != 0 && albumNr > appropriateNrAlbumsCarousel) {
+  if (albumNr % albumAppropriateNr != 0 && albumNr > albumAppropriateNr) {
     let smallNavigator = document.createElement("div");
     smallNavigator.classList.add("av_album_navigator");
     smallNavigator.style.width = widthSmallNavigator + "px";
@@ -419,23 +430,23 @@ function setArtistSinglesEpContent(content, width) {
 
   console.log(content);
 
-  let singlesContainer = content.singles.items;
+  let singlesContent = content.singles.items;
 
-  if (singlesContainer.length == 0) {
+  if (singlesContent.length == 0) {
     document.getElementById("av_singles_EPs_container").style.display = "none";
     return;
   } else {
     document.getElementById("av_singles_EPs_container").style.display = "flex";
   }
 
-  if (singlesContainer.length >= 4) {
+  if (singlesContent.length >= 4) {
     singlesEpCarousel.style.justifyContent = "left";
   } else {
     singlesEpCarousel.style.justifyContent = "center";
   }
 
-  for (let i = 0; i < singlesContainer.length; i++) {
-    const track = singlesContainer[i];
+  for (let i = 0; i < singlesContent.length; i++) {
+    const track = singlesContent[i];
     let info = track.releases.items[0];
     singlesEps.push(info);
 
@@ -492,26 +503,30 @@ function setArtistSinglesEpContent(content, width) {
 
     singlesEpCarousel.appendChild(albumContainer);
   }
+  spawnArtistSingesNavigator(singlesContent.length, appropriateNrAlbumsCarousel);
+}
 
+function spawnArtistSingesNavigator(singlesNr, singlesAppropritateNr) {
   const singlesEPsCarouselElement = document.getElementById(
     "av_singles_EPs_carousel"
   );
   const navigatorContainer = document.getElementById("av_singles_navigation");
-  const singlesNr = singlesContainer.length;
   let nrBigNavigators = 0;
-  if (singlesNr >= appropriateNrAlbumsCarousel) {
-    nrBigNavigators = parseInt(singlesNr / appropriateNrAlbumsCarousel);
+  if (singlesNr >= singlesAppropritateNr) {
+    nrBigNavigators = parseInt(singlesNr / singlesAppropritateNr);
   }
-  const widthSmallNavigator = (80 / appropriateNrAlbumsCarousel) * (singlesNr % appropriateNrAlbumsCarousel);
+  const widthSmallNavigator = (80 / singlesAppropritateNr) * (singlesNr % singlesAppropritateNr);
 
   navigatorContainer.innerHTML = "";
 
   for (let i = 0; i < nrBigNavigators; i++) {
     let bigNavigator = document.createElement("div");
     bigNavigator.classList.add("av_singles_navigator");
+    correctWidth = 20 * singlesAppropritateNr;
+    bigNavigator.style.width = correctWidth + "px";
 
     bigNavigator.addEventListener("click", function () {
-      scrollWidth = 300 * appropriateNrAlbumsCarousel * i;
+      scrollWidth = 300 * singlesAppropritateNr * i;
       singlesEPsCarouselElement.scrollTo({
         left: scrollWidth,
         behavior: "smooth",
@@ -521,7 +536,7 @@ function setArtistSinglesEpContent(content, width) {
     navigatorContainer.appendChild(bigNavigator);
   }
 
-  if (singlesNr % appropriateNrAlbumsCarousel != 0 && singlesNr > appropriateNrAlbumsCarousel) {
+  if (singlesNr % singlesAppropritateNr != 0 && singlesNr > singlesAppropritateNr) {
     let smallNavigator = document.createElement("div");
     smallNavigator.classList.add("av_singles_navigator");
     smallNavigator.style.width = widthSmallNavigator + "px";
@@ -749,11 +764,31 @@ function setArtistOpenedFrom() {
 function calculateAppropriateAlbumCarouselWidth() {
   const albumWidth = 300;
   const contentWidth = window.innerWidth - 60 - 12; //60 = menuLeft, 12 = scrollBar
-  let nrAlbums = Math.floor((contentWidth - 50) / albumWidth);
-
-  appropriateNrAlbumsCarousel = nrAlbums;
+  const nrAlbums = Math.floor((contentWidth - 50) / albumWidth);
 
   const carouselWidth = nrAlbums * albumWidth;
 
-  return carouselWidth;
+  return {
+    carouselWidth: carouselWidth,
+    nrAlbums: nrAlbums
+  };
+}
+
+async function recalculateAlbumCarouselWidth() {
+  let appropriateDims = calculateAppropriateAlbumCarouselWidth();
+  if (appropriateDims.nrAlbums == appropriateNrAlbumsCarousel) {
+    return;
+  }
+
+  let albumCarousel = document.getElementById("av_albums_carousel");
+  albumCarousel.style.width = appropriateDims.carouselWidth + "px";
+
+  let singlesEpCarousel = document.getElementById("av_singles_EPs_carousel");
+  singlesEpCarousel.style.width = appropriateDims.carouselWidth + "px";
+
+  spawnArtistAlbumNavigator(albums.length, appropriateDims.nrAlbums);
+
+  spawnArtistSingesNavigator(singlesEps.length, appropriateDims.nrAlbums);
+
+  appropriateNrAlbumsCarousel = appropriateDims.nrAlbums;
 }

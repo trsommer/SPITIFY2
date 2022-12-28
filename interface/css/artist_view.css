@@ -367,7 +367,8 @@
     height: 40vh;
     display: flex;
     flex-direction: row;
-    overflow: auto;
+    overflow-x: scroll;
+    overflow-y: hidden;
     scroll-behavior: smooth;
     align-items: center;
     justify-content: center;

@@ -94,9 +94,11 @@ function changeHiddenHeadingVisibility(mode, id) {
     if (!mode) {
         document.getElementById(id).style.transform = "translateX(-20px)"
         document.getElementById(id).style.opacity = 0
+        document.getElementById(id).style.pointerEvents = "none"
     } else {
         document.getElementById(id).style.transform = "translateX(0px)"
         document.getElementById(id).style.opacity = 1
+        document.getElementById(id).style.pointerEvents = null
     }
 }
 

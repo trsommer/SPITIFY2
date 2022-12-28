@@ -5,6 +5,7 @@ document.addEventListener('keydown', (e) => {
       if (e.key == " " && e.target == document.body) {
         e.preventDefault();
         changePlayState();
+        changePlayStateVariable();
     }
 });
 
@@ -15,7 +16,7 @@ function onPlaystateChange() {
         manualPlay();
     }
     if (audioPaused == playState) {
-        changePlayStateVariables(audioPaused)
+        changePlayStateVariable(audioPaused)
     }
 }
 
@@ -37,7 +38,7 @@ async function play(song) {
     audio.src = song.getSongStreamingUrl();
     addInfoToPlayer(song);
     setSpecificVolume(song.getSongPreferredVolume());
-    changePlayState();
+    setPlayState(true);
     animatePlayerIn();
     createNewNotification(song);
 }
@@ -154,28 +155,48 @@ function getCurrentVolume() {
     return audioSlider.value;
 }
 
+function setPlayState(state) {
+    const audioElement = document.getElementById('menu_player_audio')
+    var playPauseIcon = document.getElementById('menu_player_icon1')
+    if (audioElement.src == "") return;
+
+    if (state == false) {
+        audioElement.pause()
+        playPauseIcon.src = 'icons/play/play.svg'
+        setPlayStateVariable(false)
+    } else {
+        audioElement.play()
+        playPauseIcon.src = 'icons/play/pause.svg'
+        setPlayStateVariable(true)
+    }
+}
+
 function changePlayState() {
     const audioElement = document.getElementById('menu_player_audio')
+    var playPauseIcon = document.getElementById('menu_player_icon1')
     if (audioElement.src == "") return;
 
     if (playState == true) {
         audioElement.pause()
+        playPauseIcon.src = 'icons/play/play.svg'
+        setPlayStateVariable(false)
     } else {
         audioElement.play()
+        playPauseIcon.src = 'icons/play/pause.svg'
+        setPlayStateVariable(true)
     }
-    changePlayStateVariables(playState)
 }
 
-function changePlayStateVariables(bool) {
-    var playPauseIcon = document.getElementById('menu_player_icon1')
-
-    if (bool == true) {
+function changePlayStateVariable() {
+    if (playState) {
         playState = false
-        playPauseIcon.src = 'icons/play/play.svg'
     } else {
         playState = true
-        playPauseIcon.src = 'icons/play/pause.svg'
     }
+}
+
+function setPlayStateVariable(state) {
+    playState = state
 }
 
 function skipTo(object) {
@@ -226,8 +247,6 @@ function skipTrack() {
     addToPlayedQueue(currentSong);
     clearCurrentlyPlaying();
     playQueue();
-
-    changePlayState();
 }
 
 function goBackTrack() {
@@ -255,7 +274,6 @@ function skipToPreviousTrack() {
     clearCurrentlyPlaying();
     currentSong = previousSong;
     play(currentSong);
-    changePlayState();
 }
 
 function setLikeIcon(liked) {
