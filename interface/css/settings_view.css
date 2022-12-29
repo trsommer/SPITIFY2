@@ -49,16 +49,22 @@
     overflow: hidden;
     color: white;
     padding: 5px;
+    transition: background-color 0.1s ease-in-out;
 }
 
 .settings_menu_item:hover {
     background: var(--accentColor);
-    color: black;
+    color: var(--accentColorDark);
     cursor: pointer;
 }
 
-.settings_menu_item img {
+.settings_menu_item:hover svg {
+    fill: var(--accentColorDark);
+}
+
+.settings_menu_item svg {
     width: 30px;
+    fill: white;
 }
 
 .settings_menu_item_text_container {

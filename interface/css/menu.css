@@ -125,7 +125,7 @@
 }
 
 #menu_top_logo {
-    width: 24px;
+    width: 24.1px;
     position: absolute;
     fill: var(--accentColor);
     transition: 0.25s ease;
@@ -347,3 +347,4 @@
     fill: var(--accentColor);
     margin-right: 4px;
 }
+

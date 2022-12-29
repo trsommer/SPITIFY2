@@ -134,7 +134,6 @@
     padding-top: 15vh;
     padding-bottom: 20vh;
     display: flex;
-    align-items: center;
     flex-direction: column;
     background: #151616;
 }
@@ -148,7 +147,7 @@
     margin-bottom: 4px;
     padding-top: 4px;
     padding-bottom: 4px;
-    width: calc(100% - 32px);
+    width: calc(100% - 40px);
     border-radius: 5px;
     margin-left: 20px;
     margin-right: 8px;
@@ -173,7 +172,7 @@
 }
 
 .album_view_track_text_duration {
-    right: 25px;
+    right: 28px;
     position: absolute;
 }
 

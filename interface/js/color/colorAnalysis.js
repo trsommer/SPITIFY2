@@ -116,3 +116,43 @@ function getBestColor(colorBestMatch, colors, darknessThreshold) {
     }
 
 }
+
+function getBestColorNew(colors, threshHold) {
+    bestColor = null
+    bestColorHSL = null
+    score = -1
+    
+    for (let i = 0; i < colors.length; i++) {
+        const color = colors[i];
+        const colorHSL = colorHSLconversion(color)
+        lightnessThreshgold = 1 - threshHold
+        darknessThreshold = threshHold
+
+        if (colorHSL[2] > lightnessThreshgold || colorHSL[2] < darknessThreshold) {
+            continue;
+        }
+
+        colorScore = (colors.length - i) * 2 + colorHSL[1] * 35 //+ (1 - Math.abs(0.5 - colorHSL[2]) * 4) * 25
+
+        colorString = getColorString(color)
+        hslString = colorHSL[0] + ", " + colorHSL[1] + ", " + colorHSL[2]
+        textColor = "black"
+        if (colorHSL[2] < 0.2) {
+            textColor = "white"
+        }
+        baseStyle = "color: " + textColor + "; font-size: 20px; font-family: monospace; background-color: " + colorString + ";"
+        console.log("%c" + colorString + " " + hslString + " " + colorScore, baseStyle)
+
+
+
+        if (colorScore > score) {
+            bestColor = color
+            bestColorHSL = colorHSL
+            score = colorScore
+        }
+    }
+
+    console.log(getColorString(bestColor) + ", " + bestColorHSL[2] + ", " + bestColorHSL[1] + ", " + score);
+
+    return bestColor
+}

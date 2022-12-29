@@ -5,7 +5,6 @@ async function getColors(id) {
     const colorThief = new ColorThief();
     colors = await colorThief.getPalette(img)
     primeColor = await colorThief.getColor(img)
-    bestColor = getBestColor(primeColor, colors, 0.4)
-    console.log("rgb(" + bestColor[0] + ", " + bestColor[1] + ", " + bestColor[2] + ")"); 
+    bestColor = getBestColorNew(colors, 0.25)
     return getColorString(bestColor)
 }

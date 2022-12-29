@@ -3,6 +3,7 @@ var openedFrom = "";
 var lastViewInfo = "";
 var backButtonVisibility = false;
 var artistResizeListener = false;
+var settingsScrollListener = false;
 var views = [
   "search_view",
   "artist_view",
@@ -21,17 +22,25 @@ function switchView(view) {
     return;
   }
 
-  if (view != "artist_view") {
+  if (view == "artist_view") {
+    window.addEventListener("resize", recalculateAlbumCarouselWidth);
+    artistResizeListener = true;
+  } else {
     if (artistResizeListener) {
       window.removeEventListener("resize", recalculateAlbumCarouselWidth);
       artistResizeListener = false;
     }
-      
-    } else {
-      //attach resize event listener
-      window.addEventListener("resize", recalculateAlbumCarouselWidth);
-      artistResizeListener = true;
+  }
+
+  if (view == "settings_view") {
+    window.addEventListener("scroll", scrollSettings)
+    settingsScrollListener = true;
+  } else {
+    if (settingsScrollListener) {
+      window.removeEventListener("scroll", scrollSettings)
+      settingsScrollListener = false;
     }
+  }
 
     document.getElementById("menu_top_hidden_heading").style.width = null;
     setTopMenuOpacity(0.95);

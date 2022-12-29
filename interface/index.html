@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="css/settings_view.css">
     <link rel="stylesheet" href="css/downloads_view.css">
     <link rel="stylesheet" href="css/menu.css">
+    <link rel="stylesheet" href="css/spitifyLogoAnimation.css">
     <script src="js/songs/artists.js"></script>
     <script src="js/songs/song.js"></script>
     <script src="js/songs/songComparisons.js"></script>
@@ -52,7 +53,72 @@
             <div id="menu_left_items">
                 <div id="menu_top_items">
                     <div id="menu_top_logo_container">
-                        <svg id="menu_top_logo" class="menu_top_logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 255.64 278.47" style="animation: 0.25s ease 0s 1 normal forwards running logoTopColorChangeOut;"><defs></defs><g id="Ebene_2" data-name="Ebene 2"><g id="Ebene_1-2" data-name="Ebene 1"><rect class="cls-1" y="96.86" width="34.61" height="84.75" rx="17.3"></rect><rect class="cls-1" x="55.26" y="53.14" width="34.61" height="172.19" rx="17.3"></rect><rect class="cls-1" x="110.51" width="34.61" height="278.47" rx="17.3"></rect><rect class="cls-1" x="165.77" y="74.66" width="34.61" height="129.14" rx="17.3"></rect><rect class="cls-1" x="221.03" y="30.94" width="34.61" height="216.58" rx="17.3"></rect></g></g></svg>
+                        <svg id="menu_top_logo" class="menu_top_logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 255.64 278.47" style="animation: 0.25s ease 0s 1 normal forwards running logoTopColorChangeOut;"><defs></defs>
+                            <g id="Ebene_2" data-name="Ebene 2">
+                                <g id="Ebene_1-2" data-name="Ebene 1">
+                                    <rect class="cls-1" y="96.86" width="34.61" height="84.75" rx="17.3">
+                                        <animate
+                                        attributeName="height"
+                                        values="84.75;172.19;278.47;129.14;216.58;84.75"
+                                        dur="2.5s"
+                                        repeatCount="indefinite" />
+                                        <animate
+                                        attributeName="y"
+                                        values="96.86;53.14;0;74.66;30.94;96.86"
+                                        dur="2.5s"
+                                        repeatCount="indefinite" />
+                                    </rect>
+                                    <rect class="cls-1" x="55.26" y="53.14" width="34.61" height="172.19" rx="17.3">
+                                        <animate
+                                        attributeName="height"
+                                        values="172.19;278.47;129.14;216.58;84.75;172.19"
+                                        dur="2.5s"
+                                        repeatCount="indefinite" />
+                                        <animate
+                                        attributeName="y"
+                                        values="53.14;0;74.66;30.94;96.86;53.14"
+                                        dur="2.5s"
+                                        repeatCount="indefinite" />
+                                    </rect>
+                                    <rect class="cls-1" x="110.51" width="34.61" height="278.47" rx="17.3">
+                                        <animate
+                                        attributeName="height"
+                                        values="278.47;129.14;216.58;84.75;172.19;278.47"
+                                        dur="2.5s"
+                                        repeatCount="indefinite" />
+                                        <animate
+                                        attributeName="y"
+                                        values="0;74.66;30.94;96.86;53.14;0"
+                                        dur="2.5s"
+                                        repeatCount="indefinite" />
+                                    </rect>
+                                    <rect class="cls-1" x="165.77" y="74.66" width="34.61" height="129.14" rx="17.3">
+                                        <animate
+                                        attributeName="height"
+                                        values="129.14;216.58;84.75;172.19;278.47;129.14"
+                                        dur="2.5s"
+                                        repeatCount="indefinite" />
+                                        <animate
+                                        attributeName="y"
+                                        values="74.66;30.94;96.86;53.14;0;74.66"
+                                        dur="2.5s"
+                                        repeatCount="indefinite" />
+                                    </rect>
+                                    <rect class="cls-1" x="221.03" y="30.94" width="34.61" height="216.58" rx="17.3">
+                                        <animate
+                                        attributeName="height"
+                                        values="216.58;84.75;172.19;278.47;129.14;216.58"
+                                        dur="2.5s"
+                                        repeatCount="indefinite" />
+                                        <animate
+                                        attributeName="y"
+                                        values="30.94;96.86;53.14;0;74.66;30.94"
+                                        dur="2.5s"
+                                        repeatCount="indefinite" />
+                                    </rect>
+                                </g>
+                            </g>
+                        </svg>
                     </div>
                     <div id="menu_top_text_container">
                         <svg id="menu_top_text" class="menu_top_text" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 59.07 19.8" style="animation: 0.25s ease 0s 1 normal forwards running logoTopOut;"><defs></defs><g id="Ebene_2" data-name="Ebene 2"><g id="Ebene_1-2" data-name="Ebene 1"><path class="cls-1" d="M2.32,11.42C2.53,12.94,4,13.86,6,13.86s3.34-1,3.34-2.37c0-1.2-.81-1.94-2.86-2.39L4.83,8.75C1.75,8.1.36,6.68.36,4.47.36,1.84,2.67,0,5.93,0s5.48,1.84,5.56,4.52H9.18C9,3,7.76,2.06,5.9,2.06s-3.11.88-3.11,2.28c0,1.12.78,1.86,2.77,2.29L7.24,7c3.21.68,4.53,2,4.53,4.2,0,2.89-2.27,4.71-5.85,4.71S.15,14.16,0,11.42Z"></path><path class="cls-1" d="M24.17,10c0,3.54-1.86,5.79-4.67,5.79a3.82,3.82,0,0,1-3.52-2h-.05v5.54h-2.3V4.45h2.22V6.37h.05a3.87,3.87,0,0,1,3.56-2.11C22.3,4.26,24.17,6.5,24.17,10Zm-2.36,0c0-2.34-1.14-3.84-3-3.84S15.92,7.73,15.92,10s1.17,3.84,2.93,3.84S21.81,12.39,21.81,10Z"></path><path class="cls-1" d="M25.83,1.32a1.33,1.33,0,1,1,1.33,1.32A1.31,1.31,0,0,1,25.83,1.32ZM26,4.45h2.3V15.63H26Z"></path><path class="cls-1" d="M33.63,1.8V4.45h2.13V6.26H33.63v6.17c0,1,.43,1.41,1.36,1.41a4.1,4.1,0,0,0,.76-.06V15.6a5.93,5.93,0,0,1-1.28.11c-2.26,0-3.15-.86-3.15-3V6.26H29.7V4.45h1.62V1.8Z"></path><path class="cls-1" d="M37.53,1.32A1.32,1.32,0,0,1,38.86,0a1.31,1.31,0,0,1,1.32,1.32,1.32,1.32,0,0,1-1.32,1.32A1.33,1.33,0,0,1,37.53,1.32Zm.18,3.13H40V15.63h-2.3Z"></path><path class="cls-1" d="M43,6.26H41.49V4.47H43V3.37c0-2.17,1-3.19,3.3-3.19a7.47,7.47,0,0,1,1.29.11V2a5.18,5.18,0,0,0-.84-.07,1.3,1.3,0,0,0-1.47,1.49V4.47h2.26V6.26H45.34v9.37H43Z"></path><path class="cls-1" d="M49.56,19.75V17.89a4.47,4.47,0,0,0,.74,0,1.86,1.86,0,0,0,2-1.59s.21-.68.21-.7l-4-11.19h2.49l2.83,9.1h0l2.83-9.1h2.43L54.88,16.22c-1,2.71-2.07,3.58-4.38,3.58A9.36,9.36,0,0,1,49.56,19.75Z"></path></g></g></svg>
@@ -369,15 +435,14 @@
                     <div id="settings_menu">
                         <div class="settings_menu_item" onclick="scrollSettingsMenuItemIntoView('settings_general')">
                             <div class="settings_menu_item_icon_container">
-                                <img src="icons/settings.svg" alt="">
-                            </div>
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 450.05 359.93"><g id="Ebene_2" data-name="Ebene 2"><g id="Ebene_1-2" data-name="Ebene 1"><circle class="cls-1" cx="155.42" cy="35" r="35"/><circle class="cls-1" cx="332.98" cy="181.53" r="35"/><circle class="cls-1" cx="235.72" cy="324.93" r="35"/><rect class="cls-1" y="165.03" width="287.98" height="30" rx="15"/><rect class="cls-1" x="377.98" y="165.03" width="72.02" height="30" rx="15"/><rect class="cls-1" x="0.05" y="20" width="110" height="30" rx="15"/><rect class="cls-1" x="200.05" y="20" width="250" height="30" rx="15"/><rect class="cls-1" y="309.93" width="190.72" height="30" rx="15"/><rect class="cls-1" x="280.72" y="309.93" width="169.28" height="30" rx="15"/></g></g></svg>                            </div>
                             <div class="settings_menu_item_text_container">
                                 <p>general</p>
                             </div>
                         </div>
                         <div class="settings_menu_item" onclick="scrollSettingsMenuItemIntoView('settings_appearance')">
                             <div class="settings_menu_item_icon_container">
-                                <img src="standardImages/cover.jpg" alt="">
+                                <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"	 viewBox="0 0 1000 1000" style="enable-background:new 0 0 1000 1000;" xml:space="preserve"><path d="M343.75,454.64c-2.68-2.98-6.08-4.83-10.2-5.58c-3.03-0.57-9.11-0.85-18.26-0.85h-12.26v35.66h13.89	c10,0,16.69-0.66,20.06-1.97c3.37-1.32,6.02-3.37,7.93-6.18c1.92-2.79,2.87-6.05,2.87-9.77	C347.78,461.38,346.44,457.61,343.75,454.64z M343.75,454.64c-2.68-2.98-6.08-4.83-10.2-5.58c-3.03-0.57-9.11-0.85-18.26-0.85	h-12.26v35.66h13.89c10,0,16.69-0.66,20.06-1.97c3.37-1.32,6.02-3.37,7.93-6.18c1.92-2.79,2.87-6.05,2.87-9.77	C347.78,461.38,346.44,457.61,343.75,454.64z M343.75,454.64c-2.68-2.98-6.08-4.83-10.2-5.58c-3.03-0.57-9.11-0.85-18.26-0.85	h-12.26v35.66h13.89c10,0,16.69-0.66,20.06-1.97c3.37-1.32,6.02-3.37,7.93-6.18c1.92-2.79,2.87-6.05,2.87-9.77C347.78,461.38,346.44,457.61,343.75,454.64z M343.75,454.64c-2.68-2.98-6.08-4.83-10.2-5.58c-3.03-0.57-9.11-0.85-18.26-0.85	h-12.26v35.66h13.89c10,0,16.69-0.66,20.06-1.97c3.37-1.32,6.02-3.37,7.93-6.18c1.92-2.79,2.87-6.05,2.87-9.77	C347.78,461.38,346.44,457.61,343.75,454.64z M343.75,454.64c-2.68-2.98-6.08-4.83-10.2-5.58c-3.03-0.57-9.11-0.85-18.26-0.85	h-12.26v35.66h13.89c10,0,16.69-0.66,20.06-1.97c3.37-1.32,6.02-3.37,7.93-6.18c1.92-2.79,2.87-6.05,2.87-9.77	C347.78,461.38,346.44,457.61,343.75,454.64z M343.75,454.64c-2.68-2.98-6.08-4.83-10.2-5.58c-3.03-0.57-9.11-0.85-18.26-0.85	h-12.26v35.66h13.89c10,0,16.69-0.66,20.06-1.97c3.37-1.32,6.02-3.37,7.93-6.18c1.92-2.79,2.87-6.05,2.87-9.77	C347.78,461.38,346.44,457.61,343.75,454.64z M0,0v1000h1000V0H0z M239.25,536.25c-4,6.29-9.66,10.96-16.98,14.02	c-7.31,3.05-16.43,4.58-27.34,4.58c-15.89,0-28.09-3.67-36.61-11.01c-8.52-7.35-13.6-18.05-15.26-32.11l24.69-2.4	c1.49,8.29,4.5,14.38,9.05,18.26c4.54,3.89,10.67,5.83,18.38,5.83c8.18,0,14.33-1.73,18.48-5.19c4.14-3.45,6.21-7.5,6.21-12.13	c0-2.97-0.87-5.5-2.61-7.58c-1.74-2.09-4.79-3.9-9.13-5.45c-2.97-1.03-9.75-2.85-20.32-5.48c-13.6-3.38-23.14-7.52-28.63-12.44	c-7.72-6.91-11.58-15.34-11.58-25.29c0-6.4,1.82-12.38,5.45-17.96c3.63-5.57,8.86-9.81,15.69-12.73c6.83-2.91,15.07-4.37,24.73-4.37	c15.77,0,27.65,3.46,35.62,10.38c7.97,6.91,12.16,16.14,12.56,27.69l-25.38,1.11c-1.08-6.46-3.41-11.1-6.98-13.93	c-3.58-2.83-8.93-4.24-16.08-4.24c-7.37,0-13.14,1.51-17.31,4.54c-2.69,1.94-4.03,4.54-4.03,7.8c0,2.97,1.25,5.52,3.77,7.63	c3.2,2.69,10.97,5.49,23.32,8.4c12.34,2.92,21.47,5.93,27.39,9.05c5.91,3.11,10.54,7.37,13.88,12.77c3.35,5.4,5.02,12.07,5.02,20.02	C245.25,523.22,243.25,529.96,239.25,536.25z M369.73,485.07c-2.8,5.26-6.36,9.39-10.67,12.39c-4.32,3-8.7,4.98-13.16,5.96	c-6.06,1.2-14.83,1.8-26.32,1.8h-16.55v47.4h-25.37V426.95h40.72c15.43,0,25.49,0.62,30.18,1.88c7.2,1.89,13.23,5.99,18.08,12.3	c4.86,6.32,7.29,14.48,7.29,24.48C373.93,473.32,372.53,479.81,369.73,485.07z M430.43,552.62h-25.38V426.95h25.38V552.62z	 M556.54,448.21h-37.21v104.41h-25.37V448.21h-37.3v-21.26h99.88V448.21z M608.58,552.62H583.2V426.95h25.38V552.62z M730.14,448.21	h-60.78v29.74h52.47v21.26h-52.47v53.41h-25.37V426.95h86.15V448.21z M820.42,499.9v52.72h-25.29v-52.89l-46.04-72.78h29.75	l29.58,49.72l28.97-49.72h29.24L820.42,499.9z M333.55,449.06c-3.03-0.57-9.11-0.85-18.26-0.85h-12.26v35.66h13.89	c10,0,16.69-0.66,20.06-1.97c3.37-1.32,6.02-3.37,7.93-6.18c1.92-2.79,2.87-6.05,2.87-9.77c0-4.57-1.34-8.34-4.03-11.31	C341.07,451.66,337.67,449.81,333.55,449.06z M343.75,454.64c-2.68-2.98-6.08-4.83-10.2-5.58c-3.03-0.57-9.11-0.85-18.26-0.85	h-12.26v35.66h13.89c10,0,16.69-0.66,20.06-1.97c3.37-1.32,6.02-3.37,7.93-6.18c1.92-2.79,2.87-6.05,2.87-9.77	C347.78,461.38,346.44,457.61,343.75,454.64z M343.75,454.64c-2.68-2.98-6.08-4.83-10.2-5.58c-3.03-0.57-9.11-0.85-18.26-0.85	h-12.26v35.66h13.89c10,0,16.69-0.66,20.06-1.97c3.37-1.32,6.02-3.37,7.93-6.18c1.92-2.79,2.87-6.05,2.87-9.77	C347.78,461.38,346.44,457.61,343.75,454.64z M343.75,454.64c-2.68-2.98-6.08-4.83-10.2-5.58c-3.03-0.57-9.11-0.85-18.26-0.85	h-12.26v35.66h13.89c10,0,16.69-0.66,20.06-1.97c3.37-1.32,6.02-3.37,7.93-6.18c1.92-2.79,2.87-6.05,2.87-9.77	C347.78,461.38,346.44,457.61,343.75,454.64z M343.75,454.64c-2.68-2.98-6.08-4.83-10.2-5.58c-3.03-0.57-9.11-0.85-18.26-0.85	h-12.26v35.66h13.89c10,0,16.69-0.66,20.06-1.97c3.37-1.32,6.02-3.37,7.93-6.18c1.92-2.79,2.87-6.05,2.87-9.77	C347.78,461.38,346.44,457.61,343.75,454.64z"/></svg>
                             </div>
                             <div class="settings_menu_item_text_container">
                                 <p>appearance</p>
@@ -385,7 +450,7 @@
                         </div>
                         <div class="settings_menu_item" onclick="scrollSettingsMenuItemIntoView('settings_player')">
                             <div class="settings_menu_item_icon_container">
-                                <img src="icons/settingsPlay.svg" alt="">
+                                <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 512 512" style="enable-background:new 0 0 512 512;" xml:space="preserve"><g id="Ebene_2"><g id="Ebene_1-2"><g id="play"><path class="st0" d="M452.4,277.7L88.3,507.5c-12,8.1-28.2,4.9-36.3-7.1c-3-4.5-4.6-9.8-4.4-15.2v-459C47.5,11.9,59.1,0.1,73.6,0c0.1,0,0.1,0,0.2,0c5.1,0,10,1.4,14.3,4.2l364.4,228.8c12.3,8,15.7,24.3,7.8,36.6c0,0-0.1,0.1-0.1,0.1C458.1,272.9,455.5,275.6,452.4,277.7z"/></g></g></g></svg>
                             </div>
                             <div class="settings_menu_item_text_container">
                                 <p>player</p>
@@ -393,24 +458,21 @@
                         </div>
                         <div class="settings_menu_item" onclick="scrollSettingsMenuItemIntoView('settings_search')">
                             <div class="settings_menu_item_icon_container">
-                                <img src="icons/search.svg" alt="">
-                            </div>
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512.01 512"><g id="Ebene_2" data-name="Ebene 2"><g id="Capa_1" data-name="Capa 1"><path class="cls-1" d="M505.75,475.58,360.15,330a201.67,201.67,0,0,0,45.18-127.31C405.33,90.92,314.41,0,202.67,0S0,90.92,0,202.67,90.92,405.33,202.67,405.33A201.67,201.67,0,0,0,330,360.15l145.6,145.6a21.33,21.33,0,0,0,30.17-30.17ZM202.67,362.67c-88.24,0-160-71.77-160-160s71.76-160,160-160,160,71.76,160,160S290.9,362.67,202.67,362.67Z"/></g></g></svg>                            </div>
                             <div class="settings_menu_item_text_container">
                                 <p>search</p>
                             </div>
                         </div>
                         <div class="settings_menu_item" onclick="scrollSettingsMenuItemIntoView('settings_playlistAlbum')">
                             <div class="settings_menu_item_icon_container">
-                                <img src="icons/playlists.svg" alt="">
-                            </div>
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 450.37 389.5"><g id="Ebene_2" data-name="Ebene 2"><g id="Ebene_1-2" data-name="Ebene 1"><rect class="cls-1" y="359.5" width="450" height="30" rx="15"/><rect class="cls-1" x="0.37" y="214.6" width="450" height="30" rx="15"/><rect class="cls-1" x="180.37" y="69.58" width="270" height="30" rx="15"/><path class="cls-1" d="M148.39,99.21,22.76,170.34A15,15,0,0,1,.37,157.29V15A15,15,0,0,1,22.76,2L148.39,73.1A15,15,0,0,1,148.39,99.21Z"/></g></g></svg>                            </div>
                             <div class="settings_menu_item_text_container">
                                 <p>playlist / album</p>
                             </div>
                         </div>
                         <div class="settings_menu_item" onclick="scrollSettingsMenuItemIntoView('settings_download')">
                             <div class="settings_menu_item_icon_container">
-                                <img src="icons/downloads.svg" alt="">
-                            </div>
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 450 450"><g id="Ebene_2" data-name="Ebene 2"><g id="Ebene_1-2" data-name="Ebene 1"><path class="cls-1" d="M225,30A195,195,0,0,1,362.89,362.89,195,195,0,0,1,87.11,87.11,193.72,193.72,0,0,1,225,30m0-30C100.74,0,0,100.74,0,225S100.74,450,225,450,450,349.26,450,225,349.26,0,225,0Z"/><path class="cls-1" d="M224.82,347.09a15,15,0,0,1-15-15V105a15,15,0,1,1,30,0V332.09A15,15,0,0,1,224.82,347.09Z"/><path class="cls-1" d="M224.82,360a14.93,14.93,0,0,1-9.49-3.38l-84-68.62a15,15,0,0,1,19-23.23l74.53,60.88,74.87-60.9a15,15,0,1,1,18.93,23.27l-84.36,68.62A15,15,0,0,1,224.82,360Z"/></g></g></svg>                            </div>
                             <div class="settings_menu_item_text_container">
                                 <p>download</p>
                             </div>

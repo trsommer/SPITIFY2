@@ -299,7 +299,7 @@ function spawnPopularSongs(content, layout) {
 
 function setArtistAlbumContent(content, width) {
   albums = [];
-  let albumCarousel = document.getElementById("av_albums_carousel");
+  const albumCarousel = document.getElementById("av_albums_carousel");
   albumCarousel.style.width = width + "px";
   albumCarousel.innerHTML = "";
 
@@ -314,7 +314,7 @@ function setArtistAlbumContent(content, width) {
 
   let albumContent = content.albums.items;
 
-  if (albumContent.length >= 4) {
+  if (albumContent.length >= appropriateNrAlbumsCarousel) {
     albumCarousel.style.justifyContent = "left";
   } else {
     albumCarousel.style.justifyContent = "center";
@@ -424,13 +424,13 @@ function spawnArtistAlbumNavigator(albumNr, albumAppropriateNr) {
 
 function setArtistSinglesEpContent(content, width) {
   singlesEps = [];
-  let singlesEpCarousel = document.getElementById("av_singles_EPs_carousel");
+  const singlesEpCarousel = document.getElementById("av_singles_EPs_carousel");
   singlesEpCarousel.style.width = width + "px";
   singlesEpCarousel.innerHTML = "";
 
   console.log(content);
 
-  let singlesContent = content.singles.items;
+  const singlesContent = content.singles.items;
 
   if (singlesContent.length == 0) {
     document.getElementById("av_singles_EPs_container").style.display = "none";
@@ -439,7 +439,7 @@ function setArtistSinglesEpContent(content, width) {
     document.getElementById("av_singles_EPs_container").style.display = "flex";
   }
 
-  if (singlesContent.length >= 4) {
+  if (singlesContent.length >= appropriateNrAlbumsCarousel) {
     singlesEpCarousel.style.justifyContent = "left";
   } else {
     singlesEpCarousel.style.justifyContent = "center";
@@ -447,7 +447,7 @@ function setArtistSinglesEpContent(content, width) {
 
   for (let i = 0; i < singlesContent.length; i++) {
     const track = singlesContent[i];
-    let info = track.releases.items[0];
+    const info = track.releases.items[0];
     singlesEps.push(info);
 
     /*
@@ -460,22 +460,22 @@ function setArtistSinglesEpContent(content, width) {
     </div>
     */
 
-    let albumContainer = document.createElement("div");
+    const albumContainer = document.createElement("div");
     albumContainer.classList.add("av_album_container");
 
-    let albumBackground = document.createElement("div");
+    const albumBackground = document.createElement("div");
     albumBackground.classList.add("av_album_background");
 
-    let albumImageContainer = document.createElement("div");
+    const albumImageContainer = document.createElement("div");
     albumImageContainer.classList.add("av_album_image_container");
 
-    let albumCoverImage = document.createElement("img");
+    const albumCoverImage = document.createElement("img");
     albumCoverImage.classList.add("av_album_cover_image");
     albumCoverImage.src = getAlbumImageCoverUrl(info);
 
     albumImageContainer.appendChild(albumCoverImage);
 
-    let albumHeading = document.createElement("p");
+    const albumHeading = document.createElement("p");
     albumHeading.classList.add("av_album_heading");
 
     albumName = info.name;
@@ -486,7 +486,7 @@ function setArtistSinglesEpContent(content, width) {
 
     albumHeading.innerHTML = albumName;
 
-    let albumInfo = document.createElement("p");
+    const albumInfo = document.createElement("p");
     albumInfo.classList.add("av_album_info");
     albumInfo.innerHTML = info.date.year + " - " + info.type;
 
@@ -775,15 +775,16 @@ function calculateAppropriateAlbumCarouselWidth() {
 }
 
 async function recalculateAlbumCarouselWidth() {
-  let appropriateDims = calculateAppropriateAlbumCarouselWidth();
+  const appropriateDims = calculateAppropriateAlbumCarouselWidth();
+
   if (appropriateDims.nrAlbums == appropriateNrAlbumsCarousel) {
     return;
   }
 
-  let albumCarousel = document.getElementById("av_albums_carousel");
+  const albumCarousel = document.getElementById("av_albums_carousel");
   albumCarousel.style.width = appropriateDims.carouselWidth + "px";
 
-  let singlesEpCarousel = document.getElementById("av_singles_EPs_carousel");
+  const singlesEpCarousel = document.getElementById("av_singles_EPs_carousel");
   singlesEpCarousel.style.width = appropriateDims.carouselWidth + "px";
 
   spawnArtistAlbumNavigator(albums.length, appropriateDims.nrAlbums);
@@ -791,4 +792,16 @@ async function recalculateAlbumCarouselWidth() {
   spawnArtistSingesNavigator(singlesEps.length, appropriateDims.nrAlbums);
 
   appropriateNrAlbumsCarousel = appropriateDims.nrAlbums;
+
+  if (albums.length >= appropriateDims.nrAlbums) {
+    albumCarousel.style.justifyContent = "left";
+  } else {
+    albumCarousel.style.justifyContent = "center";
+  }
+
+  if (singlesEps.length >= appropriateDims.nrAlbums) {
+    singlesEpCarousel.style.justifyContent = "left";
+  } else {
+    singlesEpCarousel.style.justifyContent = "center";
+  }
 }
