@@ -1,6 +1,8 @@
 spotifyIds = [];
+var tracksHTML = []
 songInfo = [];
 var albums = [];
+var searchPlayingTrack = null;
 
 window.electronAPI.updateSpotifySearch((event, response) => {
   result = response.data.search
@@ -9,6 +11,7 @@ window.electronAPI.updateSpotifySearch((event, response) => {
 
 function search_view() {
   stopMenuLogoColorChange(false)
+  updateSearchPlayingTrack()
 }
 
 function setContentSearch(content) {
@@ -120,6 +123,8 @@ function setSongsContent(content) {
     artistString = "";
     songs[index] = track["id"];
     songInfo[index] = track;
+    id = track.id
+
     for (var j = 0; j < artists.length; j++) {
       if (j == 0) {
         artistString = artists["0"]["profile"]["name"];
@@ -127,6 +132,7 @@ function setSongsContent(content) {
         artistString = artistString + ", " + artists[j]["profile"]["name"];
       }
     }
+
     trackTimeMS = track["duration"]["totalMilliseconds"];
     trackTimeFormated = timeConvert(trackTimeMS);
 
@@ -143,11 +149,33 @@ function setSongsContent(content) {
     songImageContainer = document.createElement("div");
     songImageContainer.classList.add("search_results_song_image_container");
 
+    currentlyPlayingContainer = document.createElement("div");
+    currentlyPlayingContainer.classList.add("currently_playing_container");
+    currentlyPlayingContainer.classList.add("search_currently_playing_container")
+
+    currentlyPlayingBackground = document.createElement("div");
+    currentlyPlayingBackground.classList.add("currently_playing_background");
+
+    currentlyPlayingImage = document.createElement("img");
+    currentlyPlayingImage.classList.add("currently_playing_svg");
+    currentlyPlayingImage.src = "icons/spitifyAnimated.svg";
+
+    if (currentSong != null && currentSong.getSongSpotifyId() == id) {
+      currentlyPlayingContainer.style.display = "flex"; // show currently playing track
+      searchPlayingTrack = {
+          "id": id,
+          "html": songContainer
+      }       
+  }
+    currentlyPlayingContainer.appendChild(currentlyPlayingBackground);
+    currentlyPlayingContainer.appendChild(currentlyPlayingImage);
+
     songImage = document.createElement("img");
     songImage.classList.add("search_result_track_image");
     songImage.src = trackImageUrl;
 
     songImageContainer.appendChild(songImage);
+    songImageContainer.appendChild(currentlyPlayingContainer);
 
     songTextContainer = document.createElement("div");
     songTextContainer.classList.add("search_results_song_text");
@@ -185,6 +213,8 @@ function setSongsContent(content) {
     document
       .getElementById("search_section_songs_result")
       .appendChild(songContainer);
+
+    tracksHTML.push({id: id, html: songContainer})
   }
 }
 
@@ -246,4 +276,47 @@ async function openAlbum(id) {
 
   console.log(theSplit[2]);
   console.log(album);
+}
+
+function searchSongCurrentlyPlaying(id) {
+  if (searchPlayingTrack != null) {
+    searchPlayingTrack.html.getElementsByClassName("currently_playing_container")[0].style.display = "none";
+    searchPlayingTrack = null;
+      // if another track is playing, hide the currently playing icon from the previous track (playlistPlayingTrack)
+  }
+
+  for (let i = 0; i < tracksHTML.length; i++) {
+      const trackHTML = tracksHTML[i];
+      if (trackHTML.id == id) {
+          trackHTML.html.getElementsByClassName("currently_playing_container")[0].style.display = "flex";
+          searchPlayingTrack = trackHTML;
+      }
+  }
+}
+
+function updateSearchPlayingTrack() {
+  if (searchPlayingTrack == null || currentSong == null) return; 
+    
+  if (searchPlayingTrack != null) {
+    if (currentSong.getSongSpotifyId() != searchPlayingTrack.id) {
+      oldId = searchPlayingTrack.id;
+      for (let i = 0; i < tracksHTML.length; i++) {
+        const trackHTML = tracksHTML[i];
+        if (trackHTML.id == currentSong.getSongSpotifyId()) {
+          trackHTML.html.getElementsByClassName("currently_playing_container")[0].style.display = "flex";
+          searchPlayingTrack = trackHTML;
+        }
+        if (trackHTML.id == oldId) {
+          trackHTML.html.getElementsByClassName("currently_playing_container")[0].style.display = "none";
+        }
+      }
+    }
+  }
+}
+
+function searchRemoveCurrentlyPlaying() {
+  if (searchPlayingTrack != null) {
+    searchPlayingTrack.html.getElementsByClassName("currently_playing_container")[0].style.display = "none";
+    searchPlayingTrack = null;
+  }
 }

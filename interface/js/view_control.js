@@ -205,3 +205,33 @@ function goBack() {
 function setTopMenuOpacity(opacity) {
   document.getElementById("menu_top").style.opacity = opacity;
 }
+
+function indicateCurrentlyPlaying(id) {
+  switch (currentView) {
+    case "playlist_view":
+      playlistSongCurrentlyPlaying(id);
+      break;
+    case "album_view":
+      albumSongCurrentlyPlaying(id);
+      break;
+    case "downloads_view":
+      downloadsSongCurrentlyPlaying(id);
+      break;
+    case "artist_view":
+      artistSongCurrentlyPlaying(id);
+      break;
+    case "search_view":
+      searchSongCurrentlyPlaying(id);
+      break;
+    default:
+      break;
+  }
+}
+
+function removeCurrentlyPlaying() {
+  playlistRemoveCurrentlyPlaying();
+  albumRemoveCurrentlyPlaying();
+  downloadsRemoveCurrentlyPlaying();
+  artistRemoveCurrentlyPlaying();
+  searchRemoveCurrentlyPlaying();
+}

@@ -1,8 +1,10 @@
 var tracks = []
+var tracksHTML = []
 var playlistName = ""
 var playlistId = 0;
 let id;
 var playlistPictureSongId = "";
+var playlistPlayingTrack = null;
 
 async function playlist_view() {
     await Sortable.create(playlist_tracks_container, {
@@ -23,6 +25,7 @@ async function playlist_view() {
         }
 
     });
+
 }
 
 async function setContentPlaylist(playlistData, songData, thisid) {
@@ -92,6 +95,9 @@ async function setSongsContentPlaylist(songData) {
 
     for (let index = 0; index < songData.length; index++) {
         const song = songData[index];
+        if (song == undefined) {
+            continue;
+        }
         const songInfo = JSON.parse(song.info);
         title = songInfo.songTitle;
         imageUrl = songInfo.songImageUrl;
@@ -105,31 +111,54 @@ async function setSongsContentPlaylist(songData) {
         }
 
         songContainer = document.createElement("div");
-        songContainer.classList.add("playlist_track_item");
+        songContainer.classList.add("track_item");
         songContainer.setAttribute("data-id", id);
 
         spacer = document.createElement("div");
-        spacer.classList.add("playlist_track_spacer");
+        spacer.classList.add("track_spacer_left");
 
         imageContainer = document.createElement("div");
-        imageContainer.classList.add("playlist_track_image_container");
+        imageContainer.classList.add("track_image_container");
 
         image = document.createElement("img");
-        image.classList.add("playlist_track_image");
+        image.classList.add("track_image");
         image.src = imageUrl;
 
+        currentlyPlayingContainer = document.createElement("div");
+        currentlyPlayingContainer.classList.add("currently_playing_container");
+        currentlyPlayingContainer.classList.add("playlist_currently_playing_container")
+
+        currentlyPlayingBackground = document.createElement("div");
+        currentlyPlayingBackground.classList.add("currently_playing_background");
+
+        currentlyPlayingImage = document.createElement("img");
+        currentlyPlayingImage.classList.add("currently_playing_svg");
+        currentlyPlayingImage.src = "icons/spitifyAnimated.svg";
+
+        if (currentSong != null && currentSong.getSongSpotifyId() == id) {
+            currentlyPlayingContainer.style.display = "flex"; // show currently playing track
+            playlistPlayingTrack = {
+                "id": id,
+                "html": songContainer
+            }       
+        }
+
+        currentlyPlayingContainer.appendChild(currentlyPlayingBackground);
+        currentlyPlayingContainer.appendChild(currentlyPlayingImage);
+
         imageContainer.appendChild(image);
+        imageContainer.appendChild(currentlyPlayingContainer);
 
         songTitle = document.createElement("p");
-        songTitle.classList.add("playlist_track_name");
+        songTitle.classList.add("track_text_left");
         songTitle.innerHTML = title;
 
         artists = document.createElement("p");
-        artists.classList.add("playlist_track_artists");
+        artists.classList.add("track_text_middle");
         artists.innerHTML = artistsText;
 
         durationHTML = document.createElement("p");
-        durationHTML.classList.add("playlists_track_duration");
+        durationHTML.classList.add("track_text_right");
         durationHTML.innerHTML = duration;
 
         songContainer.appendChild(spacer);
@@ -147,6 +176,7 @@ async function setSongsContentPlaylist(songData) {
           });
         playlistContainer.appendChild(songContainer);
 
+        tracksHTML.push({id: id, html: songContainer})
     }
 
     var songNr = songData.length + " songs";
@@ -201,9 +231,9 @@ async function createQuadHeaderImage(songData) {
 
 }
 
-function playTrackPlaylist(id) {
+async function playTrackPlaylist(id) {
     songInfo = tracks[id];
-    playSongNow(songInfo);
+    await playSongNow(songInfo);
 
     clearQueue();
 
@@ -216,7 +246,7 @@ function playTrackPlaylist(id) {
 
 async function playPlaylist() {
     const firstSong = tracks[0];
-    playSongNow(firstSong);
+    await playSongNow(firstSong);
 
     clearQueue();
 
@@ -296,7 +326,6 @@ function convertMS(ms) {
     }
 
     return returnString;
-
 }
 
 
@@ -349,4 +378,27 @@ function changeTrackListSorting(newOrder) {
 
 function openPlaylistContextMenu() {
     //spawnPlaylistMenu();
+}
+
+function playlistSongCurrentlyPlaying(id) {
+    if (playlistPlayingTrack != null) {
+        playlistPlayingTrack.html.getElementsByClassName("currently_playing_container")[0].style.display = "none";
+        playlistPlayingTrack = null;
+        // if another track is playing, hide the currently playing icon from the previous track (playlistPlayingTrack)
+    }
+
+    for (let i = 0; i < tracksHTML.length; i++) {
+        const trackHTML = tracksHTML[i];
+        if (trackHTML.id == id) {
+            trackHTML.html.getElementsByClassName("currently_playing_container")[0].style.display = "flex";
+            playlistPlayingTrack = trackHTML;
+        }
+    }
+}
+
+function playlistRemoveCurrentlyPlaying() {
+    if (playlistPlayingTrack != null) {
+        playlistPlayingTrack.html.getElementsByClassName("currently_playing_container")[0].style.display = "none";
+        playlistPlayingTrack = null;
+    }
 }

@@ -209,12 +209,18 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    border-radius: 8px;
+    overflow: hidden;
 }
 
 .av_music_preview_musicShowcase_trackIMG {
-    max-width: 50px;
-    max-height: 50px;
-    border-radius: 8px;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.av_music_preview_currently_playing_container {
+    height: 50px;
 }
 
 .av_music_preview_musicShowcase_trackText {

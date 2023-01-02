@@ -1,4 +1,5 @@
 var topSongs = [];
+var topSongsHTML = [];
 var scrolledDown = false;
 var headerImageVisible = true;
 var albums = [];
@@ -8,6 +9,7 @@ var additionalSongInfo;
 var menuLogoColorChangeStopped = false;
 var accentColor = "";
 var appropriateNrAlbumsCarousel = 4;
+var artistPlayingTrack = null;
 
 function artist_view() {
   setTopMenuOpacity(0);
@@ -235,8 +237,7 @@ function spawnPopularSongs(content, layout) {
     for (let j = 0; j < trackNumber; j++) {
       let trackContent = content[currentTrack].track;
       let realTrackNumber = 3 * i + j;
-
-      console.log(trackContent);
+      id = trackContent.id;
 
       let thisTrackContainer = document.createElement("div");
       thisTrackContainer.classList.add("av_music_preview_musicShowcase_track");
@@ -247,7 +248,30 @@ function spawnPopularSongs(content, layout) {
       let trackImage = document.createElement("img");
       trackImage.classList.add("av_music_preview_musicShowcase_trackIMG");
 
+      currentlyPlayingContainer = document.createElement("div");
+      currentlyPlayingContainer.classList.add("currently_playing_container");
+      currentlyPlayingContainer.classList.add("av_music_preview_currently_playing_container")
+
+      currentlyPlayingBackground = document.createElement("div");
+      currentlyPlayingBackground.classList.add("currently_playing_background");
+
+      currentlyPlayingImage = document.createElement("img");
+      currentlyPlayingImage.classList.add("currently_playing_svg");
+      currentlyPlayingImage.src = "icons/spitifyAnimated.svg";
+
+      if (currentSong != null && currentSong.getSongSpotifyId() == id) {
+        currentlyPlayingContainer.style.display = "flex"; // show currently playing track
+        artistPlayingTrack = {
+            "id": id,
+            "html": thisTrackContainer
+        }       
+    }
+
+      currentlyPlayingContainer.appendChild(currentlyPlayingBackground);
+      currentlyPlayingContainer.appendChild(currentlyPlayingImage);
+
       trackImageContainer.appendChild(trackImage);
+      trackImageContainer.appendChild(currentlyPlayingContainer);
 
       let imageUrl = trackContent.albumOfTrack.coverArt.sources[2].url;
 
@@ -284,6 +308,8 @@ function spawnPopularSongs(content, layout) {
       thisTrackContainer.appendChild(trackTextContainer);
 
       tracksContainer.appendChild(thisTrackContainer);
+
+      topSongsHTML.push({id: id, html: thisTrackContainer})
 
       currentTrack++;
     }
@@ -803,5 +829,28 @@ async function recalculateAlbumCarouselWidth() {
     singlesEpCarousel.style.justifyContent = "left";
   } else {
     singlesEpCarousel.style.justifyContent = "center";
+  }
+}
+
+function artistSongCurrentlyPlaying(id) {
+  if (artistPlayingTrack != null) {
+    artistPlayingTrack.html.getElementsByClassName("currently_playing_container")[0].style.display = "none";
+    artistPlayingTrack = null;
+      // if another track is playing, hide the currently playing icon from the previous track (playlistPlayingTrack)
+  }
+
+  for (let i = 0; i < topSongsHTML.length; i++) {
+      const topSongHTML = topSongsHTML[i];
+      if (topSongHTML.id == id) {
+        topSongHTML.html.getElementsByClassName("currently_playing_container")[0].style.display = "flex";
+          artistPlayingTrack = topSongHTML;
+      }
+  }
+}
+
+function artistRemoveCurrentlyPlaying() {
+  if (artistPlayingTrack != null) {
+    artistPlayingTrack.html.getElementsByClassName("currently_playing_container")[0].style.display = "none";
+    artistPlayingTrack = null;
   }
 }

@@ -201,17 +201,22 @@
     height: 5vh;
     width: 5vh;
     margin-right: 5px;
+    margin-left: 5px;
     display: flex;
     justify-content: center;
     align-items: center;
+    overflow: hidden;
 }
 
-.search_results_song_image_container img {
+.search_result_track_image {
     border-radius: 5px;
-    height: 90%;
-    margin-left: 5px;
-    width: 90%;
-    object-fit: contain;
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+}
+
+.search_currently_playing_container {
+    height: 5vh
 }
 
 .search_results_song p {

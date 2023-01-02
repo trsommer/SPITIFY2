@@ -49,6 +49,7 @@ async function playQueue() {
 
   //no song is in queue
   if (songQueueLength == 0) {
+    removeCurrentlyPlaying();
     return;
   }
 

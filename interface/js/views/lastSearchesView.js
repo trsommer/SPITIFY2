@@ -15,29 +15,29 @@ async function loadLastSearches() {
     if (lastSearch == undefined) continue;
     const lastSearchId = lastSearch.spotifyId;
 
-    var lastSearchItem = document.createElement("div");
+    const lastSearchItem = document.createElement("div");
     lastSearchItem.classList.add("last_search_item");
 
-    var lastSearchItemClickZone = document.createElement("div");
+    const lastSearchItemClickZone = document.createElement("div");
     lastSearchItemClickZone.classList.add("last_search_item_click_zone");
 
-    var lastSearchImage = document.createElement("img");
+    const lastSearchImage = document.createElement("img");
     lastSearchImage.classList.add("last_search_item_image");
     lastSearchImage.src = lastSearch.imageUrl;
 
-    var lastSearchTextContainer = document.createElement("div");
+    const lastSearchTextContainer = document.createElement("div");
     lastSearchTextContainer.classList.add("last_search_item_text");
 
-    var lastSearchTitle = document.createElement("p");
+    const lastSearchTitle = document.createElement("p");
     lastSearchTitle.classList.add("last_search_item_text_title");
     name = shortenString(lastSearch.name, 25);
     lastSearchTitle.innerHTML = name;
 
-    var lastSearchTypeHTML = document.createElement("p");
+    const lastSearchTypeHTML = document.createElement("p");
     lastSearchTypeHTML.classList.add("last_search_item_text_type");
     lastSearchTypeHTML.innerHTML = lastSearch.type;
 
-    var lastSearchCloseButton = document.createElement("img");
+    const lastSearchCloseButton = document.createElement("img");
     lastSearchCloseButton.classList.add("last_search_item_close_button");
     lastSearchCloseButton.src = "icons/close.svg";
 
@@ -67,7 +67,7 @@ async function loadLastSearches() {
     });
     const theIndex = newIndex;
     lastSearchCloseButton.addEventListener("click", function () {
-        removeLastSearch(lastSearchId, theIndex);
+        removeLastSearch(lastSearchId, lastSearchItem);
     });
 
     document.getElementById('last_searches_results_container').appendChild(lastSearchItem);
@@ -77,14 +77,10 @@ async function loadLastSearches() {
 
 }
 
-function removeLastSearch(id, index) {
+function removeLastSearch(id, element) {
   //remove from html
   const lastSearchesContainer = document.getElementById('last_searches_results_container');
-  const lastSearchItems = lastSearchesContainer.childNodes;
-  const elemToBeRemoved = lastSearchItems[index];
-
-
-  lastSearchesContainer.removeChild(elemToBeRemoved)
+  lastSearchesContainer.removeChild(element)
 
   //remove from db
   deleteSpecificLastSearch(id);

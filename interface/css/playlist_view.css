@@ -40,8 +40,8 @@
 #playlist_header_image {
     height: 80%;
     border-radius: 20px;
-    margin-left: 25px;
-    margin-top: 25px;
+    margin-left: 20px;
+    margin-top: 20px;
 }
 
 .playlist_header_image_quad {
@@ -53,8 +53,8 @@
 #playlist_header_quadImage_container {
     height: 80%;
     border-radius: 20px;
-    margin-left: 25px;
-    margin-top: 25px;
+    margin-left: 20px;
+    margin-top: 20px;
     position: absolute;
     aspect-ratio: 1 / 1;
     display: grid;
@@ -70,14 +70,14 @@
 
 #playlist_header_text_container_center {
     height: 80%;
-    margin-top: 25px;
+    margin-top: 20px;
     display: flex;
     align-items: center;
 }
 
 #playlist_header_text_container {
     color: white;
-    margin-left: 25px;
+    margin-left: 20px;
 }
 
 #playlist_header_text {
@@ -94,66 +94,6 @@
     color: white;
     font-size: 16px;
     opacity: 0.75;
-}
-
-.playlist_track_item {
-    display: flex;
-    flex-direction: row;
-    height: 6vh;
-    align-items: center;
-    margin-top: 4px;
-    margin-bottom: 4px;
-    padding-top: 4px;
-    padding-bottom: 4px;
-    width: calc(100% - 40px);
-    border-radius: 5px;
-    color: var(--contrast_bright);
-    margin-left: 20px;
-    margin-right: 20px;
-    cursor: pointer;
-}
-
-.playlist_track_item:hover {
-    background-color: rgba(255, 255, 255, 0.3);
-}
-
-.playlist_track_item:hover p{
-    color: var(--bg_dark);
-    font-weight: 600;
-}
-
-.playlist_track_spacer {
-    height: 100%;
-    width: 4px;
-}
-
-.playlist_track_image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.playlist_track_image_container {
-    height: 6vh;
-    border-radius: 5px;
-    overflow: hidden;
-    aspect-ratio: 1 / 1;
-}
-
-.playlist_track_name {
-    margin-left: 20px;
-    color: var(--contrast_bright);
-}
-
-.playlist_track_artists {
-    left: 50vw;
-    position: absolute;
-    max-width: 35vw;
-}
-
-.playlists_track_duration {
-    right: 28px;
-    position: absolute;
 }
 
 .playlist_button {
@@ -218,4 +158,8 @@
     width: 100%;
     height: 0;
     background-color: aqua;
+}
+
+.playlist_currently_playing_container {
+    height: 6vh;
 }

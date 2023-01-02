@@ -1,6 +1,8 @@
 var tracks = []
+var tracksHTML = []
 var info = []
 var scrolledDown = false;
+var albumPlayingTrack = null;
 
 function album_view() {
     setTopMenuOpacity(0);
@@ -94,33 +96,61 @@ function addTracks() {
         trackTimeFormated = timeConvert(trackDurationMS)
         artists = track["artists"]["items"]
         artistString = getArtistString(artists)
+        uri = track.uri
+        id = uri.split(":")[2]
 
         trackDiv = document.createElement("div")
-        trackDiv.classList.add("album_view_track")
+        trackDiv.classList.add("track_item")
 
         trackSpacer = document.createElement("div")
-        trackSpacer.classList.add("album_view_track_spacer")
+        trackSpacer.classList.add("track_spacer_left")
+
+        trackImageContainer = document.createElement("div")
+        trackImageContainer.classList.add("track_image_container")
 
         trackimage = document.createElement("img")
-        trackimage.classList.add("album_view_track_image")
+        trackimage.classList.add("track_image")
         trackimage.src = imageUrl
 
+        currentlyPlayingContainer = document.createElement("div");
+        currentlyPlayingContainer.classList.add("currently_playing_container");
+        currentlyPlayingContainer.classList.add("playlist_currently_playing_container")
+
+        currentlyPlayingBackground = document.createElement("div");
+        currentlyPlayingBackground.classList.add("currently_playing_background");
+
+        currentlyPlayingImage = document.createElement("img");
+        currentlyPlayingImage.classList.add("currently_playing_svg");
+        currentlyPlayingImage.src = "icons/spitifyAnimated.svg";
+
+        if (currentSong != null && currentSong.getSongSpotifyId() == id) {
+            currentlyPlayingContainer.style.display = "flex"; // show currently playing track
+            albumPlayingTrack = {
+                "id": id,
+                "html": trackDiv
+            }       
+        }
+
+        currentlyPlayingContainer.appendChild(currentlyPlayingBackground)
+        currentlyPlayingContainer.appendChild(currentlyPlayingImage)
+
+        trackImageContainer.appendChild(trackimage)
+        trackImageContainer.appendChild(currentlyPlayingContainer)
+
         trackName = document.createElement("p")
-        trackName.classList.add("album_view_track_text")
+        trackName.classList.add("track_text_left")
         trackName.innerHTML = trackNameString
 
         trackArtists = document.createElement("p")
-        trackArtists.classList.add("album_view_track_text")
-        trackArtists.classList.add("album_view_track_text_artists") 
+        trackArtists.classList.add("track_text_middle")
         trackArtists.innerHTML = artistString
 
         trackTime = document.createElement("p")
-        trackTime.classList.add("album_view_track_text")
-        trackTime.classList.add("album_view_track_text_duration")
+        trackTime.classList.add("track_text_right")
         trackTime.innerHTML = trackTimeFormated
 
         trackDiv.appendChild(trackSpacer)
-        trackDiv.appendChild(trackimage)
+        trackDiv.appendChild(trackImageContainer)
         trackDiv.appendChild(trackName)
         trackDiv.appendChild(trackArtists)
         trackDiv.appendChild(trackTime)
@@ -134,6 +164,8 @@ function addTracks() {
         trackDiv.addEventListener("contextmenu", (e) => {
             showAlbumContextMenu(index, e)
         })
+
+        tracksHTML.push({id: id, html: trackDiv})
     }
 }
 
@@ -267,4 +299,27 @@ function showAlbumContextMenu(index, event) {
 
     setClickedAlbumSong(track)
     spawnAlbumMenu(event)
+}
+
+function albumSongCurrentlyPlaying(id) {
+    if (albumPlayingTrack != null) {
+        albumPlayingTrack.html.getElementsByClassName("currently_playing_container")[0].style.display = "none";
+        albumPlayingTrack = null;
+        // if another track is playing, hide the currently playing icon from the previous track (playlistPlayingTrack)
+    }
+
+    for (let i = 0; i < tracksHTML.length; i++) {
+        const trackHTML = tracksHTML[i];
+        if (trackHTML.id == id) {
+            trackHTML.html.getElementsByClassName("currently_playing_container")[0].style.display = "flex";
+            albumPlayingTrack = trackHTML;
+        }
+    }
+}
+
+function albumRemoveCurrentlyPlaying() {
+    if (albumPlayingTrack != null) {
+        albumPlayingTrack.html.getElementsByClassName("currently_playing_container")[0].style.display = "none";
+        albumPlayingTrack = null;
+    }
 }

@@ -1,9 +1,13 @@
 downloadedSongs = [];
+tracksHTML = [];
 downloadedSongInfo = [];
+downloadsPlayingTrack = null;
+
 
 function downloads_view() {
     console.log("downloads_view");
     stopMenuLogoColorChange(false);
+    updateDownloadedCurrentyplaying();
 }
 
 function addDownloadToView(song) {
@@ -62,43 +66,60 @@ async function loadDownloads() {
         songTitle = songInfo.songTitle;
         artistsText = getArtistString(JSON.parse(songInfo.songArtistArray).items);
 
-        addHTMLSong(songImageUrl, songTitle, artistsText, songId, "done", index);
+        addHTMLSong(songImageUrl, songTitle, artistsText, songId, "done", index, songId);
+
+
     }
 
 }
 
-function addHTMLSong(songImage, title, artistText, songId, progress, index) {
+function addHTMLSong(songImage, title, artistText, songId, progress, index, id) {
     const container = document.getElementById('downloads_tracks_container');
 
     const track = document.createElement('div');
-    track.classList.add('downloads_track_item');
+    track.classList.add('track_item');
 
     const trackImageSpacer = document.createElement('div');
-    trackImageSpacer.classList.add('downloads_track_image_spacer');
+    trackImageSpacer.classList.add('track_spacer_left');
 
-    const trackImageConatiner = document.createElement('div');
-    trackImageConatiner.classList.add('downloads_track_image_container');
+    const trackImageContainer = document.createElement('div');
+    trackImageContainer.classList.add('track_image_container');
 
     const trackImage = document.createElement('img');
-    trackImage.classList.add('downloads_track_image');
+    trackImage.classList.add('track_image');
     trackImage.src = songImage;
 
-    trackImageConatiner.appendChild(trackImage);
+    const currentlyPlayingContainer = document.createElement("div");
+    currentlyPlayingContainer.classList.add("currently_playing_container");
+    currentlyPlayingContainer.classList.add("playlist_currently_playing_container")
+
+    const currentlyPlayingBackground = document.createElement("div");
+    currentlyPlayingBackground.classList.add("currently_playing_background");
+
+    const currentlyPlayingImage = document.createElement("img");
+    currentlyPlayingImage.classList.add("currently_playing_svg");
+    currentlyPlayingImage.src = "icons/spitifyAnimated.svg";
+
+    currentlyPlayingContainer.appendChild(currentlyPlayingBackground)
+    currentlyPlayingContainer.appendChild(currentlyPlayingImage)
+
+    trackImageContainer.appendChild(trackImage)
+    trackImageContainer.appendChild(currentlyPlayingContainer)
 
     const trackName = document.createElement('p');
-    trackName.classList.add('downloads_track_name');
+    trackName.classList.add('track_text_left');
     trackName.innerText = title;
 
     const trackArtist = document.createElement('p');
-    trackArtist.classList.add('downloads_track_artist');
+    trackArtist.classList.add('track_text_middle');
     trackArtist.innerText = artistText;
 
     const trackProgress = document.createElement('p');
-    trackProgress.classList.add('downloads_track_progress');
+    trackProgress.classList.add('track_text_right');
     trackProgress.innerText = progress;
 
     track.appendChild(trackImageSpacer);
-    track.appendChild(trackImageConatiner);
+    track.appendChild(trackImageContainer);
     track.appendChild(trackName);
     track.appendChild(trackArtist);
     track.appendChild(trackProgress);
@@ -110,6 +131,8 @@ function addHTMLSong(songImage, title, artistText, songId, progress, index) {
     container.appendChild(track);
     
     downloadedSongs[songId] = track;
+
+    tracksHTML.push({id: id, html: track})
 }
 
 function clearDownloadsView() {
@@ -126,5 +149,38 @@ async function playDownloadedSong(id) {
         info = JSON.parse(songInfo.info);
         convertedSongInfo = info.songInfo;
         playSongNow(convertedSongInfo)
+    }
+}
+
+function updateDownloadedCurrentyplaying() {
+    for (let i = 0; i < tracksHTML.length; i++) {
+        const track = tracksHTML[i];
+        if (currentSong != null && currentSong.getSongSpotifyId() == track.id) {
+            track.html.getElementsByClassName("currently_playing_container")[0].style.display = "flex";
+            downloadsPlayingTrack = track;
+        }
+    }
+}
+
+function downloadsSongCurrentlyPlaying(id) {
+    if (downloadsPlayingTrack != null) {
+        downloadsPlayingTrack.html.getElementsByClassName("currently_playing_container")[0].style.display = "none";
+        downloadsPlayingTrack = null;
+        // if another track is playing, hide the currently playing icon from the previous track (playlistPlayingTrack)
+    }
+
+    for (let i = 0; i < tracksHTML.length; i++) {
+        const trackHTML = tracksHTML[i];
+        if (trackHTML.id == id) {
+            trackHTML.html.getElementsByClassName("currently_playing_container")[0].style.display = "flex";
+            downloadsPlayingTrack = trackHTML;
+        }
+    }
+}
+
+function downloadsRemoveCurrentlyPlaying() {
+    if (downloadsPlayingTrack != null) {
+        downloadsPlayingTrack.html.getElementsByClassName("currently_playing_container")[0].style.display = "none";
+        downloadsPlayingTrack = null;
     }
 }

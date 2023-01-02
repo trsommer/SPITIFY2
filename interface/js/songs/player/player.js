@@ -41,6 +41,7 @@ async function play(song) {
     setPlayState(true);
     animatePlayerIn();
     createNewNotification(song);
+    indicateCurrentlyPlaying(song.getSongSpotifyId());
 }
 
 async function addInfoToPlayer(song) {

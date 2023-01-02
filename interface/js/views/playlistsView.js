@@ -55,7 +55,6 @@ async function createSpecificPlaylist(name, author, imageUrl, locked) {
 }
 
 async function openPlaylist(playlistId) {
-    console.log(playlistId);
     playlistName = 'playlist' + playlistId;
     if(playlistId == 'Likes') {
         data = {
@@ -70,6 +69,7 @@ async function openPlaylist(playlistId) {
         data = playlists[playlistId - 1];
     }
     result = await getPlaylistSongs(playlistName);
+    console.log(result);
     switchView("playlist_view");
     await setContentPlaylist(data, result, playlistId);
 }

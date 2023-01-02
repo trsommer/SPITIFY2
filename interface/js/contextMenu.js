@@ -632,15 +632,25 @@ function contextAlbumPlaylists(offsetLeft, OffsetTop, buttonIndex, side) {
   spawnContextSubMenu(offsetLeft, OffsetTop, buttonIndex, content);
 }
 
-function contextAlbumAddToPlaylist(index) {
+async function contextAlbumAddToPlaylist(index) {
   new Song(clickedAlbumSongInfo);
-  addPlaylistSong(clickedAlbumSongInfo.id, index + 1);
+  id = clickedAlbumSongInfo.id;
+  if (id == undefined) {
+    uri = clickedAlbumSongInfo.uri;
+    id = uri.split(":")[2];
+  }
+  addPlaylistSong(id, index + 1);
 }
 
 async function contextAlbumAddToNewPlaylist() {
   new Song(clickedAlbumSongInfo);
   const playlistId = await createPlaylist();
-  addPlaylistSong(clickedAlbumSongInfo.id, playlistId);
+  id = clickedAlbumSongInfo.id;
+  if (id == undefined) {
+    uri = clickedAlbumSongInfo.uri;
+    id = uri.split(":")[2];
+  }
+  addPlaylistSong(id, playlistId);
 }
 
 function contextAlbumOpenArtists(offsetLeft, OffsetTop, buttonIndex, side) {

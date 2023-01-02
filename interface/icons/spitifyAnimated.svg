@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 26.2.1, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 255.6 278.5" style="enable-background:new 0 0 255.6 278.5; transform-box: fill-box" xml:space="preserve">
+<defs><style>.cls-1{fill:#ffffff;}</style></defs>
+<g id="Layer_1">
+	<rect class="cls-1" y="96.86" width="34.61" height="84.75" rx="17.3" >
+		<animate
+		attributeName="height"
+		values="84.75;172.19;278.47;129.14;216.58;84.75"
+		dur="2.5s"
+		repeatCount="indefinite" />
+		<animate
+		attributeName="y"
+		values="96.86;53.14;0;74.66;30.94;96.86"
+		dur="2.5s"
+		repeatCount="indefinite" />
+	</rect>
+</g>
+<g id="Layer_2">
+	<rect class="cls-1" x="55.26" y="53.14" width="34.61" height="172.19" rx="17.3" >
+		<animate
+		attributeName="height"
+		values="172.19;278.47;129.14;216.58;84.75;172.19"
+		dur="2.5s"
+		repeatCount="indefinite" />
+		<animate
+		attributeName="y"
+		values="53.14;0;74.66;30.94;96.86;53.14"
+		dur="2.5s"
+		repeatCount="indefinite" />
+	</rect>
+
+</g>
+<g id="Layer_3">
+	<rect class="cls-1" x="110.51" width="34.61" height="278.47" rx="17.3" >
+		<animate
+		attributeName="height"
+		values="278.47;129.14;216.58;84.75;172.19;278.47"
+		dur="2.5s"
+		repeatCount="indefinite" />
+		<animate
+		attributeName="y"
+		values="0;74.66;30.94;96.86;53.14;0"
+		dur="2.5s"
+		repeatCount="indefinite" />
+	</rect>
+
+</g>
+<g id="Layer_4">
+	<rect class="cls-1" x="165.77" y="74.66" width="34.61" height="129.14" rx="17.3" >
+		<animate
+		attributeName="height"
+		values="129.14;216.58;84.75;172.19;278.47;129.14"
+		dur="2.5s"
+		repeatCount="indefinite" />
+		<animate
+		attributeName="y"
+		values="74.66;30.94;96.86;53.14;0;74.66"
+		dur="2.5s"
+		repeatCount="indefinite" />
+	</rect>
+
+</g>
+<g id="Layer_5">
+	<rect class="cls-1" x="221.03" y="30.94" width="34.61" height="216.58" rx="17.3" >
+		<animate
+		attributeName="height"
+		values="216.58;84.75;172.19;278.47;129.14;216.58"
+		dur="2.5s"
+		repeatCount="indefinite" />
+		<animate
+		attributeName="y"
+		values="30.94;96.86;53.14;0;74.66;30.94"
+		dur="2.5s"
+		repeatCount="indefinite" />
+	</rect>
+</g>
+</svg>
