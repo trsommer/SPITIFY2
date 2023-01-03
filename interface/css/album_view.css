@@ -57,23 +57,25 @@
 }
 
 #album_view_header_container {
-    position: absolute;
+    /* position: absolute; */
     width: 100%;
-    height: 25vh;
+    height: 12vh;
     top: 31vh;
     text-align: center;
     z-index: 5;
-    display: flex;
-    flex-direction: column;
     align-items: center;
     pointer-events: none;
+    background: #151616;
+    display: grid;
 }
 
 #album_view_header {
     margin: 0;
     color: var(--accentColor);
-    max-width: 75%;
     white-space: nowrap;
+    position: absolute;
+    bottom: 0;
+    z-index: 4;
 }
 
 .album_view_header_big {
@@ -90,7 +92,6 @@
 
 #album_view_2ndHeader {
     margin: 0;
-    margin-bottom: 10px;
     color: var(--contrast_bright);
     font-size: 20px;
     font-weight: 500;
@@ -100,7 +101,6 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-top: 5px;
 }
 
 .album_view_header_buttton {
@@ -115,6 +115,7 @@
     border: none;
     pointer-events: all;
     font-size: 16px;
+    transition: 0.3 ease;
 }
 
 .album_view_header_buttton:hover {
@@ -126,11 +127,11 @@
     padding-right: 21px;
     font-size: 17px;
     cursor: pointer;
+    transition: 0.3 ease;
 }
 
 #album_view_content {
     min-height: calc(60vh - 60px);
-    padding-top: 15vh;
     padding-bottom: 20vh;
     display: flex;
     flex-direction: column;

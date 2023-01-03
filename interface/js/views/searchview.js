@@ -234,9 +234,14 @@ function setAlbumContent(content) {
     albumContainer.classList.add("search_results_album");
     albumContainer.id = "search_results_album_" + index;
 
+    albumImageContainer = document.createElement("div");
+    albumImageContainer.classList.add("search_results_album_image_container");
+
     albumImage = document.createElement("img");
     albumImage.classList.add("search_results_album_image");
     albumImage.src = imgUrl;
+
+    albumImageContainer.appendChild(albumImage);
 
     albumTextContainer = document.createElement("div");
     albumTextContainer.classList.add("search_results_album_text");
@@ -252,7 +257,7 @@ function setAlbumContent(content) {
     albumTextContainer.appendChild(albumTitle);
     albumTextContainer.appendChild(albumTypeHTML);
 
-    albumContainer.appendChild(albumImage);
+    albumContainer.appendChild(albumImageContainer);
     albumContainer.appendChild(albumTextContainer);
     albumContainer.addEventListener("click", function () {
       openAlbum(index);

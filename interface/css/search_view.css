@@ -26,23 +26,37 @@
 
 #search_most_relevant_result_heading {
     color: white;
-    margin-left: 50px;
+    margin-left: 20px;
 }
 
 #search_most_relevant_result_image_container {
-    height: 32vh;
-    width: 32vh;
+    height: 30vh;
+    width: 30vh;
     display: flex;
     align-items: center;
     justify-content: center;
     position: absolute;
-    margin-left: 45px;
+    margin-left: 20px;
+}
+
+#search_most_relevant_result_image_container:hover #search_most_relevant_image {
+    width: 92%;
+    height: 92%;
+    transition: 0.25s ease;
+}
+
+#search_most_relevant_result_image_container:hover #search_most_relevant_image_darkener {
+    width: 92%;
+    height: 92%;
+    transition: 0.25s ease;
 }
 
 #search_most_relevant_image {
+    width: 100%;
     height: 100%;
     border-radius: 20px;
     position: absolute;
+    transition: 0.25s ease;
 }
 
 #search_most_relevant_image_darkener {
@@ -52,7 +66,7 @@
     position: absolute;
     z-index: 3;
     background: linear-gradient(0deg, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0) 70%);
-
+    transition: 0.25s ease;
 }
 
 #search_most_relevant_image_darkener:hover {
@@ -62,10 +76,12 @@
 
 #search_most_relevant_result_image_heading_container {
     position: absolute;
-    width: 40vh;
-    height: 30vh;
-    padding-left: 6vh;
+    width: 30vh;
+    height: 28vh;
+    padding-left: 20px;
     pointer-events: none;
+    display: flex;
+    justify-content: center;
 }
 
 #search_most_relevant_result_image_heading {
@@ -81,17 +97,17 @@
 #search_results_artist_container{
     height: 60vh;
     width: 30%;
-    display: flex;
-    flex-direction: column;
+    margin-left: 20px;
 }
 
 #search_results_artists {
-    margin-left: 50px;
+    display: grid;
+    grid-template-columns: auto;
+    grid-row-gap: 10px;
 }
 
 #search_results_artist_heading {
     color: white;
-    margin-left: 50px;
 }
 
 .search_results_artist{
@@ -107,6 +123,13 @@
 .search_results_artist:hover{
     background-color: rgba(255,255,255,0.3);
     cursor: pointer;
+    transition: background-color 0.15;
+}
+
+.search_results_artist:hover img {
+    height: 90%;
+    width: 90%;
+    transition: 0.15s ease;
 }
 
 .search_results_artist_image_container {
@@ -119,10 +142,11 @@
 }
 
 .search_results_artist img {
-    height: 90%;
-    width: 90%;
+    height: 100%;
+    width: 100%;
     border-radius: 10px;
-    object-fit: contain;
+    object-fit: cover;
+    transition: 0.15s ease;
 }
 
 .search_results_artist_text {
@@ -153,7 +177,7 @@
 
 #search_section_songs_result {
     height: 80%;
-    width: 100%;
+    margin-right: 20px;
 }
 
 #search_section_songs_result_container {
@@ -166,7 +190,6 @@
 
 #search_section_songs_result_heading {
     color: white;
-    margin-left: 50px;
 }
 
 .search_results_song {
@@ -243,12 +266,11 @@
     position: absolute;
     color: grey;
     font-size: 14px;
-    margin-right: 10px;
+    margin-right: 26px;
 }
 
 #search_results_albums_heading {
     color: white;
-    margin-left: 50px;
 }
 
 #search_bottom_albums_container {
@@ -257,16 +279,15 @@
 }
 
 #search_results_albums {
-    display: flex;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
     flex-direction: row;
-    margin-left: 35px;
+    margin-right: 20px;
+    grid-column-gap: 10px;
 }
 
 .search_results_album {
-    width: 15%;
-    padding-left: 10px;
-    padding-right: 10px;
-    padding-top: 10px;
+    width: 100%;
     background-color: rgba(255, 255, 255, 0.0);
     transition: background-color 0.15s;
     border-radius: 13px;
@@ -277,10 +298,26 @@
     cursor: pointer;
 }
 
+.search_results_album:hover .search_results_album_image {
+    width: 90%;
+    height: 90%;
+    transition: 0.15s ease;
+}
+
+.search_results_album_image_container {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 .search_results_album_image {
     width: 100%;
+    height: 100%;
+    object-fit: cover;
     border-radius: 15px;
-
+    transition: 0.15s ease;
 }
 
 .search_results_album_text_title {
@@ -294,5 +331,6 @@
 }
 
 .search_results_album_text {
+    margin-top: 5px;
     margin-left: 5px;
 }
