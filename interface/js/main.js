@@ -11,6 +11,8 @@ function onLoad() {
     window.electronAPI.updateDownloads((event, progress, spotifyId) => {
         updateDownloadProgress(spotifyId, progress)
     });
+
+    setupMenuMove()
 }
 
 function sleep(ms) {

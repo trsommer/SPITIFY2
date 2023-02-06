@@ -9,6 +9,18 @@ playerCurrentPosition = "bottomLeft"
 currentPositionIndex = 2
 disabled = false
 
+function setupMenuMove() {
+    const playerBG = document.getElementById('menu_player')
+    playerBG.addEventListener('mousedown', function(e) {
+        if (e.target.nodeName == "INPUT") {
+            return
+        }
+        startMovePlayer(e)
+    }, false);
+}
+
+
+
 // player in animation
 async function animatePlayerIn() {
     const playerBG = document.getElementById('menu_player')
@@ -33,6 +45,10 @@ async function animatePlayerIn() {
         if (i == 5) {
             buttonsAndSlider[i].style.width = "150px"
         }
+
+        buttonsAndSlider[i].addEventListener('transitionend', function() {
+            buttonsAndSlider[i].style.transitionDelay = null
+        }, {once: true})
     }
 
     //add class menu_player_shown to playerBG
@@ -116,6 +132,7 @@ function endMovePlayer(e) {
     }
 
     velocity = getVelocity()
+    console.log(velocity);
     if (velocity > 500) {
         const direction = getDirection(startCords, endCords)
         if(direction != "neutral") {
@@ -124,7 +141,7 @@ function endMovePlayer(e) {
             animationToPlayerPosition(offset)
             //add animation end listener to player
         }
-    } else {
+    } else if (velocity < 500 && velocity > 10) {
         offset = getOffset(playerCurrentPosition)
         animationToPlayerPosition(offset)
         playerBg.classList.remove('mouseDownCursor')

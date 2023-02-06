@@ -120,6 +120,7 @@ function getBestColor(colorBestMatch, colors, darknessThreshold) {
 function getBestColorNew(colors, threshHold) {
     bestColor = null
     bestColorHSL = null
+    colorMatrix = getColorDeltaMatrix(colors)
     score = -1
     
     for (let i = 0; i < colors.length; i++) {
@@ -128,11 +129,15 @@ function getBestColorNew(colors, threshHold) {
         lightnessThreshgold = 1 - threshHold
         darknessThreshold = threshHold
 
+
         if (colorHSL[2] > lightnessThreshgold || colorHSL[2] < darknessThreshold) {
             continue;
         }
 
-        colorScore = (colors.length - i) * 2 + colorHSL[1] * 35 //+ (1 - Math.abs(0.5 - colorHSL[2]) * 4) * 25
+        const colorDistanceSum = getColorDistanceSum(colorMatrix, i) / 100
+        console.log(colorDistanceSum);
+
+        colorScore = (colors.length - i) * 2 + colorHSL[1] * 35 + colorDistanceSum
 
         colorString = getColorString(color)
         hslString = colorHSL[0] + ", " + colorHSL[1] + ", " + colorHSL[2]
@@ -155,4 +160,59 @@ function getBestColorNew(colors, threshHold) {
     console.log(getColorString(bestColor) + ", " + bestColorHSL[2] + ", " + bestColorHSL[1] + ", " + score);
 
     return bestColor
+}
+
+function redmeanColorDistance(color1, color2) {
+    const deltaR = color1[0] - color2[0];
+    const deltaG = color1[1] - color2[1];
+    const deltaB = color1[2] - color2[2];
+
+    const rCross = 0.5 * (color1[0] + color2[0]);
+
+    const colorDelta = Math.sqrt((2 + rCross / 256) * deltaR * deltaR + 4 * deltaG * deltaG + (2 + (255 - rCross) / 256) * deltaB * deltaB);
+
+    return colorDelta;
+}
+
+function getColorDeltaMatrix(colors) {
+    const colorDeltaMatrix = [];
+
+    for (let i = 0; i < colors.length; i++) {
+        const color1 = colors[i];
+        const colorDeltaRow = [];
+
+        for (let j = 0; j < colors.length; j++) {
+            const color2 = colors[j];
+            const colorDelta = redmeanColorDistance(color1, color2);
+
+            colorDeltaRow.push(colorDelta);
+        }
+
+        colorDeltaMatrix.push(colorDeltaRow);
+    }
+
+    return colorDeltaMatrix;
+}
+
+function printColorArrayInColor(colors) {
+    for (let i = 0; i < colors.length; i++) {
+        const color = colors[i];
+        const colorString = getColorString(color);
+        const textColor = getClosestColor(color, [[0, 0, 0], [255, 255, 255]]);
+        const textColorString = getColorString(textColor);
+
+        console.log("%c" + colorString, "color: " + textColorString + "; font-size: 15px; font-family: monospace; background-color: " + colorString + ";");
+    }
+}
+
+function getColorDistanceSum(colorDistanceMatrix, index) {
+    colorDIstances = colorDistanceMatrix[index]
+    sum = 0
+
+    for (let i = 0; i < colorDIstances.length; i++) {
+        const distance = colorDIstances[i];
+        sum += distance
+    }
+
+    return sum
 }
