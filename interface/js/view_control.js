@@ -4,6 +4,7 @@ var lastViewInfo = "";
 var backButtonVisibility = false;
 var artistResizeListener = false;
 var settingsScrollListener = false;
+var playerTopOffset = false;
 var views = [
   "search_view",
   "artist_view",
@@ -234,4 +235,23 @@ function removeCurrentlyPlaying() {
   downloadsRemoveCurrentlyPlaying();
   artistRemoveCurrentlyPlaying();
   searchRemoveCurrentlyPlaying();
+}
+
+function repositionPlayer(offsetX, offsetY) {
+  if (playerCurrentPosition != "topRight") {
+    return
+  }
+
+  const player = document.getElementById("menu_player_container");
+
+  //add on transition end listener to reset transition
+
+  player.addEventListener("transitionend", function () {
+    player.style.transition = "none";
+    console.log("transition ended");
+  }, {once: true});
+
+  player.style.transition = "0.25s ease";
+  player.style.right = offsetX + "px";
+  player.style.top = offsetY + "px";
 }

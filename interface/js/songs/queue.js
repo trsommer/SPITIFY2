@@ -50,6 +50,7 @@ async function playQueue() {
   //no song is in queue
   if (songQueueLength == 0) {
     removeCurrentlyPlaying();
+    setPlayState(false)
     return;
   }
 
@@ -116,4 +117,8 @@ function getQueue() {
 
 function getLastPlayedSongInfo() {
   return playedQueue[playedQueue.length - 1].getSongInfo();
+}
+
+function getLastPlayedSong() {
+  return playedQueue[playedQueue.length - 1];
 }

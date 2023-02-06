@@ -230,6 +230,7 @@ async function spawnSongMenu(e) {
     { name: "play next", action: contextPlayNext, subMenu: null },
     { name: "play after queue", action: contextPlayAfterQueue, subMenu: null },
     { name: "add to playlist", action: null, subMenu: contextPlaylists },
+    { name: "open album", action: contextOpenSingleAlbum, subMenu: null },
     { name: "open Artist", action: contextOpenSingleArtist, subMenu: contextArtists },
     { name: "download", action: contextDownload, subMenu: null },
   ];
@@ -265,7 +266,6 @@ function contextPlaylists(offsetLeft, OffsetTop, buttonIndex, side) {
 
 function contextArtists(offsetLeft, OffsetTop, buttonIndex, side) {
     const artists = clickedSongInfo.artists.items;
-
     if (artists.length == 1) {
         return;
     }
@@ -284,6 +284,13 @@ function contextArtists(offsetLeft, OffsetTop, buttonIndex, side) {
     }
 
     spawnContextSubMenu(offsetLeft, OffsetTop, buttonIndex, content);
+}
+
+function contextOpenSingleAlbum() {
+    let album = clickedSongInfo.album;
+    let id = album.id;
+
+    setupAlbumView(id, album);
 }
 
 function contextPlay() {
@@ -333,6 +340,7 @@ function contextOpenSingleArtist() {
 
 function contextOpenArtist(i) {
     artists = clickedSongInfo.artists.items;
+    console.log(clickedSongInfo);
     artistURI = artists[i].uri;
     artistId = artistURI.split(":")[2];
 

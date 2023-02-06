@@ -14,15 +14,18 @@ var artistPlayingTrack = null;
 function artist_view() {
   setTopMenuOpacity(0);
   stopMenuLogoColorChange(true);
+  repositionPlayer(12, 0);
 }
 
 function scrollArtistView(scrollY) {
   if (scrollY > 300 && !scrolledDown) {
     scrolledDown = true;
     changeMenuTopVisibility(false);
+    repositionPlayer(12, 60);
   } else if (scrollY <= 300 && scrolledDown) {
     scrolledDown = false;
     changeMenuTopVisibility(true);
+    repositionPlayer(12, 0);
   }
 }
 

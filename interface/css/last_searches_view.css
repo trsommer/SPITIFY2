@@ -74,6 +74,17 @@
     width: calc(100% - 18px);
     height: 100%;
     align-items: center;
+    transition: 0.2s ease;
+}
+
+.last_search_item_click_zone:hover .last_search_item_image {
+    height: 75px;
+    margin-left: 25px;
+    border-radius: 10px;
+    margin-right: 20px;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    transition: 0.2s ease;
 }
 
 .last_search_item_close_button {

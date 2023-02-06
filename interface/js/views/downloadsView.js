@@ -8,6 +8,7 @@ function downloads_view() {
     console.log("downloads_view");
     stopMenuLogoColorChange(false);
     updateDownloadedCurrentyplaying();
+    repositionPlayer(12, 60);
 }
 
 function addDownloadToView(song) {

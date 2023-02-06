@@ -5,48 +5,44 @@ endCords = null
 startOffset = null
 newOffset = null
 startDate = null
-playerCurrentPosition = "bottomLeft"
+currentPosition = "bottomLeft"
 currentPositionIndex = 2
-disabled = false
+disabled = true
 
 // player in animation
 async function animatePlayerIn() {
-    const playerBG = document.getElementById('menu_player')
-    const playerCover = document.getElementById('menu_player_cover')
-    const playerText = document.getElementById('menu_player_text_container')
-    const sliderTime = document.getElementById('menu_player_slider')
-    const sliderVolume = document.getElementById('menu_player_volume_slider')
+    playerBG = document.getElementById('menu_player')
+    playerImage = document.getElementById('menu_player_cover')
+    playerText = document.getElementById('menu_player_text_container')
+    sliderBig = document.getElementById('menu_player_slider')
+    sliderSmall = document.getElementById('menu_player_volume_slider')
+    buttonSecondary0 = document.getElementById('menu_player_secondary_icon0')
+    buttonSecondary1 = document.getElementById('menu_player_secondary_icon1')
+    button1 = document.getElementById('menu_player_icon0')
+    button2 = document.getElementById('menu_player_icon1')
+    button3 = document.getElementById('menu_player_icon2')
+    button4 = document.getElementById('menu_player_icon3')
+    sliderBig.progress = 0
 
-    const buttonShuffle = document.getElementById('menu_player_shuffle')
-    const buttonBack = document.getElementById('menu_player_backward')
-    const buttonPlay = document.getElementById('menu_player_play')
-    const buttonForward = document.getElementById('menu_player_forward')
-    const buttonRepeat = document.getElementById('menu_player_repeat')
-    const buttonLike = document.getElementById('menu_player_like')
+    playerBG.style.animation = "playerBgIn 0.4s forwards"
+    playerImage.style.animation = 'playerImageIn 0.6s forwards'
+    playerText.style.animation = 'playerFadeIn 0.5s forwards'
+    sliderBig.style.animation = 'playerSliderBigIn 0.5s forwards'
+    sliderSmall.style.animation = 'playerSliderVolumeIn 0.5s forwards'
+    buttonSecondary0.style.animation = 'playerFadeIn 0.5s forwards'
+    await sleep(100)
 
-    const buttonsAndSlider = [buttonShuffle, buttonBack, buttonPlay, buttonForward, buttonRepeat, sliderVolume, buttonLike]
+    button1.style.animation = 'playerFadeIn 0.5s forwards'
+    await sleep(100)
+    button2.style.animation = 'playerFadeIn 0.5s forwards'
+    await sleep(100)
+    button3.style.animation = 'playerFadeIn 0.5s forwards'
+    await sleep(100)
+    buttonSecondary1.style.animation = 'playerFadeIn 0.5s forwards'
+    await sleep(100)
+    button4.style.animation = 'playerFadeIn 0.5s forwards'
 
-    for (let i = 0; i < buttonsAndSlider.length; i++) {
-        //add transition delay to each button
-        buttonsAndSlider[i].style.transitionDelay = `${0.15 + i * 0.08}s`
-        buttonsAndSlider[i].style.opacity = 1
-        if (i == 5) {
-            buttonsAndSlider[i].style.width = "150px"
-        }
-    }
-
-    //add class menu_player_shown to playerBG
-    playerBG.classList.add('menu_player_shown')
-    
-    //add class menu_player_cover_shown to playerCover
-    playerCover.classList.add('menu_player_cover_shown')
-
-    //add class menu_player_text_container_shown to playerText
-    playerText.classList.add('menu_player_text_container_shown')
-
-    //add class menu_player_slider_shown to sliderTime
-    sliderTime.classList.add('menu_player_slider_shown')
-
+    disabled = false;
 }
 
 // player movement
@@ -58,8 +54,9 @@ function startMovePlayer(e) {
     e.preventDefault()
     mouseDown = true;
     player = document.getElementById('menu_player_container')
-    player.classList.remove('mouseUpCursor')
-    player.classList.add('mouseDownCursor')
+    playerBg = document.getElementById('menu_player')
+    playerBg.classList.remove('mouseUpCursor')
+    playerBg.classList.add('mouseDownCursor')
     startCords = {
         x: e.clientX,
         y: e.clientY
@@ -69,10 +66,11 @@ function startMovePlayer(e) {
         y: player.offsetTop
     }
 
-    player.className = ""
-    player.style.cssText = ""
+    player.style.animation = ""
     player.style.top = startOffset.y + "px"
+    player.style.right = "inherit"
     player.style.left = startOffset.x + "px"
+    player.style.bottom = "inherit"
 
     startDate = new Date()
     document.onmousemove = movePlayer
@@ -95,6 +93,7 @@ function movePlayer(e) {
     }
     player.style.left = (startOffset.x + offsetX) + "px";
     player.style.top = (startOffset.y - offsetY) + "px";
+    player.style.bottom = "inherit";
 }
 
 function endMovePlayer(e) {
@@ -106,10 +105,6 @@ function endMovePlayer(e) {
     startLeft = startOffset.x + "px"
     startTop="60px"
 
-    player.addEventListener('transitionend', function() {
-        setFinalPosition(playerCurrentPosition)
-    }, { once: true })
-
     endCords = {
         x: e.clientX,
         y: e.clientY
@@ -117,19 +112,18 @@ function endMovePlayer(e) {
 
     velocity = getVelocity()
     if (velocity > 500) {
-        const direction = getDirection(startCords, endCords)
+        direction = getDirection(startCords, endCords)
         if(direction != "neutral") {
             offset = getOffset(direction)
-            playerCurrentPosition = direction
+            currentPosition = direction
             animationToPlayerPosition(offset)
-            //add animation end listener to player
         }
-    } else {
-        offset = getOffset(playerCurrentPosition)
-        animationToPlayerPosition(offset)
-        playerBg.classList.remove('mouseDownCursor')
-        playerBg.classList.add('mouseUpCursor')
     }
+
+    offset = getOffset(currentPosition)
+    animationToPlayerPosition(offset)
+    playerBg.classList.remove('mouseDownCursor')
+    playerBg.classList.add('mouseUpCursor')
 
     document.onmouseup = null;
     document.onmousemove = null;
@@ -155,40 +149,50 @@ function getVectorDistance(start, end) {
     return Math.sqrt(vectorX * vectorX + vectorY * vectorY)
 }
 
-function setFinalPosition(direction) {
+function animationToPlayerPosition(newOffset) {
+    var root = document.querySelector(':root')
     player = document.getElementById('menu_player_container')
-    console.log("end");
-    //remove transitions from player
-    player.style.cssText = null
-
-    switch (direction) {
-        case "topLeft":
-            //set player class to top left
-            player.className = "topLeft"
-            break;
-        case "topRight":
-            player.className = "topRight"
-            break;
-        case "bottomLeft":
-            player.className = "bottomLeft"
-            break;
-        case "bottomRight":
-            player.className = "bottomRight"
-            break;
-        
-        default:
-            break;
+    root.style.setProperty('--endOffsetTop', newOffset.y + "px")
+    console.log(newOffset);
+    if (Number.isInteger(newOffset.x)) {
+        root.style.setProperty('--endOffsetLeft', newOffset.x + "px")
+    } else {
+        root.style.setProperty('--endOffsetLeft', newOffset.x)
     }
+    player.style.animation = "movePlayer 0.4s forwards"
 }
 
-function animationToPlayerPosition(newOffset) {
+function setPlayerPosition() {
     player = document.getElementById('menu_player_container')
-
-    console.log(newOffset);
-
-    player.style.transition = "0.4s ease-in-out"
-    player.style.left = newOffset.x + "px"
-    player.style.top = newOffset.y + "px"
+    switch (currentPosition) {
+        case "topLeft":
+            player.style.top = "60px"
+            player.style.left = "0"
+            player.style.bottom = "inherit"
+            player.style.right = "inherit"
+            return
+        case "topRight":
+            player.style.top = "60px"
+            player.style.right = "0"
+            player.style.bottom = "inherit"
+            player.style.left = "inherit"
+            return
+        case "bottomLeft":
+            player.style.bottom = "0"
+            player.style.left = "0"
+            player.style.top = "inherit"
+            player.style.right = "inherit"
+            return
+        case "bottomRight":
+            player.style.bottom = "0"
+            player.style.right = "0"
+            player.style.top = "inherit"
+            player.style.left = "inherit"
+            return
+        default:
+            return
+    }
+    
 }
 
 function getVector(startCords, endCords) {
@@ -309,7 +313,7 @@ function getOffset(direction) {
     switch(direction) {
         case "topRight":
             offsetLeft = window.innerWidth - player.offsetWidth - 12 - 60 // 12 is width of scrollbar
-            offsetTop = 0
+            offsetTop = 60
             break;
         case "topLeft":
             offsetLeft = 0
@@ -317,11 +321,11 @@ function getOffset(direction) {
             break;
         case "bottomLeft":
             offsetLeft = 0
-            offsetTop = window.innerHeight - 120 //30 is margin around player
+            offsetTop = window.innerHeight - document.getElementById('menu_player').offsetHeight - 40 //30 is margin around player
             break;
         case "bottomRight":
             offsetLeft = window.innerWidth - player.offsetWidth - 12 - 60 // 12 is width of scrollbar
-            offsetTop = window.innerHeight - 120 //30 is margin around player
+            offsetTop = window.innerHeight - document.getElementById('menu_player').offsetHeight - 40 //30 is margin around player
             break;
         default:
             return null
@@ -336,7 +340,7 @@ function getOffset(direction) {
 
 function menuSlidePlayer(direction) {
     player = document.getElementById('menu_player_container')
-    switch(playerCurrentPosition) {
+    switch(currentPosition) {
         case "topLeft":
         case "bottomLeft":
             player.style.animation = "playerChangePosition" + direction + " 0.25s forwards"

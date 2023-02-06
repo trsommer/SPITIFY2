@@ -7,6 +7,7 @@ var playlistPictureSongId = "";
 var playlistPlayingTrack = null;
 
 async function playlist_view() {
+    repositionPlayer(12, 60);
     await Sortable.create(playlist_tracks_container, {
         animation: 150,
         group: "localStorage-example",

@@ -1,28 +1,51 @@
 #menu_player_container {
   position: absolute;
-  bottom: 0;
-  left: 0;
-  top: inherit;
-  right: auto;
   display: flex;
   align-items: center;
   animation-fill-mode: forwards;
   pointer-events: all;
   display: flex;
   justify-content: center;
+  height: 120px;
+}
+
+.bottomLeft {
+  bottom: 0;
+  left: 0;
+}
+
+.bottomRight {
+  bottom: 0;
+  right: 12px;
+}
+
+.topLeft {
+  top: 60px;
+  left: 0;
+}
+
+.topRight {
+  top: 0;
+  right: 12px;
 }
 
 #menu_player {
   height: 90px;
   margin: 15px;
   backdrop-filter: blur(0);
-  animation-fill-mode: forwards;
   display: flex;
   align-items: center;
-  background: rgba(32,32,32,0);
+  background: rgba(32,32,32,0.75);
   border-radius: 28px;
   width: 0;
   opacity: 0;
+  transition: 0.3s ease;
+}
+
+.menu_player_shown {
+  width: 600px !important;
+  opacity: 1 !important;
+  backdrop-filter: blur(5px) !important;
 }
 
 #menu_player_content {
@@ -41,14 +64,21 @@
   overflow: hidden;
   pointer-events: none;
   border-radius: 30%;
+  transition: 0.3s ease;
 }
 
 #menu_player_cover {
-  height: 50%;
-  width: 50%;
+  height: 100%;
+  width: 100%;
   opacity: 0;
   animation-fill-mode: forwards;
   object-fit: contain;
+  transition: 0.3s ease;
+}
+
+.menu_player_cover_shown {
+  opacity: 1 !important;
+  transition: 0.3s ease !important;
 }
 
 #menu_player_controls_container {
@@ -61,7 +91,12 @@
   width: 50%;
   opacity: 0;
   margin-right: 10px;
-  animation-fill-mode: forwards;
+  transition: 0.3 ease;
+}
+
+.menu_player_slider_shown {
+  opacity: 1 !important;
+  width: 100% !important;
 }
 
 .slider {
@@ -102,6 +137,7 @@
   height: 40px;
   align-items: center;
   pointer-events: none;
+  transition: 0.2s ease;
 }
 
 .menu_player_music_control {
@@ -109,13 +145,16 @@
   margin-left: 10px;
   margin-right: 10px;
   opacity: 0;
-  animation-fill-mode: forwards;
+  transition: 0.1s ease;
   pointer-events: all;
 }
 
 .menu_player_music_control:hover {
-  opacity: 1;
   cursor: pointer;
+  width: 22px !important;
+  margin-left: 11px !important;
+  margin-right: 11px !important;
+  transition-delay: 0 !important;
 }
 
 .menu_player_music_control_secondary {
@@ -234,7 +273,13 @@
   grid-column-gap: 10px;
   margin-left: 4px;
   opacity: 0;
-  animation-fill-mode: forwards;
+  transition: 0.3s ease;
+  transition-delay: 0.15s;
+}
+
+.menu_player_text_container_shown {
+  opacity: 1 !important;
+  transition-delay: 0 !important;
 }
 
 .menu_player_text {
@@ -249,7 +294,7 @@
   opacity: 0;
   margin-left: 10px;
   margin-right: 10px;
-  animation-fill-mode: forwards;
+  transition: 0.2 ease;
 }
 
 #menu_player_icon1 {

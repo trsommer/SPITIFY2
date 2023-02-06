@@ -1,11 +1,16 @@
 var playState = false
 
 document.addEventListener('keydown', (e) => {
+    console.log(e.key);
     //closes context menu on esc
-      if (e.key == " " && e.target == document.body) {
+      if (e.key == " ") {
         e.preventDefault();
+        if (getCurrentSong() == null) {
+            lastSongInfo = getLastPlayedSongInfo();
+            playNewSong(lastSongInfo);
+            return
+        };
         changePlayState();
-        changePlayStateVariable();
     }
 });
 
@@ -14,6 +19,7 @@ function onPlaystateChange() {
     audioPaused = audioElement.paused
     if (audioPaused == false) {
         manualPlay();
+        setContinusProgress();
     }
     if (audioPaused == playState) {
         changePlayStateVariable(audioPaused)
@@ -25,9 +31,10 @@ function onPlaystateChange() {
 async function manualPlay() {
     if (getCurrentSong() == null) {
         const info = getLastPlayedSongInfo();
-        const song = await new Song(info);
-        setCurrentSong(song);
+        playNewSong(info);
+        return
     }
+    //changePlayState();
 }
 
 async function play(song) {
@@ -142,6 +149,20 @@ function setProgress() {
     updatePlayerSlider(progress)
 }
 
+function setContinusProgress() {
+    const audioElement = document.getElementById('menu_player_audio')
+    var currentTime = audioElement.currentTime
+    var duration = audioElement.duration
+
+    progress = 100 * (currentTime / duration)
+    if (playState == false) {
+        return
+    }
+    document.getElementById('menu_player_slider').value = progress
+
+    window.requestAnimationFrame(setContinusProgress)
+}
+
 function setSpecificProgress(progress) {
     updatePlayerSlider(progress)
 }
@@ -158,7 +179,7 @@ function getCurrentVolume() {
 
 function setPlayState(state) {
     const audioElement = document.getElementById('menu_player_audio')
-    var playPauseIcon = document.getElementById('menu_player_icon1')
+    var playPauseIcon = document.getElementById('menu_player_play')
     if (audioElement.src == "") return;
 
     if (state == false) {
@@ -174,7 +195,7 @@ function setPlayState(state) {
 
 function changePlayState() {
     const audioElement = document.getElementById('menu_player_audio')
-    var playPauseIcon = document.getElementById('menu_player_icon1')
+    var playPauseIcon = document.getElementById('menu_player_play')
     if (audioElement.src == "") return;
 
     if (playState == true) {
@@ -283,5 +304,5 @@ function setLikeIcon(liked) {
 
     let newLikeIcon = liked ? likeIcon : dislikeIcon
 
-    document.getElementById('menu_player_icon3').src = newLikeIcon
+    document.getElementById('menu_player_like').src = newLikeIcon
 }

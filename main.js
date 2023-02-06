@@ -25,6 +25,7 @@ async function createWindow() {
     resizable: true,
     icon: Path.join(__dirname, "spitifyIcon.png"),
     titleBarStyle: "shown",
+    autoHideMenuBar: true,
     webPreferences: {
       preload: Path.join(__dirname, "contextBridge.js"),
     },
