@@ -3,7 +3,7 @@ var playState = false
 document.addEventListener('keydown', (e) => {
     console.log(e.key);
     //closes context menu on esc
-      if (e.key == " ") {
+      if (e.key == " " && e.target.nodeName != "INPUT") {
         e.preventDefault();
         if (getCurrentSong() == null) {
             lastSongInfo = getLastPlayedSongInfo();

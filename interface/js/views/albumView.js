@@ -7,7 +7,7 @@ var albumPlayingTrack = null;
 function album_view() {
     setTopMenuOpacity(0);
     stopMenuLogoColorChange(true);
-    repositionPlayer(12, 60);
+    repositionPlayer(12, 0);
 }
 
 function scrollAlbumView(scrollY) {
