@@ -12,7 +12,7 @@ window.electronAPI.updateSpotifySearch((event, response) => {
 function search_view() {
   stopMenuLogoColorChange(false)
   updateSearchPlayingTrack()
-  repositionPlayer(12, 60);
+  updateTopBarVisible(true);
 }
 
 function setContentSearch(content) {

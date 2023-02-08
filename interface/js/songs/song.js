@@ -2,7 +2,7 @@ class Song {
   /*
     This class represents a playable song. It combines the information gained from the spotify api (songInfo)
     with the corresponding video from youtube music (songYoutube).
-    */
+  */
 
   //Globals
   #songSpotifyId = "";

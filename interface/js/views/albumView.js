@@ -7,18 +7,18 @@ var albumPlayingTrack = null;
 function album_view() {
     setTopMenuOpacity(0);
     stopMenuLogoColorChange(true);
-    repositionPlayer(12, 0);
+    updateTopBarVisible(false);
 }
 
 function scrollAlbumView(scrollY) {
     if (scrollY > 450 && !scrolledDown) {
         scrolledDown = true;
         changeMenuTopVisibility(false);
-        repositionPlayer(12, 60);
+        updateTopBarVisible(true);
     } else if (scrollY < 450 && scrolledDown) {
         scrolledDown = false;
         changeMenuTopVisibility(true);
-        repositionPlayer(12, 0);
+        updateTopBarVisible(false);
     }
 }
 

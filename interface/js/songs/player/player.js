@@ -151,6 +151,8 @@ function setProgress() {
 
 function setContinusProgress() {
     const audioElement = document.getElementById('menu_player_audio')
+    const sliderElement = document.getElementById('menu_player_slider')
+    const roundSliderElement = document.getElementById('menu_player_circular_progress')
     var currentTime = audioElement.currentTime
     var duration = audioElement.duration
 
@@ -158,7 +160,11 @@ function setContinusProgress() {
     if (playState == false) {
         return
     }
-    document.getElementById('menu_player_slider').value = progress
+    sliderElement.value = progress
+    sliderElement.style.backgroundSize = progress + '% 100%';
+
+    stretchedProgress = progress * 2.6
+    roundSliderElement.style.strokeDashoffset = 6630 - stretchedProgress
 
     window.requestAnimationFrame(setContinusProgress)
 }
@@ -168,8 +174,10 @@ function setSpecificProgress(progress) {
 }
 
 function updateVolumeSlider(volume) {
+    const volumeSlider = document.getElementById('menu_player_volume_slider')
     const audioSlider = document.getElementById('menu_player_volume_slider');
     audioSlider.value = volume;
+    volumeSlider.style.backgroundSize = volume + '% 100%';
 }
 
 function getCurrentVolume() {

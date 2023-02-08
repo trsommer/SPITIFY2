@@ -7,19 +7,81 @@ newOffset = null
 startDate = null
 playerCurrentPosition = "bottomLeft"
 currentPositionIndex = 2
+topBarVisible = true
+leftMenuVisible = false
 disabled = false
 
 function setupMenuMove() {
     const playerBG = document.getElementById('menu_player')
+    const volumeSlider = document.getElementById('menu_player_volume_slider')
+    const menuLeft = document.getElementById('menu_left')
+    const menu_pushed = document.getElementById('menu_pushed')
     playerBG.addEventListener('mousedown', function(e) {
         if (e.target.nodeName == "INPUT") {
             return
         }
         startMovePlayer(e)
     }, false);
+
+    volumeSlider.addEventListener('input', function(e) {
+        volumeSlider.style.backgroundSize = volumeSlider.value + '% 100%';
+    }, false)
+
+    menuLeft.addEventListener("mouseenter", function(e) {
+        updateLeftMenuVisible(true)
+    }, false)
+
+    menuLeft.addEventListener("mouseleave", function(e) {
+        updateLeftMenuVisible(false)
+    }, false)
 }
 
+function updateTopBarVisible (visible) {
+    if (topBarVisible == visible) return
 
+    const player = document.getElementById("menu_player_container");
+    //reposition player if shown 
+
+    player.style.transition = "0.25s ease";
+
+    if (topBarVisible == false && visible == true) {
+        //translate down 60px
+        player.classList.add("topRightWithTopBar")
+    } else {
+        //translate up 60px
+        player.style.transitionDelay = "0.25s";
+        player.classList.remove("topRightWithTopBar")
+    }
+
+    player.addEventListener("transitionend", function () {
+        player.style.transition = "none";
+        player.style.transitionDelay = "none";
+        console.log("transition ended");
+      }, {once: true});
+    
+    topBarVisible = visible
+}
+
+function updateLeftMenuVisible (visible) {
+    if (leftMenuVisible == visible) return
+
+    if (playerCurrentPosition == "topRight" || playerCurrentPosition == "bottomRight") return
+
+    const player = document.getElementById("menu_player_container");
+    //reposition player if shown 
+
+    player.style.transition = "0.25s ease";
+
+    if (leftMenuVisible == false && visible == true) {
+        //translate right 180px
+        player.classList.add("leftWithLeftMenu")
+    } else {
+        //translate left 180px
+        player.classList.remove("leftWithLeftMenu")
+    }
+    
+    leftMenuVisible = visible
+}
 
 // player in animation
 async function animatePlayerIn() {
@@ -185,6 +247,7 @@ function setFinalPosition(direction) {
             break;
         case "topRight":
             player.className = "topRight"
+            if (topBarVisible) player.classList.add("topRightWithTopBar")
             break;
         case "bottomLeft":
             player.className = "bottomLeft"
@@ -203,7 +266,7 @@ function animationToPlayerPosition(newOffset) {
 
     console.log(newOffset);
 
-    player.style.transition = "0.4s ease-in-out"
+    player.style.transition = "0.4s ease"
     player.style.left = newOffset.x + "px"
     player.style.top = newOffset.y + "px"
 }
@@ -325,15 +388,16 @@ function getOffset(direction) {
 
     switch(direction) {
         case "topRight":
-            offsetLeft = window.innerWidth - player.offsetWidth - 12 - 60 // 12 is width of scrollbar
-            offsetTop = 0
+            offsetLeft = window.innerWidth - player.offsetWidth - 12 // 12 is width of scrollbar
+            if (topBarVisible) offsetTop = 60
+            else offsetTop = -10
             break;
         case "topLeft":
-            offsetLeft = 0
-            offsetTop = 60
+            offsetLeft = 60
+            offsetTop = 50
             break;
         case "bottomLeft":
-            offsetLeft = 0
+            offsetLeft = 60
             offsetTop = window.innerHeight - 120 //30 is margin around player
             break;
         case "bottomRight":
@@ -361,4 +425,8 @@ function menuSlidePlayer(direction) {
         default:
             return
     }
+}
+
+function getCurrentPlayerPosition() {
+    return getCurrentPlayerPosition
 }

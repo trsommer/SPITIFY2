@@ -5,7 +5,7 @@ function settings_view() {
   clearSettingsMenuItems();
   highlitedMenuItem = 0;
   document.getElementsByClassName("settings_menu_item")[0].style.backgroundColor = "var(--accentColor)"
-  repositionPlayer(12, 60);
+  updateTopBarVisible(true);
 }
 
 function scrollSettingsMenuItemIntoView(id) {

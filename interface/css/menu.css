@@ -19,7 +19,6 @@
 #menu_pushed {
     position: relative;
     height: 100%;
-    width: 100vw;
 }
 
 #menu_left:hover {
@@ -248,12 +247,13 @@
     position: absolute;
     margin-left: 20px;
     overflow: hidden;
+    backdrop-filter: blur(3px);
 }
 
 #top_search_container_box_bg {
     width: 100%;
     height: 100%;
-    background: var(--bg_dark);
+    background: rgba(32,32,32,0.85);
     position: absolute;
     z-index: -5;
     opacity: 0.95;

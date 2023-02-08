@@ -3,7 +3,7 @@ var lastSearches = []
 function last_searches_view() {
   loadLastSearches();
   stopMenuLogoColorChange(false);
-  repositionPlayer(12, 60);
+  updateTopBarVisible(true);
 }
 
 async function loadLastSearches() {

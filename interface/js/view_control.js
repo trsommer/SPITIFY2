@@ -184,6 +184,7 @@ function backButtonChangeVisibility(visibility) {
     backButtonVisibility = true;
     document.getElementById("menu_top_back_button").style.width = "45px";
     document.getElementById("menu_top_back_button").style.opacity = "1";
+
   } else {
     backButtonVisibility = false;
     document.getElementById("menu_top_back_button").style.width = "0px";
@@ -235,23 +236,4 @@ function removeCurrentlyPlaying() {
   downloadsRemoveCurrentlyPlaying();
   artistRemoveCurrentlyPlaying();
   searchRemoveCurrentlyPlaying();
-}
-
-function repositionPlayer(offsetX, offsetY) {
-  if (playerCurrentPosition != "topRight") {
-    return
-  }
-
-  const player = document.getElementById("menu_player_container");
-
-  //add on transition end listener to reset transition
-
-  player.addEventListener("transitionend", function () {
-    player.style.transition = "none";
-    console.log("transition ended");
-  }, {once: true});
-
-  player.style.transition = "0.25s ease";
-  player.style.right = offsetX + "px";
-  player.style.top = offsetY + "px";
 }

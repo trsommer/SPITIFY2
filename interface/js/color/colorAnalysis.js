@@ -1,4 +1,7 @@
 function getColorString(color) {
+    if (color == null || color == undefined) {
+        return null
+    }
     return "rgb(" + color[0] + ", " + color[1] + ", " + color[2] + ")"
 }
 
@@ -125,6 +128,9 @@ function getBestColorNew(colors, threshHold) {
     
     for (let i = 0; i < colors.length; i++) {
         const color = colors[i];
+        if (color == null || color == undefined) {
+            continue;
+        }
         const colorHSL = colorHSLconversion(color)
         lightnessThreshgold = 1 - threshHold
         darknessThreshold = threshHold
@@ -137,7 +143,19 @@ function getBestColorNew(colors, threshHold) {
         const colorDistanceSum = getColorDistanceSum(colorMatrix, i) / 100
         console.log(colorDistanceSum);
 
-        colorScore = (colors.length - i) * 2 + colorHSL[1] * 35 + colorDistanceSum
+        lowSaturationPenalty = 0
+        //low saturation
+        if (colorHSL[1] < 0.1) {
+            lowSaturationPenalty = 10 + colorHSL[1] * 5
+        }
+
+        highSaturationReward = 0
+        //high saturation
+        if (colorHSL[1] > 0.8) {
+            highSaturationReward = 10 + colorHSL[1] * 5
+        }
+
+        colorScore = (colors.length - i) * 2 + colorHSL[1] * 35 + colorDistanceSum - lowSaturationPenalty + highSaturationReward
 
         colorString = getColorString(color)
         hslString = colorHSL[0] + ", " + colorHSL[1] + ", " + colorHSL[2]
@@ -145,8 +163,8 @@ function getBestColorNew(colors, threshHold) {
         if (colorHSL[2] < 0.2) {
             textColor = "white"
         }
-        baseStyle = "color: " + textColor + "; font-size: 20px; font-family: monospace; background-color: " + colorString + ";"
-        console.log("%c" + colorString + " " + hslString + " " + colorScore, baseStyle)
+        baseStyle = "color: " + textColor + "; font-size: 18px; font-family: monospace; background-color: " + colorString + ";"
+        console.log("%c" + "("+ colors.length + " - " + i +") * 2 + " + colorHSL[1] + " * 35 + " + colorDistanceSum + " - " + lowSaturationPenalty + " + " + highSaturationReward + " = " + colorScore, baseStyle)
 
 
 
@@ -197,6 +215,9 @@ function getColorDeltaMatrix(colors) {
 function printColorArrayInColor(colors) {
     for (let i = 0; i < colors.length; i++) {
         const color = colors[i];
+        if (color == null || color == undefined) {
+            continue;
+        }
         const colorString = getColorString(color);
         const textColor = getClosestColor(color, [[0, 0, 0], [255, 255, 255]]);
         const textColorString = getColorString(textColor);
