@@ -32,8 +32,16 @@
   top: 60px !important;
 }
 
-.leftWithLeftMenu {
+.topLeftWithLeftMenu {
   left: 180px !important;
+}
+
+.topLeftWithLeftMenuAndBackButton {
+  left: 240px !important;
+}
+
+.topLeftWithBackButton {
+  left: 120px !important;
 }
 
 

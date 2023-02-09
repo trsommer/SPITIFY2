@@ -9,6 +9,7 @@ playerCurrentPosition = "bottomLeft"
 currentPositionIndex = 2
 topBarVisible = true
 leftMenuVisible = false
+albumBackButtonVisible = false
 disabled = false
 
 function setupMenuMove() {
@@ -39,12 +40,17 @@ function setupMenuMove() {
 function updateTopBarVisible (visible) {
     if (topBarVisible == visible) return
 
+    const formerState = topBarVisible
+    topBarVisible = visible
+
+    if (playerCurrentPosition != "topRight") return
+
     const player = document.getElementById("menu_player_container");
     //reposition player if shown 
 
     player.style.transition = "0.25s ease";
 
-    if (topBarVisible == false && visible == true) {
+    if (formerState == false && visible == true) {
         //translate down 60px
         player.classList.add("topRightWithTopBar")
     } else {
@@ -59,7 +65,6 @@ function updateTopBarVisible (visible) {
         console.log("transition ended");
       }, {once: true});
     
-    topBarVisible = visible
 }
 
 function updateLeftMenuVisible (visible) {
@@ -74,13 +79,49 @@ function updateLeftMenuVisible (visible) {
 
     if (leftMenuVisible == false && visible == true) {
         //translate right 180px
-        player.classList.add("leftWithLeftMenu")
+        if (albumBackButtonVisible) {
+            player.classList.add("topLeftWithLeftMenuAndBackButton")
+            player.classList.remove("topLeftWithBackButton")
+        } else {
+            player.classList.add("topLeftWithLeftMenu")
+        }
     } else {
         //translate left 180px
-        player.classList.remove("leftWithLeftMenu")
+        player.classList.remove("topLeftWithLeftMenu")
+        player.classList.remove("topLeftWithLeftMenuAndBackButton")
+        if (albumBackButtonVisible) {
+            player.classList.add("topLeftWithBackButton")
+        }
     }
     
     leftMenuVisible = visible
+}
+
+function updateAlbumBackButtonVisible (visible) {
+    if (albumBackButtonVisible == visible) return
+
+    if (playerCurrentPosition != "topLeft") return
+
+    const player = document.getElementById("menu_player_container");
+    //reposition player if shown 
+
+    player.style.transition = "0.25s ease";
+
+    if (albumBackButtonVisible == false && visible == true) {
+        //translate right 180px
+        player.classList.add("topLeftWithBackButton")
+    } else {
+        //translate left 180px
+        player.classList.remove("topLeftWithBackButton")
+    }
+    
+    player.addEventListener("transitionend", function () {
+        player.style.transition = "none";
+        player.style.transitionDelay = "none";
+        console.log("transition ended");
+      }, {once: true});
+
+    albumBackButtonVisible = visible
 }
 
 // player in animation
@@ -244,6 +285,7 @@ function setFinalPosition(direction) {
         case "topLeft":
             //set player class to top left
             player.className = "topLeft"
+            if (backButtonVisibility) player.classList.add("topLeftWithBackButton")
             break;
         case "topRight":
             player.className = "topRight"
@@ -393,16 +435,17 @@ function getOffset(direction) {
             else offsetTop = -10
             break;
         case "topLeft":
-            offsetLeft = 60
+            if (backButtonVisibility) offsetLeft = 120
+            else offsetLeft = 60
             offsetTop = 50
             break;
         case "bottomLeft":
             offsetLeft = 60
-            offsetTop = window.innerHeight - 120 //30 is margin around player
+            offsetTop = window.innerHeight - 130 //30 is margin around player
             break;
         case "bottomRight":
-            offsetLeft = window.innerWidth - player.offsetWidth - 12 - 60 // 12 is width of scrollbar
-            offsetTop = window.innerHeight - 120 //30 is margin around player
+            offsetLeft = window.innerWidth - player.offsetWidth - 12 // 12 is width of scrollbar
+            offsetTop = window.innerHeight - 130 //30 is margin around player
             break;
         default:
             return null

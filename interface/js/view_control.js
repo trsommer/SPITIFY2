@@ -182,11 +182,13 @@ function clearSideMenuActiveButtons(exclude) {
 function backButtonChangeVisibility(visibility) {
   if (visibility) {
     backButtonVisibility = true;
+    updateAlbumBackButtonVisible(true)
     document.getElementById("menu_top_back_button").style.width = "45px";
     document.getElementById("menu_top_back_button").style.opacity = "1";
 
   } else {
     backButtonVisibility = false;
+    updateAlbumBackButtonVisible(false)
     document.getElementById("menu_top_back_button").style.width = "0px";
     document.getElementById("menu_top_back_button").style.opacity = "0";  }
 }
