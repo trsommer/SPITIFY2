@@ -100,6 +100,9 @@ function updateLeftMenuVisible (visible) {
 function updateAlbumBackButtonVisible (visible) {
     if (albumBackButtonVisible == visible) return
 
+    const formerState = albumBackButtonVisible
+    albumBackButtonVisible = visible
+
     if (playerCurrentPosition != "topLeft") return
 
     const player = document.getElementById("menu_player_container");
@@ -107,7 +110,7 @@ function updateAlbumBackButtonVisible (visible) {
 
     player.style.transition = "0.25s ease";
 
-    if (albumBackButtonVisible == false && visible == true) {
+    if (formerState == false && visible == true) {
         //translate right 180px
         player.classList.add("topLeftWithBackButton")
     } else {
@@ -121,7 +124,6 @@ function updateAlbumBackButtonVisible (visible) {
         console.log("transition ended");
       }, {once: true});
 
-    albumBackButtonVisible = visible
 }
 
 // player in animation
@@ -431,7 +433,7 @@ function getOffset(direction) {
     switch(direction) {
         case "topRight":
             offsetLeft = window.innerWidth - player.offsetWidth - 12 // 12 is width of scrollbar
-            if (topBarVisible) offsetTop = 60
+            if (topBarVisible) offsetTop = 50
             else offsetTop = -10
             break;
         case "topLeft":
