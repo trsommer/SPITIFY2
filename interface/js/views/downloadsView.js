@@ -24,13 +24,13 @@ function addDownloadToView(song) {
 
 function updateDownloadProgress(songId, progress) {
     const htmlElement = downloadedSongs[songId];
-    const progressElem = htmlElement.querySelector('.downloads_track_progress');
+    const progressElem = htmlElement.querySelector('.track_text_right');
     const progressFloat = parseFloat(progress.toFixed(2));
     
     if (progressFloat >= 99) {
-        progressElem.innerText = "done";
+        progressElem.innerHTML = "done";
     } else {
-        progressElem.innerText = parseFloat(progress.toFixed(2)) + "%";
+        progressElem.innerHTML = parseFloat(progress.toFixed(2)) + "%";
     }
 }
 

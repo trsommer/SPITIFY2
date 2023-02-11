@@ -121,7 +121,7 @@ async function playSong(info, albumCover) {
 function onEndPlay() {
     //controls the transition between songs
     const lastSong = getCurrentSong()
-    lastSong.savePreferredVolume();
+    //lastSong.savePreferredVolume();
     addToPlayedQueue(lastSong)
     clearCurrentlyPlaying()
     playQueue()
@@ -259,6 +259,11 @@ function setVolume() {
     const newVolume = value / 100
 
     audioElement.volume = newVolume
+
+    currentSong = getCurrentSong()
+    if (currentSong != null) {
+        currentSong.savePreferredVolume(newVolume);
+    }
 }
 
 function setSpecificVolume(volume) {

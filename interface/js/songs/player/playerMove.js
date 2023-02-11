@@ -26,6 +26,7 @@ function setupMenuMove() {
 
     volumeSlider.addEventListener('input', function(e) {
         volumeSlider.style.backgroundSize = volumeSlider.value + '% 100%';
+        setVolume();
     }, false)
 
     menuLeft.addEventListener("mouseenter", function(e) {

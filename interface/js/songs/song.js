@@ -504,8 +504,7 @@ class Song {
     }
   }
 
-  savePreferredVolume() {
-    const currentVolume = getCurrentVolume() / 100;
+  savePreferredVolume(currentVolume) {
     this.#songPreferredVolume = currentVolume;
     this.#updateDB(); //TODO: does not save
   }
