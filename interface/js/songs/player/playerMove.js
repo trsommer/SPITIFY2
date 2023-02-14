@@ -80,7 +80,7 @@ function updateLeftMenuVisible (visible) {
 
     if (leftMenuVisible == false && visible == true) {
         //translate right 180px
-        if (albumBackButtonVisible) {
+        if (albumBackButtonVisible && playerCurrentPosition == "topLeft") {
             player.classList.add("topLeftWithLeftMenuAndBackButton")
             player.classList.remove("topLeftWithBackButton")
         } else {
@@ -90,7 +90,7 @@ function updateLeftMenuVisible (visible) {
         //translate left 180px
         player.classList.remove("topLeftWithLeftMenu")
         player.classList.remove("topLeftWithLeftMenuAndBackButton")
-        if (albumBackButtonVisible) {
+        if (albumBackButtonVisible && playerCurrentPosition == "topLeft") {
             player.classList.add("topLeftWithBackButton")
         }
     }
