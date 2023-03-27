@@ -104,7 +104,7 @@ async function setSongsContentPlaylist(songData) {
         imageUrl = songInfo.songImageUrl;
         duration = playlistTimeConvert(songInfo.songDuration);
         completeDuration += songInfo.songDuration;
-        artistsText = getArtistString(JSON.parse(songInfo.songArtistArray)["items"])
+        artistsText = getArtistsAsString(JSON.parse(songInfo.songArtistArray)["items"])
         id = song.id;
 
         if (index == 0 && songData.length < 4) {

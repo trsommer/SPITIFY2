@@ -17,6 +17,7 @@
     <link rel="stylesheet" href="css/downloads_view.css">
     <link rel="stylesheet" href="css/menu.css">
     <link rel="stylesheet" href="css/tracklist.css">
+    <script src="js/helperMethods.js"></script>
     <script src="js/songs/artists.js"></script>
     <script src="js/songs/song.js"></script>
     <script src="js/songs/songComparisons.js"></script>
@@ -171,7 +172,7 @@
                 <div id="top_search_container">
                     <div id="top_search_container_box">
                         <img src="icons/search.svg" alt="" id="top_search_icon">
-                        <input type="text" id="top_search_input" oninput="search(this.value)" onclick="toggleSearchView(this.value)">
+                        <input type="text" id="top_search_input" oninput="mainSearch(this.value)" onclick="toggleSearchView(this.value)">
                         <div id="top_search_clear_container">
                             <img id="top_search_clear_icon" src="icons/close.svg" alt="" onclick="clearSearchText()">
                         </div>
@@ -236,9 +237,14 @@
                     <div id="av_artist_header_gradient"></div>
                     <div id="av_artist_header_text_container">
                         <h1 id="av_artist_header_text">ARTIST</h1>
-                        <div id="av_artist_header_playButton_container">
-                            <div id="av_artist_header_playButton" onclick="playArtistTopSongs()">
+                        <div class="av_artist_header_button_container">
+                            <div class="av_artist_header_button" id="av_artist_header_playButton" onclick="playArtistTopSongs()">
                                 <img src="icons/play/play.svg">
+                            </div>
+                        </div>
+                        <div class="av_artist_header_button_container">
+                            <div class="av_artist_header_button" onclick="console.log('test123')">
+                                <img src="icons/bell/bell.svg">
                             </div>
                         </div>
                     </div>

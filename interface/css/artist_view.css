@@ -227,6 +227,7 @@
     color: var(--contrast_bright);
     margin-left: 10px;
     overflow: hidden;
+    max-width: calc(100% - 60px);
 }
 
 .av_music_preview_musicShowcase_trackText h4 {
@@ -566,7 +567,7 @@
     height: 100px;
 }
 
-#av_artist_header_playButton_container{
+.av_artist_header_button_container{
     width: 60px;
     height: 60px;
     display: flex;
@@ -575,7 +576,11 @@
     margin-left: 5px;
 }
 
-#av_artist_header_playButton {
+#av_artist_header_playButton img{
+    margin-left: 4px;
+}
+
+.av_artist_header_button {
     width: 50px;
     aspect-ratio: 1 / 1;
     border-radius: 100px;
@@ -587,12 +592,11 @@
     transition: 0.25s ease;
 }
 
-#av_artist_header_playButton:hover {
+.av_artist_header_button:hover {
     width: 54px;
     transition: 0.25s ease;
 }
 
-#av_artist_header_playButton img {
+.av_artist_header_button img {
     height: 50%;
-    margin-left: 4px;
 }

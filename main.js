@@ -50,6 +50,10 @@ app.whenReady().then(() => {
     const response = await spotify.getAlbumInfo(albumID);
     return response;
   });
+  ipcMain.handle("get:albumMetadata", async (event, albumID) => {
+    const response = await spotify.getAlbumMetadata(albumID);
+    return response;
+  });
   ipcMain.handle("convert:url", async (event, url) => {
     const response = await youtube.convertURL(url);
     return response;

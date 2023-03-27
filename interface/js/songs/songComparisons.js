@@ -184,3 +184,45 @@ function findTitleOverlap(spotifyTitle, ytTitle) {
     return false;
 }
 
+function removeBrackets(string) {
+    return string
+    .replaceAll("(", "")
+    .replaceAll(")", "")
+    .replaceAll("{", "")
+    .replaceAll("}", "")
+    .replaceAll("[", "")
+    .replaceAll("]", "");
+}
+
+function titleSimilarity(spotifyTitle, ytTitle) {
+    //divide spotifyTitle into words 
+    const spotifyTitleWords = spotifyTitle.split(" ");
+
+    //remove words from ytTitle that are also in spotifyTitle
+
+    let newTitle = ytTitle;
+
+    remainingWordsLength = 0;
+
+    for (let i = 0; i < spotifyTitleWords.length; i++) {
+        const word = spotifyTitleWords[i];
+        tempWord = removeBrackets(word).trim();
+        search = newTitle.search(tempWord);
+
+        if (search > -1) {
+            newTitle = newTitle.replace(tempWord, "");
+        } else {
+            remainingWordsLength += tempWord.length;
+        }
+    }
+
+    newTitle = newTitle.replaceAll(/\s/g,'')
+    newTitleLength = newTitle.length;
+
+    return newTitleLength + remainingWordsLength;; 
+}
+
+
+
+
+

@@ -13,7 +13,7 @@ function downloads_view() {
 
 function addDownloadToView(song) {
     const songTitle = song.getSongTitle();
-    const songArtist = song.getArtistsAsString();
+    const songArtist = song.getSongArtistString();
     const songImageUrl = song.getSongImageUrl();
     const songId = song.getSongSpotifyId();
     const index = downloadedSongInfo.length;
@@ -65,7 +65,7 @@ async function loadDownloads() {
         songId = song.id;
         songImageUrl = songInfo.songImageUrl;
         songTitle = songInfo.songTitle;
-        artistsText = getArtistString(JSON.parse(songInfo.songArtistArray).items);
+        artistsText = getArtistsAsString(JSON.parse(songInfo.songArtistArray).items);
 
         addHTMLSong(songImageUrl, songTitle, artistsText, songId, "done", index, songId);
 

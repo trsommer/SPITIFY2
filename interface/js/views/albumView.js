@@ -23,18 +23,20 @@ function scrollAlbumView(scrollY) {
 }
 
 async function setupAlbumView(id, additionalInfo) {
-    var albumInfo = await getSpotifyAlbum(id)
+    const albumInfo = await getSpotifyAlbum(id)
+    const albumMetadata = await getAlbumMetadata(id)
     console.log(additionalInfo);
     console.log(albumInfo);
+    console.log(albumMetadata);
     tracks = albumInfo["data"]["album"]["tracks"]["items"]
     info = additionalInfo
-    setContentArtists()
+    setContentArtists(albumMetadata)
     console.log(tracks)
     addTracks()
     switchView("album_view")
 }
 
-async function setContentArtists() {
+async function setContentArtists(albumMetadata) {
     imageUrl = info["coverArt"]["sources"][2]["url"]
     if (imageUrl == undefined) {
         imageUrl = "standardImages/cover.jpg"
@@ -62,19 +64,17 @@ async function setContentArtists() {
     }
     header.innerHTML = title
 
-    artists = ""
+    artists = albumMetadata.artists.items
+    artistID = artists[0]["id"]
+    artistString = getArtistsAsString(artists)
     date = info["date"]["year"]
-    heading2 = ""
+    heading2 = artistString + " - " + date
 
-    if (info.artists != undefined) {
-        artists = info["artists"]["items"]
-        artistString = getArtistString(artists)
-        heading2 = artistString + " - "
-    }
-
-    heading2 += date
-
-    document.getElementById("album_view_2ndHeader").innerHTML = heading2
+    const artistLink = document.getElementById("album_view_2ndHeader")
+    artistLink.innerHTML = heading2
+    artistLink.addEventListener("click", () => {
+        openArtist(artistID)
+    })
 
     console.log(info);
 
@@ -98,7 +98,7 @@ function addTracks() {
         trackDurationMS = track["duration"]["totalMilliseconds"]
         trackTimeFormated = timeConvert(trackDurationMS)
         artists = track["artists"]["items"]
-        artistString = getArtistString(artists)
+        artistString = getArtistsAsString(artists)
         uri = track.uri
         id = uri.split(":")[2]
 
@@ -170,20 +170,6 @@ function addTracks() {
 
         tracksHTML.push({id: id, html: trackDiv})
     }
-}
-
-function getArtistString(artists) {
-    artistString = ""
-    for (let index = 0; index < artists.length; index++) {
-        const artist = artists[index];
-        if (index == 0) {
-            artistString = artist["profile"]["name"]
-            continue
-        }
-        artistString += ", " + artist["profile"]["name"]
-    }
-
-    return artistString
 }
 
 function playSongAlbum(id) {
@@ -263,7 +249,7 @@ async function importAlbumAsPlaylist() {
     //TODO if songs are not fully loaded into db, things break - needs fixing
 
     const albumName = info.name;
-    const author = getArtistString(info.artists.items)
+    const author = getArtistsAsString(info.artists.items)
     const image = info.coverArt.sources[2].url
 
     const playlistId = await createSpecificPlaylist(albumName, author, image, 1);

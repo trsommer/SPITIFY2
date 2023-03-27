@@ -14,6 +14,17 @@ document.addEventListener('keydown', (e) => {
     }
 });
 
+//this function attaches a listener to the volume slider that resets the volume to 50% on double click
+function attachVolumeResetListener() {
+    const volumeSlider = document.getElementById("menu_player_volume_slider");
+
+    volumeSlider.addEventListener("dblclick", (e) => {
+        console.log("reset volume");
+        setSpecificVolume(0.5);
+    });
+}
+
+
 function onPlaystateChange() {
     const audioElement = document.getElementById('menu_player_audio')
     audioPaused = audioElement.paused
@@ -55,7 +66,7 @@ async function addInfoToPlayer(song) {
     //adds information (cover image, title, artists) to the player
     const playerImage = document.getElementById("menu_player_cover");
     playerImage.src = song.getSongImageUrl();
-    setPlayerText(song.getSongTitle(), song.getArtistsAsString())
+    setPlayerText(song.getSongTitle(), song.getSongArtistString())
 
     setLikeIcon(song.getSongLikeStatus());
 }
@@ -63,7 +74,7 @@ async function addInfoToPlayer(song) {
 function createNewNotification(song) {
     data = {
         title: song.getSongTitle(),
-        subTitle: song.getArtistsAsString(),
+        subTitle: song.getSongArtistString(),
         body: song.getAlbumName(),
         imageUrl: song.getSongImageUrl()
     }
@@ -74,7 +85,7 @@ function createNewNotification(song) {
 async function setMediaSessionAPI(song) {
     navigator.mediaSession.metadata = await new MediaMetadata({
         title: song.getSongTitle(),
-        artist: song.getArtistsAsString(),
+        artist: song.getSongArtistString(),
         album: "Album",
         artwork: [
             { src: song.getSongImageUrl() }

@@ -26,7 +26,6 @@ async function playSongNow(info) {
     playQueue()
     //changePlayState();
   }
-
 }
 
 function addToQueue(song) {
@@ -59,7 +58,12 @@ async function playQueue() {
     var song = await removeFromQueue();
     console.log(song.getSongTitle());
     await play(song);
-    //updateVolumeSlider(song.getSongPreferredVolume() * 100); //update preferred volume
+    
+    if (songQueueLength == 1) {
+      //find a new song to play
+      //TODO nextSong = await findRecommendedSong(song);
+    }
+
   }
 }
 

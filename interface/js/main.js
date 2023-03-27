@@ -13,6 +13,7 @@ function onLoad() {
     });
 
     setupMenuMove()
+    attachVolumeResetListener()
 }
 
 function sleep(ms) {
@@ -31,7 +32,7 @@ async function setDisplayMode(element, mode, delay){
     }
 }
 
-async function search(query) {
+async function mainSearch(query) {
     console.log("searching for:" + query + ".");
     query = query.trim()
     if (query == "") {
@@ -51,7 +52,7 @@ async function search(query) {
 
 function clearSearchText() {
     document.getElementById("top_search_input").value = ""
-    search("")
+    mainSearch("")
 }
 
 async function toggleSearchView(query) {

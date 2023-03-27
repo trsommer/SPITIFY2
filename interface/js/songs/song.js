@@ -35,14 +35,15 @@ class Song {
 
   async #setup(songInfo, requestType) {
     //requestType is either "stream", "download" or "empty" - if empty, steam is default
-    id = this.#getIdFromSongInfo(songInfo);
+    id = getIdFromSongInfo(songInfo);
     this.#songSpotifyId = id;
 
     //get possible info of song from db
     const databaseQueryResult = await this.#getInfoFromDB(id);
+    const cloudOverride = false; //forces song regeneration from cloud
 
     //check if song is in db
-    if (databaseQueryResult.length == 1) {
+    if (databaseQueryResult.length == 1 && !cloudOverride) {
       //song is in db
       await this.#setupSongDatabase(databaseQueryResult, requestType);
     } else {
@@ -85,7 +86,7 @@ class Song {
 
 
     //get if the url is expired
-    const expired = this.#checkIfUrlExpired(this.#songStreamingUrl);
+    const expired = checkIfUrlExpired(this.#songStreamingUrl);
     //if url is expired, get new url
     if (expired) {
       this.#songStreamingUrl = await this.#getStreamingUrl(
@@ -197,49 +198,15 @@ class Song {
     //this.#songType = songInfo.type;
     this.#songDuration = songInfo.duration.totalMilliseconds;
     this.#songAlbum = songInfo.album;
-    this.#songImageUrl = this.#getImageCoverUrl(songInfo);
+    this.#songImageUrl = getImageCoverUrl(songInfo);
     this.#songLikeStatus = false;
     this.#songInfo = songInfo;
   }
 
-  #getImageCoverUrl(songInfo) {
-    //searches the cover images from spotify for the best resolution
-    const images = songInfo.album.coverArt.sources;
-    let bestResolution = 0;
-    let bestImageUrl = "";
-
-    for (let i = 0; i < images.length; i++) {
-      const image = images[i];
-
-      if (image.width == undefined) {
-        return images[2].url;
-      }
-
-      if (image.width > bestResolution) {
-        bestResolution = image.width;
-        bestImageUrl = image.url;
-      }
-    }
-
-    return bestImageUrl;
-  }
-
-  #checkIfUrlExpired(url) {
-    //checks if a sreaming url is expired by comparing the timestamp in the url with the current time
-    const split = url.split("videoplayback?");
-    const params = new URLSearchParams(split[1]);
-    const expired = params.get("expire");
-    const currentTime = new Date().getTime() / 1000;
-    const timeDelta = expired - currentTime;
-    if (timeDelta < 0) {
-      return true;
-    }
-    return false;
-  }
-
   async #getYoutubeSong() {
     //construct search input for youtube search
-    const searchInput = this.#songTitle + " by " + this.getArtistsAsString();
+    const artists = this.#songArtistArray["items"]
+    const searchInput = this.#songTitle + " by " + getArtistsAsString(artists);
 
     //get different youtube results for search input
     const apiResponse = await getYoutubeUrls(searchInput);
@@ -293,6 +260,13 @@ class Song {
         this.#songTitle,
         song.title 
       );
+
+      const similarTitleComparison = await titleSimilarity(
+        this.#songTitle,
+        song.title
+      );
+
+      console.log(similarTitleComparison);
 
       const reducedTitleComparison = await compareTitles(
         this.#songTitle,
@@ -377,11 +351,12 @@ class Song {
 
       //check if the song is a better match than the current closest match
       let songDeviation =
-        i * i * 0.5 +
-        artistNumberDeviation * 3 +
+        i * i +
+        artistNumberDeviation * 6 +
+        similarTitleComparison +
         resultTitleComparison * 1.5 +
         resultAlbumComparison * 1.3 +
-        timeDifference * 0.2;
+        timeDifference * 0.5;
 
       if (titleOverlap) {
         songDeviation = songDeviation * 0.5;
@@ -391,6 +366,7 @@ class Song {
         title: this.#songTitle,
         ytTitle: song.title,
         artistNumberDeviation: artistNumberDeviation,
+        similarTitleComparison: similarTitleComparison,
         resultTitleComparison: resultTitleComparison,
         titleOverlap: titleOverlap,
         resultAlbumComparison: resultAlbumComparison,
@@ -443,50 +419,6 @@ class Song {
     return location;
   }
 
-  getArtistsAsString() {
-    const artists = this.#songArtistArray["items"];
-
-    if (artists == []) {
-      return null;
-    }
-
-    let returnString = "";
-
-    if (artists == null || artists == undefined) {
-      return null;
-    }
-
-    const artistsLength = Object.keys(artists).length;
-
-    console.log(artistsLength);
-
-    for (let i = 0; i < artistsLength; i++) {
-      const artist = artists[i];
-      const artistName = artist["profile"]["name"];
-      if (i == 0) {
-        returnString = artistName;
-      } else {
-        returnString += ", " + artistName;
-      }
-    }
-
-    return returnString;
-  }
-
-  #getIdFromSongInfo(songInfo) {
-    //check if songinfo.id is undefined
-
-    if (songInfo["id"] == undefined) {
-      return songInfo.uri.split(":")[2];
-    }
-
-    if (songInfo.id == null) {
-      return songInfo.uri.split(":")[2];
-    }
-
-    return songInfo.id;
-  }
-
   likeSong() {
     switch (this.#songLikeStatus) {
       case true:
@@ -521,6 +453,11 @@ class Song {
 
   getSongArtistArray() {
     return this.#songArtistArray;
+  }
+
+  getSongArtistString() {
+    const artists = this.#songArtistArray["items"]
+    return getArtistsAsString(artists);
   }
 
   getSongAlbum() {
@@ -560,7 +497,8 @@ class Song {
   }
 
   getSongFullTitle() {
-    return this.#songTitle + " - " + this.getArtistsAsString();
+    const artists = this.#songArtistArray["items"]
+    return this.#songTitle + " - " + getArtistsAsString(artists);
   }
 
   getSongSpotifyId() {
@@ -571,4 +509,3 @@ class Song {
     return this.#songAlbum.name;
   }
 }
-

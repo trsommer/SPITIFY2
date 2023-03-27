@@ -1,5 +1,6 @@
 position = 0
 mouseDown = false;
+minMax = 0
 startCords = null
 endCords = null
 startOffset = null
@@ -17,6 +18,7 @@ function setupMenuMove() {
     const volumeSlider = document.getElementById('menu_player_volume_slider')
     const menuLeft = document.getElementById('menu_left')
     const menu_pushed = document.getElementById('menu_pushed')
+    const player_cover = document.getElementById('menu_player_cover_container')
     playerBG.addEventListener('mousedown', function(e) {
         if (e.target.nodeName == "INPUT") {
             return
@@ -127,7 +129,7 @@ function updateAlbumBackButtonVisible (visible) {
 
 }
 
-// player in animation
+// player appearance animations
 async function animatePlayerIn() {
     const playerBG = document.getElementById('menu_player')
     const playerCover = document.getElementById('menu_player_cover')
@@ -159,6 +161,8 @@ async function animatePlayerIn() {
 
     //add class menu_player_shown to playerBG
     playerBG.classList.add('menu_player_shown')
+    playerBG.classList.remove('menu_player_min')
+    playerBG.classList.add('menu_player_max')
     
     //add class menu_player_cover_shown to playerCover
     playerCover.classList.add('menu_player_cover_shown')
@@ -169,6 +173,122 @@ async function animatePlayerIn() {
     //add class menu_player_slider_shown to sliderTime
     sliderTime.classList.add('menu_player_slider_shown')
 
+}
+
+async function animatePlayerOut() {
+    minimizePlayer()
+
+    const playerBG = document.getElementById('menu_player')
+
+    playerBG.style.transitionDelay = "0.5s"
+
+    playerBG.classList.remove('menu_player_shown')
+
+    playerBG.addEventListener('transitionend', function() {
+        playerBG.style.transitionDelay = null
+    }, {once: true})
+}
+
+async function minimizePlayer() {
+    const playerBG = document.getElementById('menu_player')
+    const playerCover = document.getElementById('menu_player_cover')
+    const playerText = document.getElementById('menu_player_text_container')
+    const sliderTime = document.getElementById('menu_player_slider')
+    const sliderVolume = document.getElementById('menu_player_volume_slider')
+
+    const buttonShuffle = document.getElementById('menu_player_shuffle')
+    const buttonBack = document.getElementById('menu_player_backward')
+    const buttonPlay = document.getElementById('menu_player_play')
+    const buttonForward = document.getElementById('menu_player_forward')
+    const buttonRepeat = document.getElementById('menu_player_repeat')
+    const buttonLike = document.getElementById('menu_player_like')
+
+    const buttonsAndSlider = [buttonShuffle, buttonBack, buttonPlay, buttonForward, buttonRepeat, sliderVolume, buttonLike]
+
+    x = 0
+
+    for (let i = buttonsAndSlider.length - 1; i >= 0 ; i--) {
+        //add transition delay to each button
+        
+        buttonsAndSlider[i].style.transitionDelay = `${0.15 + x * 0.08}s`
+        buttonsAndSlider[i].style.opacity = 0
+        if (i == 5) {
+            buttonsAndSlider[i].style.width = "24px"
+        }
+
+        buttonsAndSlider[i].addEventListener('transitionend', function() {
+            buttonsAndSlider[i].style.transitionDelay = null
+        }, {once: true})
+
+        x++;
+    }
+
+    playerBG.style.transitionDelay = "0.35s"
+    
+    playerBG.classList.remove('menu_player_max')
+    playerBG.classList.add('menu_player_min')
+
+    playerBG.addEventListener('transitionend', function() {
+        playerBG.style.transitionDelay = null
+    }, {once: true})
+
+    //add class menu_player_text_container_shown to playerText
+    playerText.classList.remove('menu_player_text_container_shown')
+
+    //add class menu_player_slider_shown to sliderTime
+    sliderTime.classList.remove('menu_player_slider_shown')
+}
+
+async function maximizePlayer() {
+    const playerBG = document.getElementById('menu_player')
+    const playerCover = document.getElementById('menu_player_cover')
+    const playerText = document.getElementById('menu_player_text_container')
+    const sliderTime = document.getElementById('menu_player_slider')
+    const sliderVolume = document.getElementById('menu_player_volume_slider')
+
+    const buttonShuffle = document.getElementById('menu_player_shuffle')
+    const buttonBack = document.getElementById('menu_player_backward')
+    const buttonPlay = document.getElementById('menu_player_play')
+    const buttonForward = document.getElementById('menu_player_forward')
+    const buttonRepeat = document.getElementById('menu_player_repeat')
+    const buttonLike = document.getElementById('menu_player_like')
+
+    const buttonsAndSlider = [buttonShuffle, buttonBack, buttonPlay, buttonForward, buttonRepeat, sliderVolume, buttonLike]
+
+    for (let i = 0; i < buttonsAndSlider.length; i++) {
+        //add transition delay to each button
+        buttonsAndSlider[i].style.transitionDelay = `${0.15 + i * 0.08}s`
+        buttonsAndSlider[i].style.opacity = 1
+        if (i == 5) {
+            buttonsAndSlider[i].style.width = "150px"
+        }
+
+        buttonsAndSlider[i].addEventListener('transitionend', function() {
+            buttonsAndSlider[i].style.transitionDelay = null
+        }, {once: true})
+    }
+    
+    playerBG.classList.remove('menu_player_min')
+    playerBG.classList.add('menu_player_max')
+
+    //add class menu_player_cover_shown to playerCover
+    playerCover.classList.add('menu_player_cover_shown')
+
+    //add class menu_player_text_container_shown to playerText
+    playerText.classList.add('menu_player_text_container_shown')
+
+    //add class menu_player_slider_shown to sliderTime
+    sliderTime.classList.add('menu_player_slider_shown')
+}
+
+function togglePlayerMinMax() {
+    if (minMax == 0) {
+        minimizePlayer()
+        minMax = 1
+    } else {
+        maximizePlayer()
+        minMax = 0
+    }
 }
 
 // player movement
@@ -227,8 +347,21 @@ function endMovePlayer(e) {
     playerBg = document.getElementById('menu_player')
     startLeft = startOffset.x + "px"
     startTop="60px"
+    startTime = startDate.getTime()
 
-    player.addEventListener('transitionend', function() {
+    player.addEventListener('transitionend', async function() {
+        currenttime = new Date().getTime()
+        if (currenttime - startTime < 300) {
+            wait = 300 - (currenttime - startTime)
+
+            timeDiff = (currenttime - startTime)
+
+            console.log("waited " + wait + "ms");
+
+            await new Promise(r => setTimeout(r, wait));
+        }
+
+        console.log("transition ended");
         setFinalPosition(playerCurrentPosition)
     }, { once: true })
 
@@ -256,6 +389,7 @@ function endMovePlayer(e) {
 
     document.onmouseup = null;
     document.onmousemove = null;
+
 }
 
 function getVelocity() {
@@ -311,7 +445,7 @@ function animationToPlayerPosition(newOffset) {
 
     console.log(newOffset);
 
-    player.style.transition = "0.4s ease"
+    player.style.transition = "0.3s ease"
     player.style.left = newOffset.x + "px"
     player.style.top = newOffset.y + "px"
 }

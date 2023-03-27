@@ -8,6 +8,7 @@ module.exports = {
   searchSpotify,
   getArtistInfo,
   getAlbumInfo,
+  getAlbumMetadata,
   addInfoArtistTracks,
 };
 
@@ -156,6 +157,24 @@ async function getAlbumInfo(albumID) {
   const variables = '{"uri":"spotify:album:' + albumID + '", "offset":0,"limit":300}';
   const hash =
     '{"persistedQuery": {"version": 1, "sha256Hash": "3ea563e1d68f486d8df30f69de9dcedae74c77e684b889ba7408c589d30f7f2e"}}';
+
+  const url = getEncodedURL(urlStart, variables, hash);
+  let response = await axios.get(url, {
+    headers: { authorization: "Bearer " + accessToken,
+    'accept-encoding': 'application/json' 
+  },
+  });
+  return response.data;
+}
+
+async function getAlbumMetadata(albumID) {
+  const tokens = await getTokens();
+  const accessToken = await tokens.accessToken;
+  const urlStart =
+    "https://api-partner.spotify.com/pathfinder/v1/query?operationName=getAlbumMetadata&";
+  const variables = '{"uri":"spotify:album:' + albumID + '", "locale":""}';
+  const hash =
+    '{"persistedQuery": {"version": 1, "sha256Hash": "411f31a2759bcb644bf85c58d2f227ca33a06d30fbb0b49d0f6f264fda05ecd8"}}';
 
   const url = getEncodedURL(urlStart, variables, hash);
   let response = await axios.get(url, {

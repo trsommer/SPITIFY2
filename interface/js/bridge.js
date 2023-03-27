@@ -10,6 +10,12 @@ async function getSpotifyAlbum(id) {
     return returnArray
 }
 
+async function getAlbumMetadata(id) {
+    data = await window.electronAPI.getAlbumMetadata(id)
+
+    return data.data.albumUnion
+}
+
 async function getSongInfo(ids) {
     return window.electronAPI.getSongInfo(ids)
 }
