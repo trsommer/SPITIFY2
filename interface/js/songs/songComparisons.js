@@ -69,7 +69,6 @@ function compareSongDurations(spotifyDuration, ytDuration) {
 
     return difference;
 }
-
 function compareContentRatings(spotifyContentRating, ytContentRating) {
     if (spotifyContentRating == "EXPLICIT") {
         if (ytContentRating) {

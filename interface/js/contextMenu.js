@@ -238,8 +238,8 @@ async function spawnSongMenu(e) {
   spawnContextMenu(cursorX, cursorY, content);
 }
 
-function contextPlaylists(offsetLeft, OffsetTop, buttonIndex, side) {
-    let playlists = getPlaylists();
+async function contextPlaylists(offsetLeft, OffsetTop, buttonIndex, side) {
+    let playlists = await getFromDB("SELECT * FROM playlists")
     let content = [];
   
     for (let i = 0; i < playlists.length; i++) {
@@ -315,13 +315,13 @@ async function contextDownload() {
 
 async function contextAddToPlaylist(index) {
   let song = await new Song(clickedSongInfo);
-  addPlaylistSong(clickedSongInfo.id, index + 1);
+  contextAddPlaylistSong(clickedSongInfo, index + 1);
 }
 
 async function contextAddToNewPlaylist() {
   new Song(clickedSongInfo);
   const playlistId = await createPlaylist();
-  addPlaylistSong(clickedSongInfo.id, playlistId);
+  contextAddPlaylistSong(clickedSongInfo, playlistId);
   
 }
 
@@ -396,13 +396,13 @@ function contextPlaylistsAddToPlaylists(offsetLeft, OffsetTop, buttonIndex, side
 
 async function contextPlaylistAddToPlaylist(index) {
   new Song(clickedPlaylistSongInfo);
-  addPlaylistSong(clickedPlaylistSongInfo.id, index + 1);
+  contextAddPlaylistSong(clickedPlaylistSongInfo, index + 1);
 }
 
 async function contextPlaylistAddToNewPlaylist() {
   new Song(clickedPlaylistSongInfo);
   const playlistId = await createPlaylist();
-  addPlaylistSong(clickedPlaylistSongInfo.id, playlistId);
+  contextAddPlaylistSong(clickedPlaylistSongInfo, playlistId);
   
 }
 
@@ -494,8 +494,8 @@ async function spawnArtistMenu(e, songInfo) {
   spawnContextMenu(cursorX, cursorY, content);
 }
 
-function contextArtistPlaylists(offsetLeft, OffsetTop, buttonIndex, side) {
-  let playlists = getPlaylists();
+async function contextArtistPlaylists(offsetLeft, OffsetTop, buttonIndex, side) {
+  let playlists = await getFromDB("SELECT * FROM playlists")
   let content = [];
 
   for (let i = 0; i < playlists.length; i++) {
@@ -522,13 +522,13 @@ function contextArtistPlaylists(offsetLeft, OffsetTop, buttonIndex, side) {
 
 async function contextArtistAddToPlaylist(index) {
   new Song(clickedArtistTopSong);
-  addPlaylistSong(clickedArtistTopSong.id, index + 1);
+  contextAddPlaylistSong(clickedArtistTopSong, index + 1);
 }
 
 async function contextArtistAddToNewPlaylist() {
   new Song(clickedArtistTopSong);
   const playlistId = await createPlaylist();
-  addPlaylistSong(clickedArtistTopSong.id, playlistId);
+  contextAddPlaylistSong(clickedArtistTopSong, playlistId);
   
 }
 
@@ -647,7 +647,7 @@ async function contextAlbumAddToPlaylist(index) {
     uri = clickedAlbumSongInfo.uri;
     id = uri.split(":")[2];
   }
-  addPlaylistSong(id, index + 1);
+  contextAddPlaylistSong(clickedAlbumSongInfo, index + 1);
 }
 
 async function contextAlbumAddToNewPlaylist() {
@@ -658,7 +658,7 @@ async function contextAlbumAddToNewPlaylist() {
     uri = clickedAlbumSongInfo.uri;
     id = uri.split(":")[2];
   }
-  addPlaylistSong(id, playlistId);
+  contextAddPlaylistSong(clickedAlbumSongInfo, playlistId);
 }
 
 function contextAlbumOpenArtists(offsetLeft, OffsetTop, buttonIndex, side) {
@@ -720,4 +720,35 @@ async function contextAlbumPlayAfterQueue() {
 
 async function contextAlbumDownload() {
   const song = await new Song(clickedAlbumSongInfo, "download");
+}
+
+
+// for all context menus
+
+async function contextAddPlaylistSong(songInfo, playlistId) {
+  playlistInfo = await getSpecificPlaylistFromDB(playlistId);
+  songId = songInfo.id;  
+  playlistLength = playlistInfo.length;
+
+  if (playlistLength == 0) {
+    imageUrl = getImageCoverUrl(songInfo);
+    changePlaylistImage(playlistId, imageUrl);
+  }
+
+  if (playlistLength == 3) {
+    playlistSongs = await getPlaylistSongs(playlistId);
+    trackImages = [];
+    for (let i = 0; i < playlistSongs.length; i++) {
+      const track = playlistSongs[i];
+      trackInfo = JSON.parse(track.info);
+      trackImages.push(trackInfo.songImageUrl);
+    }
+    trackImages.push(getImageCoverUrl(songInfo));
+
+    quadImages = trackImages.join(",");
+    changePlaylistImage(playlistId, quadImages);
+  }
+
+
+  addPlaylistSong(songId, playlistId);
 }

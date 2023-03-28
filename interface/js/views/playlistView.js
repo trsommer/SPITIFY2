@@ -1,4 +1,5 @@
 var tracks = []
+var tracksStatic = []
 var tracksHTML = []
 var playlistName = ""
 var playlistId = 0;
@@ -34,6 +35,7 @@ async function setContentPlaylist(playlistData, songData, thisid) {
     setHeaderContentPlaylist(playlistData);
     await setSongsContentPlaylist(songData)
     tracks = songData;
+    tracksStatic = songData;
     id = thisid;
 
     //makes use of the sortable library
@@ -172,7 +174,7 @@ async function setSongsContentPlaylist(songData) {
             playTrackPlaylist(index);
         })
         songContainer.addEventListener("contextmenu", (e) => {
-            setClickedPlaylistSong(tracks[index], playlistId);
+            setClickedPlaylistSong(tracksStatic[index], playlistId);
             spawnPlaylistMenu(e);
           });
         playlistContainer.appendChild(songContainer);
@@ -194,12 +196,17 @@ async function setSongsContentPlaylist(songData) {
 async function createQuadHeaderImage(songData) {
     const quadImageContainer = document.getElementById('playlist_header_quadImage_container');
     const quadImageBackgroundContainer = document.getElementById('playlist_image_quad_background_container');
+    quadImageContainer.style.display = "grid";
+    quadImageBackgroundContainer.display = "flex";
     quadImageContainer.innerHTML = "";
     quadImageBackgroundContainer.innerHTML = "";
+    const imageUrls = [];
+
     for (let i = 0; i < 4; i++) {
         const song = songData[i];
         const songInfo = JSON.parse(song.info);
         const imageUrl = songInfo.songImageUrl;
+        imageUrls.push(imageUrl);
 
         //foreground
 
@@ -230,6 +237,8 @@ async function createQuadHeaderImage(songData) {
     colorString = await getColors("playlist_header_quad_mainImage")
     document.documentElement.style.setProperty("--accentColor", colorString)
 
+    const imageUrlString = imageUrls.join(",");
+    changePlaylistImage(playlistId, imageUrlString);
 }
 
 async function playTrackPlaylist(id) {
@@ -333,8 +342,42 @@ function convertMS(ms) {
 function removeSongFromThisPlaylist(id, playlistId) {
     removePlaylistSong(id, playlistId);
     const element = document.querySelector(`[data-id="${id}"]`);
+    const parent = element.parentNode;
+    const firstTrack = tracks[0]
 
-    element.parentNode.removeChild(element);
+    if (firstTrack.id == id) {
+        if (tracks.length > 1 && tracks.length <= 4) { 
+            nextTrack = tracks[1]
+            imageUrl = JSON.parse(nextTrack.info).songImageUrl;
+            nextTrackId = nextTrack.id
+            setHeaderImage(imageUrl, nextTrackId);
+            changePlaylistImage(playlistId, imageUrl)
+        } else if (tracks.length == 1) {
+            newImage = "standardImages/cover.jpg"
+            setHeaderImage(newImage, 0);
+            changePlaylistImage(playlistId, newImage)
+        }
+    }
+
+    tracks = tracks.filter(track => track.id != id);
+
+    if (tracks.length >= 4) {
+        createQuadHeaderImage(tracks)
+    } else {
+        const nextTrack = tracks[0]
+        const imageUrl = JSON.parse(nextTrack.info).songImageUrl;
+        const nextTrackId = nextTrack.id
+
+        const quadImageContainer = document.getElementById('playlist_header_quadImage_container');
+        const quadImageBackgroundContainer = document.getElementById('playlist_image_quad_background_container');
+        quadImageContainer.style.display = "none";
+        quadImageBackgroundContainer.display = "none";
+
+        setHeaderImage(imageUrl, nextTrackId);
+        changePlaylistImage(playlistId, imageUrl)
+    }
+
+    parent.removeChild(element);
 
     console.log(element);
 
@@ -346,12 +389,14 @@ function updatePictureAfterSorting(newOrder) {
         return
     }
         
-    for (let i = 0; i < 15; i++) {
+    for (let i = 0; i < tracks.length; i++) {
         const track = tracks[i];
         
         if (track.id == newOrder[0]) {
-            setHeaderImage(JSON.parse(track.info).songImageUrl, newOrder[0]);
-            break;
+            const newUrl = JSON.parse(track.info).songImageUrl;
+            const trackId = newOrder[0]
+            setHeaderImage(newUrl, trackId);
+            changePlaylistImage(playlistId, newUrl)
         }
 
     }

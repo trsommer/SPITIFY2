@@ -10,6 +10,7 @@ var menuLogoColorChangeStopped = false;
 var accentColor = "";
 var appropriateNrAlbumsCarousel = 4;
 var artistPlayingTrack = null;
+var isFollowingArtist = false;
 
 function artist_view() {
   setTopMenuOpacity(0);
@@ -855,5 +856,16 @@ function artistRemoveCurrentlyPlaying() {
   if (artistPlayingTrack != null) {
     artistPlayingTrack.html.getElementsByClassName("currently_playing_container")[0].style.display = "none";
     artistPlayingTrack = null;
+  }
+}
+
+function followArtist() {
+  icon = document.getElementById("av_artist_header_followButton_image");
+  if (isFollowingArtist) {
+    icon.src = "icons/bell/bell.svg";
+    isFollowingArtist = false;
+  } else {
+    icon.src = "icons/bell/bell_filled_ringing.svg";
+    isFollowingArtist = true;
   }
 }

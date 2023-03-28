@@ -90,7 +90,7 @@ async function detHiddenItems(heading) {
 
     document.getElementById("menu_top_button_play").style.transform = "translateX(-20px)"
 
-    document.getElementById("menu_top_button_shuffle").style.transform = "translateX(-20px)"
+    document.getElementById("menu_top_button_follow").style.transform = "translateX(-20px)"
 } 
 
 function changeHiddenHeadingVisibility(mode, id) {
@@ -140,12 +140,12 @@ function stopMenuLogoColorChange(mode) {
         setTopMenuOpacity(0.95);
         changeHiddenHeadingVisibility(true, "menu_top_heading");
         changeHiddenHeadingVisibility(true, "menu_top_button_play");
-        changeHiddenHeadingVisibility(true, "menu_top_button_shuffle");
+        changeHiddenHeadingVisibility(true, "menu_top_button_follow");
     } else {
         stopMenuLogoColorChange(true)
         setTopMenuOpacity(0);
         changeHiddenHeadingVisibility(false, "menu_top_heading");
         changeHiddenHeadingVisibility(false, "menu_top_button_play");
-        changeHiddenHeadingVisibility(false, "menu_top_button_shuffle");
+        changeHiddenHeadingVisibility(false, "menu_top_button_follow");
     }
   }

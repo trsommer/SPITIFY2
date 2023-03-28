@@ -17,6 +17,11 @@ async function getPlaylistsFromDB() {
     playlists = await getFromDB("SELECT * FROM playlists")
 }
 
+async function getSpecificPlaylistFromDB(playlistId) {
+    playlistName = 'playlist' + playlistId;
+    playlist = await getFromDB("SELECT * FROM " + playlistName)
+    return playlist;
+}
 
 
 async function createPlaylist() {
@@ -56,7 +61,6 @@ async function createSpecificPlaylist(name, author, imageUrl, locked) {
 }
 
 async function openPlaylist(playlistId) {
-    playlistName = 'playlist' + playlistId;
     if(playlistId == 'Likes') {
         data = {
             id: "Likes",
@@ -69,7 +73,7 @@ async function openPlaylist(playlistId) {
     } else {
         data = playlists[playlistId - 1];
     }
-    result = await getPlaylistSongs(playlistName);
+    result = await getPlaylistSongs(playlistId);
     console.log(result);
     switchView("playlist_view");
     await setContentPlaylist(data, result, playlistId);
@@ -87,17 +91,17 @@ function setContent(content) {
     for (let index = 0; index < content.length; index++) {
         let name = content[index].name;
         const id = content[index].id;
-        const imageUrl = content[index].imageUrl;
+        const imageUrlString = content[index].imageUrl;
+        const imageUrls = imageUrlString.split(",");
+        const imageUrl = imageUrls[0];
+
+        
         if (name == "") {
             name = "Playlist " + id;
         }
 
         var playlistItem = document.createElement("div");
         playlistItem.classList.add("playlists_item");
-
-        var playlistImage = document.createElement("img");
-        playlistImage.classList.add("playlist_item_image");
-        playlistImage.src = imageUrl;
 
         var playlistTextContainer = document.createElement("div");
         playlistTextContainer.classList.add("playlists_item_text_container");
@@ -108,7 +112,28 @@ function setContent(content) {
 
         playlistTextContainer.appendChild(playlistTitle);
 
-        playlistItem.appendChild(playlistImage);
+        if (imageUrls.length == 1) {
+            //singe image
+            var playlistImage = document.createElement("img");
+            playlistImage.classList.add("playlist_item_image");
+            playlistImage.src = imageUrl;
+            playlistItem.appendChild(playlistImage);
+        } else {
+            //quad image
+
+            var playlistImageContainer = document.createElement("div");
+            playlistImageContainer.classList.add("playlist_item_image_container");
+
+            for (let i = 0; i < 4; i++) {
+                var playlistImage = document.createElement("img");
+                playlistImage.classList.add("playlist_item_quad_image");
+                playlistImage.src = imageUrls[i];
+                playlistImageContainer.appendChild(playlistImage);
+            }        
+
+            playlistItem.appendChild(playlistImageContainer);
+        }
+
         playlistItem.appendChild(playlistTextContainer);
 
         playlistItem.addEventListener("click", function () {

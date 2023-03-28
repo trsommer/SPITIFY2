@@ -188,7 +188,7 @@
                     <button class="menu_top_button" id="menu_top_button_play" onclick="playArtistTopSongs()">play</button>
                 </div>
                 <div id="menu_top_hidden_play_button">
-                    <button class="menu_top_button" id="menu_top_button_shuffle">shuffle</button>
+                    <button class="menu_top_button" id="menu_top_button_follow">follow</button>
                 </div>
             </div>
             <div id="menu_top_back_button_container">
@@ -243,8 +243,8 @@
                             </div>
                         </div>
                         <div class="av_artist_header_button_container">
-                            <div class="av_artist_header_button" onclick="console.log('test123')">
-                                <img src="icons/bell/bell.svg">
+                            <div class="av_artist_header_button" onclick="followArtist()">
+                                <img id="av_artist_header_followButton_image" src="icons/bell/bell.svg">
                             </div>
                         </div>
                     </div>

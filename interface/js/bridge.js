@@ -81,7 +81,8 @@ async function likeSongDb(spotifyId, type) {
     window.electronAPI.likeSong(spotifyId, type)
 }
 
-async function getPlaylistSongs(playlistName) {
+async function getPlaylistSongs(playlistId) {
+    playlistName = 'playlist' + playlistId;
     return window.electronAPI.getPlaylistSongs(playlistName)
 }
 

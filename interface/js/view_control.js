@@ -48,7 +48,7 @@ function switchView(view) {
     if (scrolledDown == true) {
       changeHiddenHeadingVisibility(false, "menu_top_heading");
       changeHiddenHeadingVisibility(false, "menu_top_button_play");
-      changeHiddenHeadingVisibility(false, "menu_top_button_shuffle");
+      changeHiddenHeadingVisibility(false, "menu_top_button_follow");
     }
 
   window.scrollTo({ top: 0, behavior: 'smooth' });
