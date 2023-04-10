@@ -5,8 +5,9 @@ var backButtonVisibility = false;
 var artistResizeListener = false;
 var settingsScrollListener = false;
 var playerTopOffset = false;
-var views = [
+const views = [
   "search_view",
+  "search_list_view",
   "artist_view",
   "last_searches_view",
   "album_view",
@@ -15,7 +16,7 @@ var views = [
   "downloads_view",
   "settings_view",
 ];
-var sideMenuViews = ["playlists_view", "downloads_view", "settings_view"];
+const sideMenuViews = ["playlists_view", "downloads_view", "settings_view"];
 var scrollBarShape = 0;
 
 function switchView(view) {
@@ -62,30 +63,10 @@ function switchView(view) {
     backButtonChangeVisibility(true);
   }
 
-
-
-  /*
-  if (altTitleState) {
-    document.getElementById("top_container_alternativeTitle").style.animation =
-    "alternativeTitleOut 0.25s forwards";
-    altTitleState = false;
-  }
-  */
-
   found = false;
 
-  for (let index = 0; index < sideMenuViews.length; index++) {
-    const v = sideMenuViews[index];
-    if (v == view) {
-      found = true;
-      break;
-    }
-  }
-
-  console.log(view);
-
-  if (!found && view != "playlist_view") {
-    //clearSideMenuActiveButtons("");
+  if (sideMenuViews.includes(currentView) && !sideMenuViews.includes(view)) {
+    deactivateSideButton(currentView);
   }
 
   console.log("switched from " + currentView + " to " + view);
@@ -150,32 +131,35 @@ function setScrollBarShape(type) {
 }
 
 function toggleMenuView(view) {
-  currentButtonSideMenu = view;
-  //clearSideMenuActiveButtons(view);
-  switchView(view+"_view");
+  deactivateSideButton(currentView);
+  nextView = view + "_view";
+  activateSideButton(nextView);
+  switchView(nextView);
 }
 
-function clearSideMenuActiveButtons(exclude) {
-  buttons = ["playlists", "downloads", "settings"];
+function deactivateSideButton(view) {
+  viewButtonContainer = document.getElementById("menu_item_container");
+  if (sideMenuViews.includes(view)) {
+    index = sideMenuViews.indexOf(view);
+    //get button
+    button = viewButtonContainer.children[index];
+    //remove active class
+    button.classList.remove("menu_button_active");
+    //add inactive class
+    button.classList.add("menu_button_inactive");
+  }
+}
 
-  console.log(exclude);
-
-  for (let index = 0; index < buttons.length; index++) {
-    const button = buttons[index];
-
-    if (button == exclude) {
-      continue;
-    }
-
-    document
-      .getElementById("menu_" + button + "_icon")
-      .style.removeProperty("fill");
-    document
-      .getElementById("menu_" + button + "_text")
-      .style.removeProperty("fill");
-    document
-      .getElementById("menu_" + button + "_button")
-      .style.removeProperty("background");
+function activateSideButton(view) {
+  viewButtonContainer = document.getElementById("menu_item_container");
+  if (sideMenuViews.includes(view)) {
+    index = sideMenuViews.indexOf(view);
+    //get button
+    button = viewButtonContainer.children[index];
+    //remove active class
+    button.classList.add("menu_button_active");
+    //add inactive class
+    button.classList.remove("menu_button_inactive");
   }
 }
 

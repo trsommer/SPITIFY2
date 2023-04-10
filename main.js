@@ -90,6 +90,9 @@ app.whenReady().then(() => {
   ipcMain.handle("update:song", async (event, data) => {
     dataBase.updateSong(data);
   });
+
+  //Playlists
+
   ipcMain.handle("create:playlist", async (event, data) => {
     return dataBase.createPlaylist(data);
   });
@@ -114,6 +117,9 @@ app.whenReady().then(() => {
   ipcMain.handle("update:playlist", async (event, playlistId, songData) => {
     dataBase.updatePlaylist(playlistId, songData);
   })
+
+  //Downloaded Songs
+
   ipcMain.handle("download:songs", async (event, songs) => {
     return downloader.downloadSongs(songs, mainWindow);
   })
@@ -124,6 +130,21 @@ app.whenReady().then(() => {
   ipcMain.handle("remove:downloadedSong", async (event, songId) => {
     dataBase.removeDownloadedSong(songId);
   })
+
+  //Followed Artists
+
+  ipcMain.handle("get:followedArtists", async (event) => {
+    return dataBase.getFollowedArtists();
+  });
+  ipcMain.handle("get:followStatus", async (event, artistId) => {
+    return dataBase.getFollowStatus(artistId);
+  });
+  ipcMain.handle("follow:artist", async (event, artistId, latestReleaseId) => {
+    dataBase.followArtist(artistId, latestReleaseId);
+  });
+  ipcMain.handle("unfollow:artist", async (event, artistId) => {
+    dataBase.unfollowArtist(artistId);
+  });
   
   createWindow();
   app.on("activate", function () {

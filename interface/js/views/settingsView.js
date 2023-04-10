@@ -1,4 +1,4 @@
-highlitedMenuItem = 0;
+let highlitedMenuItem = 0;
 
 function settings_view() {
   stopMenuLogoColorChange(false);

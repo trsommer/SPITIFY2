@@ -1,4 +1,5 @@
 var topSongs = [];
+var artistContent = [];
 var topSongsHTML = [];
 var scrolledDown = false;
 var headerImageVisible = true;
@@ -11,6 +12,7 @@ var accentColor = "";
 var appropriateNrAlbumsCarousel = 4;
 var artistPlayingTrack = null;
 var isFollowingArtist = false;
+var artistId = "";
 
 function artist_view() {
   setTopMenuOpacity(0);
@@ -49,17 +51,24 @@ async function loadImage(url, elem) {
 }
 
 async function setContentArtist(content) {
-  artistName = content["profile"]["name"];
-  headerImage = document.getElementById("av_header_image");
+  const artistName = content["profile"]["name"];
+  const headerImage = document.getElementById("av_header_image");
+  const headerImageSource = content.visuals.headerImage
+  const avatarImageSource = content.visuals.avatarImage
+  const artistId = content.id;
 
-  if (content.visuals.headerImage != null) {
+  if (headerImageSource != null) {
     bgImage = content["visuals"]["headerImage"]["sources"]["0"]["url"];
     headerImage.classList.add("av_header_image");
     headerImage.classList.remove("av_header_image_square");
-  } else {
+  } else if (avatarImageSource != null){
     bgImage = content["visuals"]["avatarImage"]["sources"]["0"]["url"];
     headerImage.classList.add("av_header_image_square");
     headerImage.classList.remove("av_header_image");
+  } else {
+    bgImage = "standardImages/bgArtist.jpg"
+    headerImage.classList.add("av_header_image");
+    headerImage.classList.remove("av_header_image_square");
   }
 
   //alternativeTitleElem = document.getElementById("top_container_alternativeTitle");
@@ -87,6 +96,8 @@ async function setContentArtist(content) {
   document.documentElement.style.setProperty("--accentColor", colorString);
 
   accentColor = colorString;
+
+  await setFollowArtistStatus(artistId);
 
   setMusicPreviewContent(content.discography);
 
@@ -690,21 +701,7 @@ function playTopSong(id) {
 }
 
 async function openArtist(id) {
-  spotifyID = "";
-
-  //window.scrollTo({ top: 0, behavior: 'smooth' });
-
-  if (isInt(id)) {
-    if (id == 0) {
-      spotifyID = spotifyIds["highlight"];
-    } else {
-      spotifyID = spotifyIds["otherArtists"][id - 1];
-    }
-  } else {
-    spotifyID = id;
-  }
-
-  responseArtist = await getSpotifyArtist(spotifyID);
+  const responseArtist = await getSpotifyArtist(id);
 
   await setContentArtist(responseArtist);
 
@@ -716,19 +713,6 @@ async function openArtist(id) {
     responseArtist["visuals"]["avatarImage"]["sources"][0]["url"],
     ""
   );
-}
-
-function openHighlightArtist() {
-  openArtist(0);
-}
-
-function isInt(value) {
-  var x;
-  if (isNaN(value)) {
-    return false;
-  }
-  x = parseFloat(value);
-  return (x | 0) === x;
 }
 
 async function playArtistTopTrack(content, songNumber) {
@@ -859,13 +843,45 @@ function artistRemoveCurrentlyPlaying() {
   }
 }
 
-function followArtist() {
-  icon = document.getElementById("av_artist_header_followButton_image");
+function changeFollowStatus() {
+  const icon = document.getElementById("av_artist_header_followButton_image");
   if (isFollowingArtist) {
-    icon.src = "icons/bell/bell.svg";
     isFollowingArtist = false;
+    unfollowArtistDB(artistId, null);
   } else {
-    icon.src = "icons/bell/bell_filled_ringing.svg";
     isFollowingArtist = true;
+    const latestRelease = artistContent.discography.latest
+    var latestReleaseId = null
+    if (latestRelease != null) {
+      latestReleaseId = latestRelease.id
+    }
+    followArtistDB(artistId, latestReleaseId);
+  }
+
+  setFollowArtistIcon(isFollowingArtist);
+  setFollowArtistText(isFollowingArtist);
+}
+
+async function setFollowArtistStatus(id) {
+  isFollowingArtist = await getFollowStatus(id);
+  setFollowArtistIcon(isFollowingArtist);
+  setFollowArtistText(isFollowingArtist);
+}
+
+function setFollowArtistIcon(following) {
+  const icon = document.getElementById("av_artist_header_followButton_image");
+  if (following) {
+    icon.src = "icons/bell/bell_filled_ringing.svg";
+  } else {
+    icon.src = "icons/bell/bell.svg";
+  }
+}
+
+function setFollowArtistText(following) {
+  const button = document.getElementById("menu_top_button_follow");
+  if (following) {
+    button.innerHTML = "following";
+  } else {
+    button.innerHTML = "follow";
   }
 }

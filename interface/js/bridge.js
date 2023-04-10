@@ -155,3 +155,19 @@ async function getLastSearches() {
     var result = await getFromDB(sql)
     return result
 }
+
+async function getFollowedArtists() {
+    return window.electronAPI.getFollowedArtists()
+}
+
+async function getFollowStatus(id) {
+    return window.electronAPI.getFollowStatus(id)
+}
+
+async function followArtistDB(id, latestReleaseId) {
+    window.electronAPI.followArtist(id, latestReleaseId)
+}
+
+async function unfollowArtistDB(id) {
+    window.electronAPI.unfollowArtist(id)
+}

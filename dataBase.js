@@ -21,7 +21,11 @@ module.exports = {
   updatePlaylistImageCover,
   updatePlaylist,
   addDownloadedSong,
-  removeDownloadedSong
+  removeDownloadedSong,
+  getFollowedArtists,
+  getFollowStatus,
+  followArtist,
+  unfollowArtist
 };
 
 async function accessDatabase(query) {
@@ -57,6 +61,9 @@ async function createTables() {
   var sql5 = 
       "CREATE TABLE downloadedSongs (id TEXT PRIMARY KEY, timestamp TEXT)"
 
+  var sql6 = 
+      "CREATE TABLE followedArtists (id TEXT PRIMARY KEY, idLatestRelease TEXT)"
+
 
   if (!fs.existsSync(dbPath)) {
     db = await getDB();
@@ -65,6 +72,7 @@ async function createTables() {
     db.prepare(sql3).run();
     db.prepare(sql4).run();
     db.prepare(sql5).run();
+    db.prepare(sql6).run();
     return;
   }
   db = await getDB();
@@ -227,4 +235,31 @@ async function addDownloadedSong(spotifyId, timestamp) {
 async function removeDownloadedSong(spotifyId) {
   db = await getDB();
   db.prepare(`DELETE * FROM downloadedSongs WHERE id = ?`).run(spotifyId);
+}
+
+//returns all followed artists with their latest release (as id)
+async function getFollowedArtists() {
+  db = await getDB();
+  let result = await db.prepare(`SELECT * FROM followedArtists`).all();
+  return result;
+}
+
+async function getFollowStatus(id) {
+  db = await getDB();
+  let result = await db.prepare(`SELECT * FROM followedArtists WHERE id = ?`).all(id);
+  if (result.length == 0) {
+    return false;
+  } else {
+    return true;
+  }
+}
+
+async function followArtist(id, idLatestRelease) {
+  db = await getDB();
+  db.prepare(`INSERT INTO followedArtists (id, idLatestRelease) VALUES (?, ?)`).run(id, idLatestRelease);
+}
+
+async function unfollowArtist(id) {
+  db = await getDB();
+  db.prepare(`DELETE FROM followedArtists WHERE id = ?`).run(id);
 }

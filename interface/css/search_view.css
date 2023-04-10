@@ -1,14 +1,13 @@
 #search_view {
     display: none;
-    height: 100vh;
     overflow-y: hidden;
 }
 
 #search_container {
     width: 100%;
-    height: 100vh;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+    margin-top: 60px;
 }
 
 #search_top_container {
@@ -20,8 +19,11 @@
 }
 
 #search_most_relevant_result {
-    height: 40vh;
-    width: 30%;
+    height: calc(30vh + 50px);
+    /* width: 30%; */
+    max-height: calc(26vw + 50px);
+    min-height: calc(20vw + 50px);
+    aspect-ratio: 1/1;
 }
 
 #search_most_relevant_result_heading {
@@ -31,12 +33,14 @@
 
 #search_most_relevant_result_image_container {
     height: 30vh;
-    width: 30vh;
     display: flex;
     align-items: center;
     justify-content: center;
     position: absolute;
     margin-left: 20px;
+    aspect-ratio: 1/1;
+    max-height: 23vw;
+    min-height: 15vw;
 }
 
 #search_most_relevant_result_image_container:hover #search_most_relevant_image {
@@ -51,11 +55,24 @@
     transition: 0.25s ease;
 }
 
+#search_most_relevant_result_image_container:hover .search_most_relevant_result_image_heading_small {
+    font-size: 20px;
+    bottom: 20px;
+    left: 25px;
+    transition: 0.25s ease;
+}
+
+#search_most_relevant_result_image_container:hover .search_most_relevant_result_image_heading_big {
+    font-size: 30px;
+    bottom: 25px;
+    left: 30px;
+    transition: 0.25s ease;
+}
+
 #search_most_relevant_image {
     width: 100%;
     height: 100%;
     border-radius: 20px;
-    position: absolute;
     transition: 0.25s ease;
 }
 
@@ -73,36 +90,37 @@
     cursor: pointer;
 }
 
-
-#search_most_relevant_result_image_heading_container {
-    position: absolute;
-    width: 30vh;
-    height: 28vh;
-    padding-left: 20px;
-    pointer-events: none;
-    display: flex;
-    justify-content: center;
-}
-
 #search_most_relevant_result_image_heading {
     color: white;
     position: absolute;
-    bottom: 0;
-    font-size: 35px;
     font-weight: 700;
     letter-spacing: 2px;
     z-index: 4;
+    width: 100%;
+    transition: 0.25s ease;
+}
+
+.search_most_relevant_result_image_heading_small {
+    font-size: 22px;
+    bottom: 10px;
+    left: 15px;
+}
+
+.search_most_relevant_result_image_heading_big {
+    font-size: 30px;
+    bottom: 10px;
+    left: 15px;
 }
 
 #search_results_artist_container{
-    height: 60vh;
-    width: 30%;
+    height: 80vh;
+    /* width: 30%; */
     margin-left: 20px;
 }
 
 #search_results_artists {
     display: grid;
-    grid-template-columns: auto;
+    grid-template-rows: repeat(4, 1fr);
     grid-row-gap: 10px;
 }
 
@@ -111,13 +129,14 @@
 }
 
 .search_results_artist{
-    height: 12vh;
+    height: 14vh;
     display: flex;
     align-items: center;
     width: 90%;
     background-color: rgba(255,255,255,0.0);
     transition: background-color 0.15;
     border-radius: 13px;
+    max-height: 10vw;
 }
 
 .search_results_artist:hover{
@@ -133,12 +152,13 @@
 }
 
 .search_results_artist_image_container {
-    height: 12vh;
-    width: 12vh;
+    height: 14vh;
     margin-right: 5px;
     display: flex;
     justify-content: center;
     align-items: center;
+    aspect-ratio: 1/1;
+    max-height: 10vw;
 }
 
 .search_results_artist img {
@@ -170,19 +190,18 @@
 
 #search_bottom_container {
     width: 100%;
-    height: calc(60vh - 60px);
     display: flex;
     flex-direction: row;
 }
 
 #search_section_songs_result {
-    height: 80%;
+    /* height: 80%; */
     margin-right: 20px;
 }
 
 #search_section_songs_result_container {
-    height: 40vh;
-    width: 70%;
+    /* height: 40vh; */
+    /* width: 70%; */
     display: flex;
     justify-content: center;
     flex-direction: column;
@@ -193,7 +212,7 @@
 }
 
 .search_results_song {
-    height: 20%;
+    height: 6vh;
     width: 100%;
     display: flex;
     flex-direction: row;
@@ -201,6 +220,7 @@
     background-color: rgba(255,255,255,0.0);
     border-radius: 5px;
     transition: background-color 0.15s;
+    max-height: 60px;
 }
 
 .search_results_song_number {
@@ -221,14 +241,15 @@
 }
 
 .search_results_song_image_container {
-    height: 5vh;
-    width: 5vh;
+    height: 80%;
+    /* width: 5vh; */
     margin-right: 5px;
     margin-left: 5px;
     display: flex;
     justify-content: center;
     align-items: center;
     overflow: hidden;
+    aspect-ratio: 1/1;
 }
 
 .search_result_track_image {
@@ -273,14 +294,14 @@
     color: white;
 }
 
-#search_bottom_albums_container {
-    width: 70%;
-    height: 50vh;
+#search_bottom_right_container {
+    /* width: 70%; */
+    height: 80vh;
 }
 
 #search_results_albums {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(6, 1fr);
     flex-direction: row;
     margin-right: 20px;
     grid-column-gap: 10px;
@@ -333,4 +354,30 @@
 .search_results_album_text {
     margin-top: 5px;
     margin-left: 5px;
+}
+
+
+#search_results_playlists_heading {
+    color: white;
+}
+
+#search_results_playlists {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    flex-direction: row;
+    margin-right: 20px;
+    grid-column-gap: 10px;
+}
+
+.search_results_heading_container {
+    display: flex;
+    align-items: center;
+}
+
+.search_results_heading_container img {
+    height: 22px;
+    aspect-ratio: 1 / 1;
+    margin-left: 10px;
+    margin-top: 5px;
+    cursor: pointer;
 }

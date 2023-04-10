@@ -1,11 +1,12 @@
-spotifyIds = [];
+var highlightSearchView = "";
 var tracksHTML = []
 songInfo = [];
 var albums = [];
+let artistsSearchView = [];
 var searchPlayingTrack = null;
 
 window.electronAPI.updateSpotifySearch((event, response) => {
-  result = response.data.search
+  result = response.data.searchV2
   setContentSearch(result)
 });
 
@@ -16,27 +17,51 @@ function search_view() {
 }
 
 function setContentSearch(content) {
+  console.log(content);
   artists = content["artists"];
-  songs = content["tracks"];
+  songs = content["tracksV2"];
   albums = content["albums"];
+  playlists = content["playlists"];
   setHighlightContent(artists);
   setOtherArtistsContent(artists);
   setSongsContent(songs);
   setAlbumContent(albums);
+  setPlaylistContent(playlists);
 }
 
 function setHighlightContent(content) {
-  data = content["items"]["0"];
+  mostRelevantContainer = document.getElementById("search_most_relevant_result_image_container");
+  //remove element with id search_most_relevant_result_image_heading
+  let element = document.getElementById("search_most_relevant_result_image_heading");
+  if (element != null) {
+    element.parentNode.removeChild(element);
+  }
+  let artistNameContainer = document.createElement("p");
+  artistNameContainer.id = "search_most_relevant_result_image_heading";
+  const data = content["items"]["0"]["data"];
   if (data == undefined) return;
-  url = data["visuals"]["avatarImage"]["sources"]["0"]["url"];
-  artistName = data["profile"]["name"];
-  spotifyURI = data["uri"];
-  spotifyIds["highlight"] = spotifyURI.replace("spotify:artist:", "");
+  const avatarImage = data["visuals"]["avatarImage"];
+  let url = "standardImages/cover.jpg";
+  if (avatarImage != null) {
+    url = avatarImage["sources"]["0"]["url"];
+  }
+  const artistName = data["profile"]["name"];
+  const spotifyURI = data["uri"];
+  const spotifyId = spotifyURI.replace("spotify:artist:", "");
+  highlightSearchView = spotifyId;
+  let artistNameLength = artistName.length;
+  if (artistNameLength > 10) {
+    //clear class list of artistNameContainer
+    artistNameContainer.classList.remove("search_most_relevant_result_image_heading_big");
+    artistNameContainer.classList.add("search_most_relevant_result_image_heading_small");
+  } else {
+    artistNameContainer.classList.remove("search_most_relevant_result_image_heading_small");
+    artistNameContainer.classList.add("search_most_relevant_result_image_heading_big");
+  }
 
   document.getElementById("search_most_relevant_image").src = url;
-  document.getElementById(
-    "search_most_relevant_result_image_heading"
-  ).innerHTML = artistName;
+  artistNameContainer.innerHTML = artistName;
+  mostRelevantContainer.appendChild(artistNameContainer);
 }
 
 function setOtherArtistsContent(content) {
@@ -44,14 +69,16 @@ function setOtherArtistsContent(content) {
   document.getElementById("search_results_artists").innerHTML = "";
   otherArtists = [];
 
-  length = 3;
-  if (artists.length < 3) length = artists.length;
+  length = 4;
+  if (artists.length < length) length = artists.length;
 
-  for (let index = 0; index < 3; index++) {
-    data = content["items"][index + 1];
+  for (let index = 0; index < length; index++) {
+    const data = content["items"][index + 1]["data"];
     if (data == undefined) return;
-    var id = "search_results_artist_" + index;
-    spotifyURI = data["uri"];
+    const id = "search_results_artist_" + index;
+    const spotifyURI = data["uri"];
+    const spotifyId = spotifyURI.replace("spotify:artist:", "");
+    artistsSearchView[index] = spotifyId;
     otherArtists[index] = spotifyURI.replace("spotify:artist:", "");
     if (data["visuals"]["avatarImage"] == null) {
       image = "standardImages/cover.jpg";
@@ -102,11 +129,9 @@ function setOtherArtistsContent(content) {
       .getElementById("search_results_artists")
       .appendChild(artistContainer);
     artistContainer.addEventListener("click", function () {
-      openArtist(index + 1);
+      openArtist(artistsSearchView[index]);
     });
   }
-
-  spotifyIds["otherArtists"] = otherArtists;
 }
 
 function setSongsContent(content) {
@@ -117,8 +142,8 @@ function setSongsContent(content) {
     if ((track = content["items"][index] == null)) {
       break;
     }
-    track = content["items"][index]["track"];
-    trackImageUrl = track["album"]["coverArt"]["sources"][0]["url"];
+    track = content["items"][index]["item"]["data"];
+    trackImageUrl = track["albumOfTrack"]["coverArt"]["sources"][0]["url"];
     trackName = track["name"];
     artists = track["artists"]["items"];
     artistString = "";
@@ -223,11 +248,14 @@ function setAlbumContent(content) {
   albums = content["items"];
   document.getElementById("search_results_albums").innerHTML = "";
 
-  for (let index = 0; index < 5; index++) {
-    albumData = albums[index];
+  var length = 5;
+  if (albums.length < length) length = albums.length;
+
+  for (let index = 0; index < length; index++) {
+    albumData = albums[index]["data"];
     if (albumData == undefined) break;
     albumName = albumData["name"];
-    albumType = albumData["type"];
+    albumYear = albumData["date"]["year"];
     var imgUrl = albumData["coverArt"]["sources"]["0"]["url"];
     if (imgUrl == undefined) imgUrl = "standardImages/cover.jpg";
 
@@ -251,12 +279,12 @@ function setAlbumContent(content) {
     albumTitle.classList.add("search_results_album_text_title");
     albumTitle.innerHTML = albumName;
 
-    albumTypeHTML = document.createElement("p");
-    albumTypeHTML.classList.add("search_results_album_text_type");
-    albumTypeHTML.innerHTML = albumType;
+    albumYearHTML = document.createElement("p");
+    albumYearHTML.classList.add("search_results_album_text_type");
+    albumYearHTML.innerHTML = albumYear;
 
     albumTextContainer.appendChild(albumTitle);
-    albumTextContainer.appendChild(albumTypeHTML);
+    albumTextContainer.appendChild(albumYearHTML);
 
     albumContainer.appendChild(albumImageContainer);
     albumContainer.appendChild(albumTextContainer);
@@ -270,6 +298,60 @@ function setAlbumContent(content) {
   }
 }
 
+function setPlaylistContent(content) {
+  playlists = content["items"];
+  document.getElementById("search_results_playlists").innerHTML = "";
+
+  var length = 5;
+  if (playlists.length < length) length = playlists.length;
+
+  for (let index = 0; index < length; index++) {
+    playlistData = playlists[index]["data"];
+    if (playlistData == undefined) break;
+    playlistName = playlistData["name"];
+    playlistOwner = playlistData["ownerV2"]["data"]["name"];
+    var imgUrl = playlistData["images"]["items"]["0"]["sources"]["0"]["url"];
+    if (imgUrl == undefined) imgUrl = "standardImages/cover.jpg";
+
+    playlistContainer = document.createElement("div");
+    playlistContainer.classList.add("search_results_album");
+    playlistContainer.id = "search_results_album_" + index;
+
+    playlistImageContainer = document.createElement("div");
+    playlistImageContainer.classList.add("search_results_album_image_container");
+
+    playlistImage = document.createElement("img");
+    playlistImage.classList.add("search_results_album_image");
+    playlistImage.src = imgUrl;
+
+    playlistImageContainer.appendChild(playlistImage);
+
+    playlistTextContainer = document.createElement("div");
+    playlistTextContainer.classList.add("search_results_album_text");
+
+    playlistTitle = document.createElement("p");
+    playlistTitle.classList.add("search_results_album_text_title");
+    playlistTitle.innerHTML = playlistName;
+
+    plylistOwner = document.createElement("p");
+    plylistOwner.classList.add("search_results_album_text_type");
+    plylistOwner.innerHTML = playlistOwner;
+
+    playlistTextContainer.appendChild(playlistTitle);
+    playlistTextContainer.appendChild(plylistOwner);
+
+    playlistContainer.appendChild(playlistImageContainer);
+    playlistContainer.appendChild(playlistTextContainer);
+    playlistContainer.addEventListener("click", function () {
+      console.log(index);
+    });
+
+    document
+      .getElementById("search_results_playlists")
+      .appendChild(playlistContainer);
+  }
+}
+
 function playSongSearchView(id) {
   playSongNow(songInfo[id]);
 }
@@ -279,9 +361,6 @@ async function openAlbum(id) {
   var spotifyURI = album["uri"];
   var theSplit = spotifyURI.split(":");
   setupAlbumView(theSplit[2], album);
-
-  console.log(theSplit[2]);
-  console.log(album);
 }
 
 function searchSongCurrentlyPlaying(id) {
@@ -326,3 +405,4 @@ function searchRemoveCurrentlyPlaying() {
     searchPlayingTrack = null;
   }
 }
+
