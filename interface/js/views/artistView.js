@@ -1,5 +1,5 @@
 var topSongs = [];
-var artistContent = [];
+let artistContent = [];
 var topSongsHTML = [];
 var scrolledDown = false;
 var headerImageVisible = true;
@@ -13,6 +13,7 @@ var appropriateNrAlbumsCarousel = 4;
 var artistPlayingTrack = null;
 var isFollowingArtist = false;
 var artistId = "";
+let artistName = "";
 
 function artist_view() {
   setTopMenuOpacity(0);
@@ -51,7 +52,8 @@ async function loadImage(url, elem) {
 }
 
 async function setContentArtist(content) {
-  const artistName = content["profile"]["name"];
+  artistContent = content;
+  artistName = content["profile"]["name"];
   const headerImage = document.getElementById("av_header_image");
   const headerImageSource = content.visuals.headerImage
   const avatarImageSource = content.visuals.avatarImage

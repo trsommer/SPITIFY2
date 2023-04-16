@@ -38,7 +38,7 @@ function checkIfUrlExpired(url) {
 //extracts the highest resolution image from the cover images of a song
 function getImageCoverUrl(songInfo) {
     //searches the cover images from spotify for the best resolution
-    const images = songInfo.album.coverArt.sources;
+    const images = songInfo.albumOfTrack.coverArt.sources;
     let bestResolution = 0;
     let bestImageUrl = "";
 

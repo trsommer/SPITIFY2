@@ -293,7 +293,7 @@ class Song {
 
           resultTitleComparison = Math.min(normalTitleComparison, reducedTitleComparison, bracketLessComparison);
 
-        } else if (bracketLess.extractedText.includes(this.#songAlbum.name)) {
+        } else if (this.#songAlbum != undefined && bracketLess.extractedText.includes(this.#songAlbum.name)) {
           bracketLessComparison = await compareTitles(
             this.#songTitle,
             bracketLess.cleanText

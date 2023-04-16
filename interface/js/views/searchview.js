@@ -36,8 +36,8 @@ function setHighlightContent(content) {
   if (element != null) {
     element.parentNode.removeChild(element);
   }
-  let artistNameContainer = document.createElement("p");
-  artistNameContainer.id = "search_most_relevant_result_image_heading";
+  let artistNameText = document.createElement("p");
+  artistNameText.id = "search_most_relevant_result_image_heading";
   const data = content["items"]["0"]["data"];
   if (data == undefined) return;
   const avatarImage = data["visuals"]["avatarImage"];
@@ -52,15 +52,21 @@ function setHighlightContent(content) {
   let artistNameLength = artistName.length;
   if (artistNameLength > 10) {
     //clear class list of artistNameContainer
-    artistNameContainer.classList.remove("search_most_relevant_result_image_heading_big");
-    artistNameContainer.classList.add("search_most_relevant_result_image_heading_small");
+    artistNameText.classList.remove("search_most_relevant_result_image_heading_big");
+    artistNameText.classList.add("search_most_relevant_result_image_heading_small");
   } else {
-    artistNameContainer.classList.remove("search_most_relevant_result_image_heading_small");
-    artistNameContainer.classList.add("search_most_relevant_result_image_heading_big");
+    artistNameText.classList.remove("search_most_relevant_result_image_heading_small");
+    artistNameText.classList.add("search_most_relevant_result_image_heading_big");
   }
 
   document.getElementById("search_most_relevant_image").src = url;
-  artistNameContainer.innerHTML = artistName;
+  artistNameText.innerHTML = artistName;
+
+  artistNameContainer = document.getElementById("search_most_relevant_result_image_heading_container");
+  artistNameContainer.innerHTML = "";
+
+  artistNameContainer.appendChild(artistNameText);
+
   mostRelevantContainer.appendChild(artistNameContainer);
 }
 
