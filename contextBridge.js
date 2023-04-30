@@ -2,6 +2,7 @@ const { contextBridge, ipcRenderer } = require('electron')
 
 contextBridge.exposeInMainWorld('electronAPI',{
   searchSpotify: (input) => ipcRenderer.invoke('searchSpotify:input', input),
+  searchSpotifySpecificType: (input, type, limit, offset) => ipcRenderer.invoke('searchSpotifySpecificType:input', input, type, limit, offset),
   getArtistInfo: (artistID) => ipcRenderer.invoke('get:artistInfo', artistID),
   getSongInfo: (songIDs) => ipcRenderer.invoke('get:songInfo', songIDs),
   getAlbumInfo: (albumID) => ipcRenderer.invoke('get:albumInfo', albumID),
@@ -29,6 +30,7 @@ contextBridge.exposeInMainWorld('electronAPI',{
   addDownloadedSong: (songId) => ipcRenderer.invoke('add:downloadedSong', songId),
   removeDownloadedSong: (songId) => ipcRenderer.invoke('remove:downloadedSong', songId),
   updateSpotifySearch: (result) => ipcRenderer.on('searchSpotify:event', result),
+  updateSpotifySpecificSerach: (result) => ipcRenderer.on('searchSpotifySpecificType:event', result),
   getFollowedArtists: () => ipcRenderer.invoke('get:followedArtists'),
   getFollowStatus: (artistId) => ipcRenderer.invoke('get:followStatus', artistId),
   followArtist: (artistId, latestReleaseId) => ipcRenderer.invoke('follow:artist', artistId, latestReleaseId),

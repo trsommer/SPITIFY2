@@ -1,5 +1,4 @@
-async function getColors(id) {
-    img = document.getElementById(id) 
+async function getColors(img) {
     if(img == null) return
     await img.decode()
     const colorThief = new ColorThief();

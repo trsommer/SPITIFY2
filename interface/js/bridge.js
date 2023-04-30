@@ -24,6 +24,10 @@ async function getSpotifySearchResults(query) {
     window.electronAPI.searchSpotify(query)
 }
 
+async function getSpotifySearchResultsSpecificType(query, type, limit, offset) {
+    window.electronAPI.searchSpotifySpecificType(query, type, limit, offset)
+}
+
 async function getYoutubeUrls(query) {
     returnArray = await window.electronAPI.searchYoutube(query)
 

@@ -5,11 +5,6 @@ var albums = [];
 let artistsSearchView = [];
 var searchPlayingTrack = null;
 
-window.electronAPI.updateSpotifySearch((event, response) => {
-  result = response.data.searchV2
-  setContentSearch(result)
-});
-
 function search_view() {
   stopMenuLogoColorChange(false)
   updateSearchPlayingTrack()

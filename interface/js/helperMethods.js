@@ -1,74 +1,73 @@
 
-//returns a string of all the artists of a song
+/**
+ * Returns a string of all the artists of a song.
+ * @param {Array} artists - Array of artist objects.
+ * @return {String|null} - Comma-separated string of artist names or null if input is invalid.
+ */
 function getArtistsAsString(artists) {
-    if (artists == null || artists == undefined || artists == []) {
-        return null;
+  if (!Array.isArray(artists) || artists.length === 0) {
+    return null;
+  }
+
+  const artistNames = [];
+  for (const artist of artists) {
+    const artistName = artist.profile && artist.profile.name;
+    if (artistName) {
+      artistNames.push(artistName);
     }
+  }
 
-    let returnString = "";
-    const artistsLength = Object.keys(artists).length;
-
-    for (let i = 0; i < artistsLength; i++) {
-      const artist = artists[i];
-      const artistName = artist["profile"]["name"];
-      if (i == 0) {
-        returnString = artistName;
-      } else {
-        returnString += ", " + artistName;
-      }
-    }
-
-    return returnString;
+  return artistNames.join(", ");
 }
 
-//checks if a sreaming url is expired by comparing the timestamp in the url with the current time
+
+/**
+ * Checks if a streaming URL is expired by comparing the timestamp in the URL with the current time.
+ * @param {string} url - The URL to check.
+ * @returns {boolean} - True if the URL is expired, false otherwise.
+ */
 function checkIfUrlExpired(url) {
-    const split = url.split("videoplayback?");
-    const params = new URLSearchParams(split[1]);
-    const expired = params.get("expire");
-    const currentTime = new Date().getTime() / 1000;
-    const timeDelta = expired - currentTime;
-    if (timeDelta < 0) {
-      return true;
-    }
-    return false;
+  const expired = new URL(url).searchParams.get("expire");
+  const timeDelta = expired - Math.floor(Date.now() / 1000);
+  return timeDelta < 0;
 }
 
-
-//extracts the highest resolution image from the cover images of a song
+/**
+ * Extracts the URL of the highest resolution image from the cover images of a song.
+ * @param {Object} songInfo - Information about the song, including its album and cover images.
+ * @returns {string} - The URL of the highest resolution cover image.
+ */
 function getImageCoverUrl(songInfo) {
-    //searches the cover images from spotify for the best resolution
-    const images = songInfo.albumOfTrack.coverArt.sources;
-    let bestResolution = 0;
-    let bestImageUrl = "";
+  const images = songInfo.albumOfTrack.coverArt.sources;
 
-    for (let i = 0; i < images.length; i++) {
-      const image = images[i];
+  // Sort images by resolution in descending order
+  images.sort((a, b) => b.width - a.width);
 
-      if (image.width == undefined) {
-        return images[2].url;
-      }
-
-      if (image.width > bestResolution) {
-        bestResolution = image.width;
-        bestImageUrl = image.url;
-      }
-    }
-
-    return bestImageUrl;
+  // Return the URL of the first image
+  return images.length > 0 ? images[0].url : '';
 }
 
-//gets the id of a song from the songinfo object
+
+/**
+ * Returns the ID of a song from the songInfo object
+ * @param {Object} songInfo - The songInfo object
+ * @returns {string} The ID of the song
+ */
 function getIdFromSongInfo(songInfo) {
-    //check if songinfo.id is undefined
-
-    if (songInfo["id"] == undefined) {
-      return songInfo.uri.split(":")[2];
-    }
-
-    if (songInfo.id == null) {
-      return songInfo.uri.split(":")[2];
-    }
-
+  if (songInfo.id !== undefined && songInfo.id !== null) {
     return songInfo.id;
+  }
+  return songInfo.uri.split(":")[2];
 }
+
+/**
+ * Shortens the string to the given length and appends "..." if necessary.
+ * @param {string} str - The string to shorten.
+ * @param {number} len - The maximum length of the shortened string.
+ * @returns {string} The shortened string.
+ */
+function shortenString(str, len) {
+  const strLen = str.length;
+  return strLen > len ? str.substring(0, len) + "..." : str;
+}
+

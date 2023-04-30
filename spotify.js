@@ -10,6 +10,7 @@ module.exports = {
   getAlbumInfo,
   getAlbumMetadata,
   addInfoArtistTracks,
+  searchSpotifySpecificType
 };
 
 refreshTokens();
@@ -126,6 +127,10 @@ async function searchSpotify(query, mainWindow) {
   abortController = controller;
 }
 
+/**
+ * types are: Artists, Tracks, Playlists, Albums
+ * 
+ */
 async function searchSpotifySpecificType(type, limit, offset, query, mainWindow) {
   if (abortController != null) {
     abortController.abort();
@@ -135,10 +140,10 @@ async function searchSpotifySpecificType(type, limit, offset, query, mainWindow)
   const tokens = await getTokens();
   const accessToken = await tokens.accessToken;
   hashes = {
-    artist: "4e7cdd33163874d9db5e08e6fabc51ac3a1c7f3588f4190fc04c5b863f6b82bd",
-    album: "37197f541586fe988541bb1784390832f0bb27e541cfe57a1fc63db3598f4ffd",
-    track: "1d021289df50166c61630e02f002ec91182b518e56bcd681ac6b0640390c0245",
-    playlist: "87b755d95fd29046c72b8c236dd2d7e5768cca596812551032240f36a29be704"
+    Artists: "4e7cdd33163874d9db5e08e6fabc51ac3a1c7f3588f4190fc04c5b863f6b82bd",
+    Albums: "37197f541586fe988541bb1784390832f0bb27e541cfe57a1fc63db3598f4ffd",
+    Tracks: "1d021289df50166c61630e02f002ec91182b518e56bcd681ac6b0640390c0245",
+    Playlists: "87b755d95fd29046c72b8c236dd2d7e5768cca596812551032240f36a29be704"
   }
 
 

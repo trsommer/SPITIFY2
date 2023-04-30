@@ -38,6 +38,9 @@ app.whenReady().then(() => {
   ipcMain.handle("searchSpotify:input", async (event, input) => {
     spotify.searchSpotify(input, mainWindow);
   });
+  ipcMain.handle("searchSpotifySpecificType:input", async (event, input, type, limit, offset) => {
+    spotify.searchSpotifySpecificType(type, limit, offset, input, mainWindow);
+  });
   ipcMain.handle("get:artistInfo", async (event, artistID) => {
     const response = await spotify.getArtistInfo(artistID);
     return response;

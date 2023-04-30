@@ -9,7 +9,6 @@ function playlists_view() {
 
 async function updatePlaylists() {
     await getPlaylistsFromDB();
-    console.log(playlists);
     setContent(playlists);
 }
 

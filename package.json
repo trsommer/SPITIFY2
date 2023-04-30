@@ -9,7 +9,8 @@
     "package": "electron-forge package",
     "make": "electron-forge make",
     "publish": "electron-forge publish",
-    "lint": "echo \"No linting configured\""
+    "lint": "echo \"No linting configured\"",
+    "test": "electron-mocha --renderer"
   },
   "keywords": [],
   "author": {
@@ -32,6 +33,7 @@
     "@electron-forge/maker-rpm": "^6.0.4",
     "@electron-forge/maker-squirrel": "^6.0.4",
     "@electron-forge/maker-zip": "^6.0.4",
-    "electron": "22.0.0"
+    "electron": "22.0.0",
+    "electron-mocha": "^11.0.2"
   }
 }

@@ -1,7 +1,3 @@
-#downloads_view {
-    display: none;
-}
-
 #downloads_container {
     padding-top: 60px;
     height: calc(100vh - 60px);

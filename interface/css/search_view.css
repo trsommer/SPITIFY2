@@ -1,9 +1,4 @@
-#search_view {
-    display: none;
-    overflow-y: hidden;
-}
-
-#search_container {
+#search_view_content {
     width: 100%;
     display: flex;
     flex-direction: row;
@@ -47,6 +42,7 @@
     /* min-height: 15vw; */
     width: 100%;
     position: relative;
+    cursor: pointer;
 }
 
 #search_most_relevant_result_image_container:hover #search_most_relevant_image {
@@ -67,9 +63,6 @@
     transition: 0.25s ease;
 }
 
-
-
-
 #search_most_relevant_image {
     width: 100%;
     height: 100%;
@@ -77,6 +70,7 @@
     transition: 0.25s ease;
     /* position: relative; */
     top: 0;
+    object-fit: cover;
 }
 
 #search_most_relevant_image_darkener {
@@ -204,7 +198,7 @@
     /* margin-right: 20px; */
 }
 
-#search_section_songs_result_container {
+#search_results_song_container {
     /* height: 40vh; */
     /* width: 70%; */
     display: flex;
@@ -395,6 +389,7 @@
 .search_results_heading_container {
     display: flex;
     align-items: center;
+    color: white;
 }
 
 .search_results_heading_container img {

@@ -86,11 +86,3 @@ function removeLastSearch(id, element) {
   //remove from db
   deleteSpecificLastSearch(id);
 }
-
-function shortenString(string, length) {
-  if (string.length > length) {
-    return string.substring(0, length) + "...";
-  } else {
-    return string;
-  }
-}

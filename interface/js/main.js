@@ -5,8 +5,6 @@ lastSearch = ""
 function onLoad() {
     window.scrollTo({ top: 0, behavior: 'smooth' })
     document.getElementsByTagName("body")[0].classList.add("flatTop")
-    loadLastSearches()
-    loadDownloads()
 
     window.electronAPI.updateDownloads((event, progress, spotifyId) => {
         updateDownloadProgress(spotifyId, progress)
@@ -14,6 +12,8 @@ function onLoad() {
 
     setupMenuMove()
     attachVolumeResetListener()
+
+    const viewController = new ViewController()
 }
 
 function sleep(ms) {
@@ -33,19 +33,20 @@ async function setDisplayMode(element, mode, delay){
 }
 
 async function mainSearch(query) {
-    console.log("searching for:" + query + ".");
+    //const viewController = new ViewController()
     query = query.trim()
-    if (query == "") {
-        changeSearchClearVisibility(false)
-        switchView("last_searches_view")
-        return
-    }
-    changeSearchClearVisibility(true)
-    switchView("search_view")
+    //if (query == "") {
+        //changeSearchClearVisibility(false)
+        //viewController.switchView("last_searches_view", null)
+        //return
+    //}
+    //changeSearchClearVisibility(true)
+    //switchView("search_view")
 
     if (query == lastSearch) return
 
     lastSearch = query
+    console.log(query)
 
     getSpotifySearchResults(query)
 }
@@ -53,15 +54,6 @@ async function mainSearch(query) {
 function clearSearchText() {
     document.getElementById("top_search_input").value = ""
     mainSearch("")
-}
-
-async function toggleSearchView(query) {
-    query = query.trim()
-    if (query == "") {
-        switchView("last_searches_view")
-    } else{
-        switchView("search_view")
-    }
 }
 
 function timeConvert(ms) {
