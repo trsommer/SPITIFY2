@@ -71,3 +71,14 @@ function shortenString(str, len) {
   return strLen > len ? str.substring(0, len) + "..." : str;
 }
 
+/**
+ * Returns a formatted string of the track length from the given duration in milliseconds.
+ * @param {number} ms - The duration of the track in milliseconds.
+ * @returns {string} - The formatted track length in the format of "minutes:seconds". 
+ */
+function getTrackLengthFromMS(ms) {
+  const minutes = Math.floor(ms / 60000);
+  const seconds = ((ms % 60000) / 1000).toFixed(0);
+  return `${minutes}:${(seconds < 10 ? "0" : "")}${seconds}`;
+}
+

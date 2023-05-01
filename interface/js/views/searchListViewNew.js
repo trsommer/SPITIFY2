@@ -253,7 +253,6 @@ class SearchListView extends View {
 
     #spawnSearchResults(data) {
         const position = this.#selectedPosition;
-
         const contentContainer = this.#searchResultsContainer;
 
         switch (position) {
@@ -272,6 +271,7 @@ class SearchListView extends View {
             default:
                 break;
         }
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     #spawnArtistSearchResults(contentContainer, data) {
@@ -280,7 +280,7 @@ class SearchListView extends View {
         const artistsData = data.artists.items;
         
         const artistsContainer = document.createElement('div');
-        artistsContainer.setAttribute('id', 'searchList_artists_container');
+        artistsContainer.setAttribute('id', 'searchList_tiles_container');
 
         this.#setArtistCSS(artistsContainer, contentContainer);
 
@@ -289,24 +289,9 @@ class SearchListView extends View {
             const artistImageUrl = artistData.visuals.avatarImage?.sources[0].url || "standardImages/cover.jpg";
             const artistName = artistData.profile.name;
 
-            const artistContainer = document.createElement('div');
-            artistContainer.setAttribute('class', 'searchList_artist_container');
+            const artistContainer = this.#createTileElement(artistImageUrl, artistName);
 
-            const artistImageContainer = document.createElement('div');
-            artistImageContainer.setAttribute('class', 'searchList_artist_image_container');
-
-            const artistImage = document.createElement('img');
-            artistImage.setAttribute('class', 'searchList_artist_image');
-            artistImage.src = artistImageUrl;
-
-            const artistNameHTML = document.createElement('div');
-            artistNameHTML.setAttribute('class', 'searchList_artist_name');
-            artistNameHTML.innerHTML = artistName;
-
-            artistImageContainer.appendChild(artistImage);
-
-            artistContainer.appendChild(artistImageContainer);
-            artistContainer.appendChild(artistNameHTML);
+            //event listeners
 
             artistsContainer.appendChild(artistContainer);
         }
@@ -315,25 +300,155 @@ class SearchListView extends View {
 
     }
 
-    #setArtistCSS(artistContainer, contentContainer) {
+    #spawnTrackSearchResults(contentContainer, data) {
+        console.log(data);
+        contentContainer.innerHTML = '';
+        const songsData = data.tracksV2.items;
+
+        const songsContainer = document.createElement('div');
+        songsContainer.setAttribute('id', 'searchList_songs_container');
+
+        for (let i = 0; i < songsData.length; i++) {
+            const songData = songsData[i].item.data;
+            const songName = songData.name;
+            const artistString = getArtistsAsString(songData.artists.items);
+            const durationMS = songData.duration.totalMilliseconds;
+            const durationString = getTrackLengthFromMS(durationMS);
+            const imageURL = songData.albumOfTrack.coverArt?.sources[0].url || "standardImages/cover.jpg";
+
+            const trackItem = document.createElement('div');
+            trackItem.setAttribute('class', 'track_item');
+
+            const trackSpacerLeft = document.createElement('div');
+            trackSpacerLeft.setAttribute('class', 'track_spacer_left');
+
+            const trackImageContainer = document.createElement('div');
+            trackImageContainer.setAttribute('class', 'track_image_container');
+
+            const trackImage = document.createElement('img');
+            trackImage.setAttribute('class', 'track_image');
+            trackImage.src = imageURL;
+
+            const currentlyPlayingContainer = document.createElement('div');
+            currentlyPlayingContainer.setAttribute('class', 'currently_playing_container');
+
+            const currentlyPlayingBG = document.createElement('div');
+            currentlyPlayingBG.setAttribute('class', 'currently_playing_background');
+
+            const currentlyPlayingSVG = document.createElement('img');
+            currentlyPlayingSVG.setAttribute('class', 'currently_playing_svg');
+            currentlyPlayingSVG.src = 'icons/spitifyAnimated.svg';
+
+            const trackName = document.createElement('p');
+            trackName.setAttribute('class', 'track_text_left');
+            trackName.innerHTML = songName;
+
+            const trackArtists = document.createElement('p');
+            trackArtists.setAttribute('class', 'track_text_middle');
+            trackArtists.innerHTML = artistString;
+
+            const trackLength = document.createElement('p');
+            trackLength.setAttribute('class', 'track_text_right');
+            trackLength.innerHTML = durationString;
+
+            currentlyPlayingContainer.appendChild(currentlyPlayingBG);
+            currentlyPlayingContainer.appendChild(currentlyPlayingSVG);
+
+            trackImageContainer.appendChild(trackImage);
+            trackImageContainer.appendChild(currentlyPlayingContainer);
+
+            trackItem.appendChild(trackSpacerLeft);
+            trackItem.appendChild(trackImageContainer);
+            trackItem.appendChild(trackName);
+            trackItem.appendChild(trackArtists);
+            trackItem.appendChild(trackLength);
+
+            songsContainer.appendChild(trackItem);
+        }
+
+        contentContainer.appendChild(songsContainer);
+    }
+
+    #spawnAlbumSearchResults(contentContainer, data) {
+        contentContainer.innerHTML = '';
+        const albumsData = data.albums.items;
+
+        const albumsContainer = document.createElement('div');
+        albumsContainer.setAttribute('id', 'searchList_tiles_container');
+
+        this.#setArtistCSS(albumsContainer, contentContainer);
+
+        for (let i = 0; i < albumsData.length; i++) {
+            const albumData = albumsData[i].data;
+            const albumName = albumData.name;
+            const albumNameShort = shortenString(albumName, 20);
+            const albumImageUrl = albumData.coverArt?.sources[0].url || "standardImages/cover.jpg";
+
+            const albumContainer = this.#createTileElement(albumImageUrl, albumNameShort);
+
+            //event listeners
+
+            albumsContainer.appendChild(albumContainer);
+        }
+
+        contentContainer.appendChild(albumsContainer);
+    }
+
+    #spawnPlaylistSearchResults(contentContainer, data) {
+        contentContainer.innerHTML = "";
+        const playlistsData = data.playlists.items;
+
+        const playlistsContainer = document.createElement('div');
+        playlistsContainer.setAttribute('id', 'searchList_tiles_container');
+
+        this.#setArtistCSS(playlistsContainer, contentContainer);
+
+        for (let i = 0; i < playlistsData.length; i++) {
+            const playlistData = playlistsData[i].data;
+            const playlistName = playlistData.name;
+            const playlistNameShort = shortenString(playlistName, 20);
+            const playlistImageUrl = playlistData.images.items[0]?.sources[0].url || "standardImages/cover.jpg";
+
+            const playlistContainer = this.#createTileElement(playlistImageUrl, playlistNameShort);
+
+            //event listeners
+
+            playlistsContainer.appendChild(playlistContainer);
+        }
+
+        contentContainer.appendChild(playlistsContainer);
+    }
+
+    #createTileElement(imageURL, title) {
+        const artistContainer = document.createElement('div');
+        artistContainer.setAttribute('class', 'searchList_tile_container');
+
+        const artistImageContainer = document.createElement('div');
+        artistImageContainer.setAttribute('class', 'searchList_tile_image_container');
+
+        const artistImage = document.createElement('img');
+        artistImage.setAttribute('class', 'searchList_tile_image');
+        artistImage.src = imageURL;
+
+        const artistNameHTML = document.createElement('div');
+        artistNameHTML.setAttribute('class', 'searchList_tile_title');
+        artistNameHTML.innerHTML = title;
+
+        artistImageContainer.appendChild(artistImage);
+
+        artistContainer.appendChild(artistImageContainer);
+        artistContainer.appendChild(artistNameHTML);
+
+        return artistContainer;
+    }
+
+    #setArtistCSS(tileContainer, contentContainer) {
         const width = contentContainer.clientWidth;
         const nrContainers = Math.floor(width / 180);
         const remainder = width % 180 - (nrContainers - 1) * 10; //added 10 for gap between containers
         const newWidth = 180 + Math.floor(remainder / nrContainers);
         const saveNewWidth = newWidth - 2;
 
-        artistContainer.style.gridTemplateColumns = `repeat(auto-fill, ${saveNewWidth}px)`;
-    }
-
-    #spawnTrackSearchResults(artistContainer, data) {
-        console.log(data);
-    }
-
-    #spawnAlbumSearchResults(artistContainer, data) {
-        console.log(data);
-    }
-
-    #spawnPlaylistSearchResults(artistContainer, data) {
-        console.log(data);
+        tileContainer.style.gridTemplateColumns = `repeat(auto-fill, ${saveNewWidth}px)`;
     }
 }
