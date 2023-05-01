@@ -3,16 +3,16 @@ class ArtistView extends View {
     #type = null; //the type of view
     #HTMLContent = null; //the HTML container that contains all the views content (excluding title)
     #displayed = false
+    #viewController = null
     #HTMLPointers = null;
     #artistData = null;
-    #viewController = null;
     #carouselWidth = 1200;
     #carouselControls = [];
     #resizeUpdate = null
 
-    constructor(data) {
+    constructor(data, viewController) {
         super();
-        return this.#constructorMethod(data);
+        return this.#constructorMethod(data, viewController);
     }
 
     //implemeneted methods
@@ -21,15 +21,19 @@ class ArtistView extends View {
      * This method fetches the users last Searches from a database and creates the last seraches view for them.
      * @param {Object} data - The data to be used for the construction. (useless here)
      */
-    async #constructorMethod(data) {
-        await this.#createView(data);
+    async #constructorMethod(data, viewController) {
+        const check = await this.#checkIfIdExists(data)
+        if (check != true) {
+            data = await getSpotifyArtist(check)
+        }
+        await this.#createView(data, viewController);
         return this
     }
 
     /**
      * Clears the viewport and adds the view HTML to it.
      */
-    show(viewController) {
+    show() {
         const viewPort = document.getElementById('viewport');
         viewPort.innerHTML = '';
         viewPort.appendChild(this.#viewHTML);
@@ -53,9 +57,10 @@ class ArtistView extends View {
      * @async
      * @param {Object} data - The data to use in the view.
      */
-    async #createView(data) {
+    async #createView(data, viewController) {
         this.#type = "search_view";
         this.#artistData = data
+        this.#viewController = viewController
 
         const returnValues = this.createHTMLContainer("unbound", 'artist_view');
         this.#viewHTML = returnValues.container
@@ -103,6 +108,14 @@ class ArtistView extends View {
           elem.onerror = reject;
           elem.src = url;
         });
+    }
+
+    async #checkIfIdExists(data) {
+        if (data.id == undefined) {
+            const id = getIdFromSongInfo(data)
+            return id
+        }
+        return true
     }
 
     async #setCustomColors(elem, imageURL) {
@@ -158,8 +171,8 @@ class ArtistView extends View {
 
     #createBackgroundImage(container, data) {
         const artistBGImage = 
-        data.visuals.headerImage.sources[0]?.url || 
-        data.visuals.avatarImage.sources[0]?.url || 
+        data.visuals.headerImage?.sources[0].url || 
+        data.visuals.avatarImage?.sources[0].url || 
         "standardImages/bgArtist.jpg";
 
         const backgroundImageContainer = document.createElement('div');
@@ -177,8 +190,8 @@ class ArtistView extends View {
     async #createHeaderContainer(container, data) {
         const artistName = data.profile.name
         const artistBGImage = 
-            data.visuals.headerImage.sources[0]?.url || 
-            data.visuals.avatarImage.sources[0]?.url || 
+            data.visuals.headerImage?.sources[0].url || 
+            data.visuals.avatarImage?.sources[0].url || 
             "standardImages/bgArtist.jpg";
 
         const headerContainer = document.createElement('div');
@@ -271,7 +284,7 @@ class ArtistView extends View {
     #createLatestRelease(container, data) {
         const name = data.name
         const nrTracks = data.tracks.totalCount
-        const songNumber = nrTracks == 1 ? "1 Song" : x + " Songs";
+        const songNumber = nrTracks == 1 ? "1 Song" : nrTracks + " Songs";
         const typeAlbum = data.type
         const date = data.date.year
         const imageURL = data.coverArt.sources[0]?.url || "standardImages/cover.jpg"

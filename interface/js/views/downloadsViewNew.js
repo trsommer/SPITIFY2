@@ -5,10 +5,11 @@ class DownloadView extends View {
     #downloadedSongs = null; //the last searches
     #htmlDownloadedSongs = [];
     #displayed = false
+    #viewController = null
 
-    constructor(data) {
+    constructor(data, viewController) {
         super();
-        return this.#constructorMethod(null);
+        return this.#constructorMethod(data, viewController);
     }
 
     //implemeneted methods
@@ -17,16 +18,16 @@ class DownloadView extends View {
      * This method fetches the users last Searches from a database and creates the last seraches view for them.
      * @param {Object} data - The data to be used for the construction. (useless here)
      */
-    async #constructorMethod(data) {
+    async #constructorMethod(data, viewController) {
         const downloadedSongs = await this.#getDownloadedSongs();
-        await this.#createView(downloadedSongs);
+        await this.#createView(downloadedSongs, viewController);
         return this
     }
 
     /**
      * Clears the viewport and adds the view HTML to it.
      */
-    show(viewController) {
+    show() {
         const viewPort = document.getElementById('viewport');
         viewPort.appendChild(this.#viewHTML);
         this.#displayed = true
@@ -47,9 +48,10 @@ class DownloadView extends View {
      * @async
      * @param {Object} data - The data to use in the view.
      */
-    async #createView(data) {
+    async #createView(data, viewController) {
         this.#downloadedSongs = data;
         this.#type = "downloads_view";
+        this.#viewController = viewController;
         
         const returnValues = this.createHTMLContainer('Your Downloads', 'downloads_view');
         this.#viewHTML = returnValues.container

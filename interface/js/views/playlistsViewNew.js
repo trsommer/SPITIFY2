@@ -5,10 +5,11 @@ class PlaylistsView extends View {
     #playlists = null; //all of the users playlists as objects
     #playlistsHTMLPointers = {}; //all of the playlists HTML pointers
     #displayed = false
+    #viewController = null;
 
-    constructor(data) {
+    constructor(data, viewController) {
         super();
-        return this.#constructorMethod(null);
+        return this.#constructorMethod(data, viewController);
     }
 
     //implemeneted methods
@@ -17,16 +18,16 @@ class PlaylistsView extends View {
      * This method fetches the users playlists from a database and creates the playlist view for them.
      * @param {Object} data - The data to be used for the construction. (useless here)
      */
-    async #constructorMethod(data) {
+    async #constructorMethod(data, viewController) {
         const playlists = await this.#getPlaylistsFromDB();
-        await this.#createView(playlists);
+        await this.#createView(playlists, viewController);
         return this
     }
 
     /**
      * Clears the viewport and adds the view HTML to it.
      */
-    show(viewController) {
+    show() {
         const viewPort = document.getElementById('viewport');
         viewPort.appendChild(this.#viewHTML);
         this.#displayed = true
@@ -47,8 +48,9 @@ class PlaylistsView extends View {
      * @async
      * @param {Object} data - The data to use in the view.
      */
-    async #createView(data) {
+    async #createView(data, viewController) {
         this.#playlists = data;
+        this.#viewController = viewController;
         this.#type = "playlists_view";
 
         this.#playlistsHTMLPointers = {

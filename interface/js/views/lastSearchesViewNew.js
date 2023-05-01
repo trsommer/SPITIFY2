@@ -4,10 +4,11 @@ class LastSearchesView extends View {
     #HTMLContent = null; //the HTML container that contains all the views content (excluding title)
     #lastSearches = null; //the last searches
     #displayed = false
+    #viewController = null
 
-    constructor(data) {
+    constructor(data, viewController) {
         super();
-        return this.#constructorMethod(null);
+        return this.#constructorMethod(data, viewController);
     }
 
     //implemeneted methods
@@ -16,16 +17,16 @@ class LastSearchesView extends View {
      * This method fetches the users last Searches from a database and creates the last seraches view for them.
      * @param {Object} data - The data to be used for the construction. (useless here)
      */
-    async #constructorMethod(data) {
+    async #constructorMethod(data, viewController) {
         const lastSearches = await getLastSearches();
-        await this.#createView(lastSearches);
+        await this.#createView(lastSearches, viewController);
         return this
     }
 
     /**
      * Clears the viewport and adds the view HTML to it.
      */
-    show(viewController) {
+    show() {
         const viewPort = document.getElementById('viewport');
         viewPort.appendChild(this.#viewHTML);
         this.#displayed = true;
@@ -46,8 +47,9 @@ class LastSearchesView extends View {
      * @async
      * @param {Object} data - The data to use in the view.
      */
-    async #createView(data) {
+    async #createView(data, viewController) {
         this.#lastSearches = data;
+        this.#viewController = viewController;
         this.#type = "lastSearches_view";
         
         const returnValues = this.createHTMLContainer('Recently Searched', 'lastSearches_view');

@@ -20,7 +20,8 @@ class ViewController {
             case "album":
             case "playlist":
             case "search": 
-                newView = this.#viewFactory(data);
+            case "searchList":
+                newView = await this.#viewFactory(viewType, data);
                 break;
             //singleton views
             case "playlists":
@@ -33,7 +34,7 @@ class ViewController {
             default: throw new Error("Invalid view type");
         }
 
-        newView.show(this);
+        newView.show();
     }
 
     async #testFunc() {
@@ -41,22 +42,21 @@ class ViewController {
             position: 0,
             query: "taylor"
         }
-        const view = await new SearchListView(data);
-        view.show(this);
+        const view = await new SearchView({}, this);
+        view.show();
     }
 
-    async #viewFactory(data) {
+    async #viewFactory(viewType, data) {
         switch (viewType) {
-            case "artist": return new ArtistView(data);
-            case "album": return new AlbumView(data);
-            case "playlist": return new PlaylistView(data);
-            case "playlists": return new PlaylistsView(data);
-            case "search": return new SearchView(data);
-            case "searchList": return new SearchListView(data);
-            case "download": return new DownloadView(data);
-            case "settings": return new SettingsView(data);
-            case "lastSearches": return new LastSearchesView(data);
-            case "testView": return new TestView(data);
+            case "artist": return new ArtistView(data, this);
+            case "album": return new AlbumView(data, this);
+            case "playlist": return new PlaylistView(data, this);
+            case "playlists": return new PlaylistsView(data, this);
+            case "search": return new SearchView(data, this);
+            case "searchList": return new SearchListView(data, this);
+            case "download": return new DownloadView(data, this);
+            case "settings": return new SettingsView(data, this);
+            case "lastSearches": return new LastSearchesView(data, this);
             default: throw new Error("Invalid view type");
         }
     }

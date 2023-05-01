@@ -4,6 +4,7 @@ class SearchListView extends View {
     #HTMLContent = null; //the HTML container that contains all the views content (excluding title)
     #data = null; //all of the users playlists as objects
     #displayed = false
+    #viewController = null;
     #htmlHeadings = [];
     #htmlSelector = null;
     #selectedPosition = null;
@@ -11,9 +12,9 @@ class SearchListView extends View {
     #query = "";
     #searchResults = [null, null, null, null]
 
-    constructor(data) {
+    constructor(data, viewController) {
         super();
-        return this.#constructorMethod(data);
+        return this.#constructorMethod(data, viewController);
     }
 
     //implemeneted methods
@@ -22,15 +23,15 @@ class SearchListView extends View {
      * This method fetches the users playlists from a database and creates the playlist view for them.
      * @param {Object} data - The data to be used for the construction. (useless here)
      */
-    async #constructorMethod(data) {
-        await this.#createView(data);
+    async #constructorMethod(data, viewController) {
+        await this.#createView(data, viewController);
         return this
     }
 
     /**
      * Clears the viewport and adds the view HTML to it.
      */
-    show(viewController) {
+    show() {
         const viewPort = document.getElementById('viewport');
         const that = this;
         const data = this.#data
@@ -61,8 +62,9 @@ class SearchListView extends View {
      * @async
      * @param {Object} data - The data to use in the view.
      */
-    async #createView(data) {
+    async #createView(data, viewController) {
         this.#data = data;
+        this.#viewController = viewController;
         this.#type = "searchlist_view";
         this.#selectedPosition = data.position;
         this.#query = data.query;
@@ -278,6 +280,7 @@ class SearchListView extends View {
         console.log(data);
         contentContainer.innerHTML = '';
         const artistsData = data.artists.items;
+        const that = this;
         
         const artistsContainer = document.createElement('div');
         artistsContainer.setAttribute('id', 'searchList_tiles_container');
@@ -292,6 +295,10 @@ class SearchListView extends View {
             const artistContainer = this.#createTileElement(artistImageUrl, artistName);
 
             //event listeners
+
+            artistContainer.addEventListener('click', () => {
+                that.#viewController.switchView('artist', artistData);
+            });
 
             artistsContainer.appendChild(artistContainer);
         }

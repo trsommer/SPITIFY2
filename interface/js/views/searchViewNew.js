@@ -4,10 +4,11 @@ class SearchView extends View {
     #HTMLContent = null; //the HTML container that contains all the views content (excluding title)
     #displayed = false
     #HTMLPointers = null;
+    #viewController = null;
 
-    constructor(data) {
+    constructor(data, viewController) {
         super();
-        return this.#constructorMethod(null);
+        return this.#constructorMethod(data, viewController);
     }
 
     //implemeneted methods
@@ -16,15 +17,15 @@ class SearchView extends View {
      * This method fetches the users last Searches from a database and creates the last seraches view for them.
      * @param {Object} data - The data to be used for the construction. (useless here)
      */
-    async #constructorMethod(data) {
-        await this.#createView();
+    async #constructorMethod(data, viewController) {
+        await this.#createView(data, viewController);
         return this
     }
 
     /**
      * Clears the viewport and adds the view HTML to it.
      */
-    show(viewController) {
+    show() {
         const viewPort = document.getElementById('viewport');
         viewPort.innerHTML = '';
         viewPort.appendChild(this.#viewHTML);
@@ -59,8 +60,9 @@ class SearchView extends View {
      * @async
      * @param {Object} data - The data to use in the view.
      */
-    async #createView(data) {
+    async #createView(data, viewController) {
         this.#type = "search_view";
+        this.#viewController = viewController
 
         const returnValues = this.createHTMLContainer(null, 'search_view');
         this.#viewHTML = returnValues.container
@@ -98,7 +100,14 @@ class SearchView extends View {
 
     //search specific methods
 
-
+    #openSearchList(position) {
+        const query = document.getElementById("top_search_input").value;
+        const data = {
+            position: position,
+            query: query
+        }
+        this.#viewController.switchView("searchList", data)
+    }
 
     //html creation methods
 
@@ -227,6 +236,7 @@ class SearchView extends View {
      */
     #setArtistsContent(content) {
         const container = this.#HTMLPointers.artistsContainer
+        const that = this;
         container.innerHTML = '';
         const artists = content["items"];
         const length = 5;
@@ -241,6 +251,9 @@ class SearchView extends View {
 
         const buttonMore = document.createElement("img");
         buttonMore.src = "icons/more.svg";
+        buttonMore.addEventListener("click", () => {
+            that.#openSearchList(0);
+        });
 
         headerContainer.appendChild(header);
         headerContainer.appendChild(buttonMore);
@@ -307,6 +320,7 @@ class SearchView extends View {
     #setSongsContent(content) {
         const container = this.#HTMLPointers.songsContainer
         container.innerHTML = '';
+        const that = this;
         const songs = content["items"];
 
         const headerContainer = document.createElement("div");
@@ -318,6 +332,9 @@ class SearchView extends View {
 
         const buttonMore = document.createElement("img");
         buttonMore.src = "icons/more.svg";
+        buttonMore.addEventListener("click", () => {
+            that.#openSearchList(1);
+        });
 
         headerContainer.appendChild(header);
         headerContainer.appendChild(buttonMore);
@@ -411,6 +428,7 @@ class SearchView extends View {
      */
     #setAlbumsContent(content) {
         const container = this.#HTMLPointers.albumsAndPlaylistsContainer
+        const that = this;
         container.innerHTML = '';
         const albums = content["items"];
 
@@ -423,6 +441,9 @@ class SearchView extends View {
 
         const buttonMore = document.createElement("img");
         buttonMore.src = "icons/more.svg";
+        buttonMore.addEventListener("click", () => {
+            that.#openSearchList(2);
+        });
 
         headerContainer.appendChild(header);
         headerContainer.appendChild(buttonMore);
@@ -485,6 +506,7 @@ class SearchView extends View {
     #setPlaylistsContent(content) {
         const container = this.#HTMLPointers.albumsAndPlaylistsContainer
         const playlists = content["items"];
+        const that = this;
 
         const headerContainer = document.createElement("div");
         headerContainer.setAttribute("class", "search_results_heading_container");
@@ -495,6 +517,9 @@ class SearchView extends View {
 
         const buttonMore = document.createElement("img");
         buttonMore.src = "icons/more.svg";
+        buttonMore.addEventListener("click", () => {
+            that.#openSearchList(3);
+        });
 
         headerContainer.appendChild(header);
         headerContainer.appendChild(buttonMore);

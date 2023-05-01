@@ -1,5 +1,5 @@
 class View {
-    constructor(data) {
+    constructor(data, viewController) {
       if (this.constructor == View) {
         throw new Error("Abstract classes can't be instantiated.");
       }
@@ -11,7 +11,7 @@ class View {
       throw new Error("Method 'constructorMethod()' must be implemented.");
     }
 
-    show(viewController) {
+    show() {
       throw new Error("Method 'show()' must be implemented.");
     }
 
