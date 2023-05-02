@@ -38,11 +38,7 @@ class ViewController {
     }
 
     async #testFunc() {
-        const data = {
-            position: 0,
-            query: "taylor"
-        }
-        const view = await new SearchView({}, this);
+        const view = await new PlaylistsView({}, this);
         view.show();
     }
 

@@ -29,6 +29,7 @@ class PlaylistsView extends View {
      */
     show() {
         const viewPort = document.getElementById('viewport');
+        viewPort.innerHTML = '';
         viewPort.appendChild(this.#viewHTML);
         this.#displayed = true
     }
@@ -190,12 +191,16 @@ class PlaylistsView extends View {
                 author: "You"
             }
         } else {
-            data = playlists[playlistId - 1];
+            data = this.#playlists[playlistId - 1];
         }
         const result = await getPlaylistSongs(playlistId);
-        console.log(result);
-        //switchView("playlist_view");
-        await setContentPlaylist(data, result, playlistId);
+
+        const playlistData = {
+            playlistInfo: data,
+            songs: result
+        }
+
+        this.#viewController.switchView('playlist', playlistData);
     }
 
     /**
@@ -214,10 +219,11 @@ class PlaylistsView extends View {
      */
     #createHTMLPlaylistLikedSongs(contentContainer) {
         const playlistLikesContainer = document.createElement('div');
+        const that = this;
         playlistLikesContainer.setAttribute('id', 'playlists_liked_songs');
         playlistLikesContainer.innerHTML = '<svg id="playlist_liked_song_image" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><defs></defs><g id="Layer_2" data-name="Layer 2"><g id="Layer_1-2" data-name="Layer 1"><rect class="cls-1 playlists_plusButton_background" width="200" height="200"></rect><path class="cls-2 playlists_plusButton" d="M148.27,88.43h-36.7V51.73a11.57,11.57,0,1,0-23.14,0v36.7H51.73a11.57,11.57,0,0,0,0,23.14h36.7v36.7a11.57,11.57,0,0,0,23.14,0v-36.7h36.7a11.57,11.57,0,0,0,0-23.14Z"></path></g></g></svg>';
         playlistLikesContainer.addEventListener('click', (e) => {
-            this.openPlaylist("Likes");
+            that.openPlaylist("Likes");
         });
 
         const playlistLikesTextContainer = document.createElement('div');
@@ -254,6 +260,7 @@ class PlaylistsView extends View {
             const imageUrlString = playlists[index].imageUrl;
             const imageUrls = imageUrlString.split(",");
             const imageUrl = imageUrls[0];
+            const that = this;
     
             if (name == "") {
                 name = "Playlist " + id;
@@ -296,7 +303,7 @@ class PlaylistsView extends View {
             playlistItem.appendChild(playlistTextContainer);
     
             playlistItem.addEventListener("click", function () {
-                this.openPlaylist(id);
+                that.openPlaylist(id);
             });
     
             contentContainer.appendChild(playlistItem);
