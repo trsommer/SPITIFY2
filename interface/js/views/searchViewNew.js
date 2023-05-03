@@ -39,9 +39,9 @@ class SearchView extends View {
         //the search state can be preserved for undo 
         //the input in the menu search would need to be restored as well
         window.electronAPI.updateSpotifySearch((event, response) => {
-            const result = response.data.searchV2
-            console.log(result)
-            that.#populateContent(result)
+            const RESULT = response.data.searchV2
+            console.log(RESULT)
+            that.#populateContent(RESULT)
         });
     }
 
@@ -64,11 +64,11 @@ class SearchView extends View {
         this.#type = "search_view";
         this.#viewController = viewController
 
-        const returnValues = this.createHTMLContainer(null, 'search_view');
-        this.#viewHTML = returnValues.container
-        this.#HTMLContent = returnValues.contentContainer
+        const RETURN_VALUES = this.createHTMLContainer(null, 'search_view');
+        this.#viewHTML = RETURN_VALUES.container
+        this.#HTMLContent = RETURN_VALUES.contentContainer
 
-        this.#createHTMLContainers(returnValues.contentContainer)
+        this.#createHTMLContainers(RETURN_VALUES.contentContainer)
 
     }
 
@@ -101,12 +101,12 @@ class SearchView extends View {
     //search specific methods
 
     #openSearchList(position) {
-        const query = document.getElementById("top_search_input").value;
-        const data = {
+        const QUERY = document.getElementById("top_search_input").value;
+        const DATA = {
             position: position,
-            query: query
+            query: QUERY
         }
-        this.#viewController.switchView("searchList", data)
+        this.#viewController.switchView("searchList", DATA)
     }
 
     //html creation methods
@@ -161,16 +161,16 @@ class SearchView extends View {
      * @param {Array<Object>} content.playlists - The list of playlist objects.
      */
     #populateContent(content) {
-        const artists = content.artists;
-        const songs = content.tracksV2;
-        const albums = content.albums;
-        const playlists = content.playlists;
+        const ARTISTS = content.artists;
+        const SONGS = content.tracksV2;
+        const ALBUMS = content.albums;
+        const PLAYLISTS = content.playlists;
 
-        this.#setHightlightContent(artists);
-        this.#setArtistsContent(artists);
-        this.#setSongsContent(songs);
-        this.#setAlbumsContent(albums);
-        this.#setPlaylistsContent(playlists);
+        this.#setHightlightContent(ARTISTS);
+        this.#setArtistsContent(ARTISTS);
+        this.#setSongsContent(SONGS);
+        this.#setAlbumsContent(ALBUMS);
+        this.#setPlaylistsContent(PLAYLISTS);
     }
 
     /**
@@ -178,16 +178,16 @@ class SearchView extends View {
      * @param {Object} content - the content object parameter that contains the data to be displayed 
      */
     #setHightlightContent(content) {
-        const container = this.#HTMLPointers.mostRelevantContainer
-        container.innerHTML = '';
-        const data = content["items"]["0"]["data"];
-        const artistName = data["profile"]["name"];
-        const artistNameLength = artistName.length;
-        const spotifyURI = data["uri"];
-        const spotifyId = spotifyURI.replace("spotify:artist:", "");
+        const CONTAINER = this.#HTMLPointers.mostRelevantContainer
+        CONTAINER.innerHTML = '';
+        const DATA = content["items"]["0"]["data"];
+        const ARTIST_NAME = DATA["profile"]["name"];
+        const ARTIST_NAME_LENGTH = ARTIST_NAME.length;
+        const SPOTIFY_URI = DATA["uri"];
+        const SPOTIFY_ID = SPOTIFY_URI.replace("spotify:artist:", "");
 
-        const avatarImage = data["visuals"]["avatarImage"];
-        const url = avatarImage?.["sources"]["0"]["url"] ?? "standardImages/cover.jpg";
+        const AVATAR_IMAGE = DATA["visuals"]["avatarImage"];
+        const IMAGE_URL = AVATAR_IMAGE?.["sources"]["0"]["url"] ?? "standardImages/cover.jpg";
 
 
         const hightlightHeading = document.createElement("h2");
@@ -204,16 +204,16 @@ class SearchView extends View {
 
         const hightlightImage = document.createElement("img");
         hightlightImage.setAttribute("id", "search_most_relevant_image");
-        hightlightImage.src = url;
+        hightlightImage.src = IMAGE_URL;
 
         const hightlightTextContainer = document.createElement("div");
         hightlightTextContainer.setAttribute("id", "search_most_relevant_result_image_heading_container");
 
         const hightlightText = document.createElement("p");
         hightlightText.setAttribute("id", "search_most_relevant_result_image_heading");
-        hightlightText.innerHTML = artistName;
+        hightlightText.innerHTML = ARTIST_NAME;
         
-        if (artistNameLength > 10) {
+        if (ARTIST_NAME_LENGTH > 10) {
             //clear class list of artistNameContainer
             hightlightText.classList.add("search_most_relevant_result_image_heading_small");
           } else {
@@ -226,8 +226,8 @@ class SearchView extends View {
         hightlightContainer.appendChild(hightlightImage);
         hightlightContainer.appendChild(hightlightTextContainer);
 
-        container.appendChild(hightlightHeading);
-        container.appendChild(hightlightContainer);
+        CONTAINER.appendChild(hightlightHeading);
+        CONTAINER.appendChild(hightlightContainer);
     }
 
     /**
@@ -235,12 +235,12 @@ class SearchView extends View {
      * @param {Object} content - The content to populate the container with. 
      */
     #setArtistsContent(content) {
-        const container = this.#HTMLPointers.artistsContainer
+        const CONTAINER = this.#HTMLPointers.artistsContainer
         const that = this;
-        container.innerHTML = '';
-        const artists = content["items"];
-        const length = 5;
-        if (artists.length < length) length = artists.length;
+        CONTAINER.innerHTML = '';
+        const ARTISTS = content["items"];
+        const LENGTH = 5;
+        if (ARTISTS.length < LENGTH) LENGTH = ARTISTS.length;
 
         const headerContainer = document.createElement("div");
         headerContainer.setAttribute("class", "search_results_heading_container");
@@ -261,16 +261,16 @@ class SearchView extends View {
         const artistResultContainer = document.createElement("div");
         artistResultContainer.setAttribute("id", "search_results_artists");
 
-        for (let i = 1; i < length; i++) {
-            const artistData = artists[i]["data"];
-            if (artistData == undefined) return;
-            const spotifyURI = artistData["uri"];
-            const spotifyId = spotifyURI.replace("spotify:artist:", "");
+        for (let i = 1; i < LENGTH; i++) {
+            const ARTIST_DATA = ARTISTS[i]["data"];
+            if (ARTIST_DATA == undefined) return;
+            const SPOTIFY_URI = ARTIST_DATA["uri"];
+            const SPOTIFY_ID = SPOTIFY_URI.replace("spotify:artist:", "");
             let imageUrl = "standardImages/cover.jpg";
-            if (artistData["visuals"]["avatarImage"] != null) {
-                imageUrl = artistData["visuals"]["avatarImage"]["sources"][0]["url"];
+            if (ARTIST_DATA["visuals"]["avatarImage"] != null) {
+                imageUrl = ARTIST_DATA["visuals"]["avatarImage"]["sources"][0]["url"];
               }
-            const artistsName = artistData["profile"]["name"];
+            const ARTIST_NAME = ARTIST_DATA["profile"]["name"];
 
             const artistContainer = document.createElement("div");
             artistContainer.classList.add("search_results_artist");
@@ -290,7 +290,7 @@ class SearchView extends View {
         
             const artistNameHTML = document.createElement("p");
             artistNameHTML.classList.add("search_results_artist_text_artist");
-            artistNameHTML.innerHTML = artistsName;
+            artistNameHTML.innerHTML = ARTIST_NAME;
         
             const artistType = document.createElement("p");
             artistType.classList.add("search_results_artist_text_type");
@@ -308,8 +308,8 @@ class SearchView extends View {
             
         }
 
-        container.appendChild(headerContainer);
-        container.appendChild(artistResultContainer);
+        CONTAINER.appendChild(headerContainer);
+        CONTAINER.appendChild(artistResultContainer);
 
     }
 
@@ -321,7 +321,7 @@ class SearchView extends View {
         const container = this.#HTMLPointers.songsContainer
         container.innerHTML = '';
         const that = this;
-        const songs = content["items"];
+        const SONGS = content["items"];
 
         const headerContainer = document.createElement("div");
         headerContainer.setAttribute("class", "search_results_heading_container");
@@ -342,16 +342,16 @@ class SearchView extends View {
         const songResultContainer = document.createElement("div");
         songResultContainer.setAttribute("id", "search_section_songs_result");
 
-        const songLength = songs.length < 5 ? length = songs.length : length = 5
+        const songLength = SONGS.length < 5 ? length = SONGS.length : length = 5
 
         for (let i = 0; i < songLength; i++) {
-            const song = songs[i]['item']['data'];
-            const songName = song["name"];
-            const songId = song["id"];
-            const songImageUrl = getImageCoverUrl(song)
-            const artists = getArtistsAsString(song.artists.items);
-            const trackTimeMS = song["duration"]["totalMilliseconds"];
-            const trackTimeFormated = timeConvert(trackTimeMS);
+            const SONG = SONGS[i]['item']['data'];
+            const Song_NAME = SONG["name"];
+            const SONG_ID = SONG["id"];
+            const SONG_IMAGE_URL = getImageCoverUrl(SONG)
+            const ARTISTS = getArtistsAsString(SONG.artists.items);
+            const TRACK_TIME_MS = SONG["duration"]["totalMilliseconds"];
+            const TRACK_TIME_FORMATED = timeConvert(TRACK_TIME_MS);
 
             const songContainer = document.createElement("div");
             songContainer.classList.add("search_results_song");
@@ -384,7 +384,7 @@ class SearchView extends View {
 
             const songImage = document.createElement("img");
             songImage.classList.add("search_result_track_image");
-            songImage.src = songImageUrl;
+            songImage.src = SONG_IMAGE_URL;
 
             songImageContainer.appendChild(songImage);
             songImageContainer.appendChild(currentlyPlayingContainer);
@@ -394,15 +394,15 @@ class SearchView extends View {
 
             const songTitle = document.createElement("p");
             songTitle.classList.add("search_results_song_text_title");
-            songTitle.innerHTML = songName;
+            songTitle.innerHTML = Song_NAME;
 
             const songArtist = document.createElement("p");
             songArtist.classList.add("search_results_song_text_artist");
-            songArtist.innerHTML = artists;
+            songArtist.innerHTML = ARTISTS;
 
             const songTime = document.createElement("p");
             songTime.classList.add("search_results_song_text_time");
-            songTime.innerHTML = trackTimeFormated;
+            songTime.innerHTML = TRACK_TIME_FORMATED;
 
             songTextContainer.appendChild(songTitle);
             songTextContainer.appendChild(songArtist);
@@ -427,10 +427,10 @@ class SearchView extends View {
      * @param {Object} content - The content to set in the container 
      */
     #setAlbumsContent(content) {
-        const container = this.#HTMLPointers.albumsAndPlaylistsContainer
+        const CONTAINER = this.#HTMLPointers.albumsAndPlaylistsContainer
         const that = this;
-        container.innerHTML = '';
-        const albums = content["items"];
+        CONTAINER.innerHTML = '';
+        const ALBUMS = content["items"];
 
         const headerContainer = document.createElement("div");
         headerContainer.setAttribute("class", "search_results_heading_container");
@@ -451,14 +451,14 @@ class SearchView extends View {
         const albumResultContainer = document.createElement("div");
         albumResultContainer.setAttribute("id", "search_results_albums");
 
-        const albumLength = albums.length < 5 ? length = albums.length : length = 5
+        const albumLength = ALBUMS.length < 5 ? length = ALBUMS.length : length = 5
 
         for (let i = 0; i < albumLength; i++) {
-            const albumData = albums[i]["data"];
-            const albumName = albumData["name"];
-            const albumYear = albumData["date"]["year"];
-            const albumImageUrl = albumData["coverArt"]["sources"][0]["url"]
-            const artists = getArtistsAsString(albumData.artists.items);
+            const ALBUM_DATA = ALBUMS[i]["data"];
+            const ALBUM_NAME = ALBUM_DATA["name"];
+            const ALBUM_YEAR = ALBUM_DATA["date"]["year"];
+            const ALBUM_IMAGE_URL = ALBUM_DATA["coverArt"]["sources"][0]["url"]
+            const ALBUM_ARTISTS_STRING = getArtistsAsString(ALBUM_DATA.artists.items);
 
             const albumContainer = document.createElement("div");
             albumContainer.classList.add("search_results_album");
@@ -471,7 +471,7 @@ class SearchView extends View {
         
             const albumImage = document.createElement("img");
             albumImage.classList.add("search_results_album_image");
-            albumImage.src = albumImageUrl;
+            albumImage.src = ALBUM_IMAGE_URL;
         
             albumImageContainer.appendChild(albumImage);
         
@@ -480,11 +480,11 @@ class SearchView extends View {
         
             const albumTitle = document.createElement("p");
             albumTitle.classList.add("search_results_album_text_title");
-            albumTitle.innerHTML = albumName;
+            albumTitle.innerHTML = ALBUM_NAME;
         
             const albumYearHTML = document.createElement("p");
             albumYearHTML.classList.add("search_results_album_text_type");
-            albumYearHTML.innerHTML = albumYear;
+            albumYearHTML.innerHTML = ALBUM_YEAR;
         
             albumTextContainer.appendChild(albumTitle);
             albumTextContainer.appendChild(albumYearHTML);
@@ -495,8 +495,8 @@ class SearchView extends View {
             albumResultContainer.appendChild(albumContainer);
         }
 
-        container.appendChild(headerContainer);
-        container.appendChild(albumResultContainer);
+        CONTAINER.appendChild(headerContainer);
+        CONTAINER.appendChild(albumResultContainer);
     }
 
     /**
@@ -504,8 +504,8 @@ class SearchView extends View {
      * @param {Object} content - Object containing playlist data
      */
     #setPlaylistsContent(content) {
-        const container = this.#HTMLPointers.albumsAndPlaylistsContainer
-        const playlists = content["items"];
+        const CONTAINER = this.#HTMLPointers.albumsAndPlaylistsContainer
+        const PLAYLISTS = content["items"];
         const that = this;
 
         const headerContainer = document.createElement("div");
@@ -527,14 +527,14 @@ class SearchView extends View {
         const playlistResultContainer = document.createElement("div");
         playlistResultContainer.setAttribute("id", "search_results_playlists");
 
-        const playlistLength = playlists.length < 5 ? length = playlists.length : length = 5
+        const playlistLength = PLAYLISTS.length < 5 ? length = PLAYLISTS.length : length = 5
 
         for (let i = 0; i < playlistLength; i++) {
-            const playlistData = playlists[i]["data"];
-            let playlistName = playlistData["name"];
+            const PLAYLIST_DATA = PLAYLISTS[i]["data"];
+            let playlistName = PLAYLIST_DATA["name"];
             if (playlistName == "") playlistName = "Untitled Playlist";
-            const playlistOwner = playlistData["ownerV2"]["data"]["name"];
-            var imgUrl = playlistData["images"]["items"]["0"]["sources"]["0"]["url"];
+            const PLAYLIST_OWNER = PLAYLIST_DATA["ownerV2"]["data"]["name"];
+            var imgUrl = PLAYLIST_DATA["images"]["items"]["0"]["sources"]["0"]["url"];
             if (imgUrl == undefined) imgUrl = "standardImages/cover.jpg";
             
             const playlistContainer = document.createElement("div");
@@ -559,7 +559,7 @@ class SearchView extends View {
         
             const plylistOwner = document.createElement("p");
             plylistOwner.classList.add("search_results_album_text_type");
-            plylistOwner.innerHTML = playlistOwner;
+            plylistOwner.innerHTML = PLAYLIST_OWNER;
         
             playlistTextContainer.appendChild(playlistTitle);
             playlistTextContainer.appendChild(plylistOwner);
@@ -570,7 +570,7 @@ class SearchView extends View {
             playlistResultContainer.appendChild(playlistContainer);
         }
 
-        container.appendChild(headerContainer);
-        container.appendChild(playlistResultContainer);
+        CONTAINER.appendChild(headerContainer);
+        CONTAINER.appendChild(playlistResultContainer);
     }
 }

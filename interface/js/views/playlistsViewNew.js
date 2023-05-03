@@ -19,8 +19,8 @@ class PlaylistsView extends View {
      * @param {Object} data - The data to be used for the construction. (useless here)
      */
     async #constructorMethod(data, viewController) {
-        const playlists = await this.#getPlaylistsFromDB();
-        await this.#createView(playlists, viewController);
+        const PLAYLISTS = await this.#getPlaylistsFromDB();
+        await this.#createView(PLAYLISTS, viewController);
         return this
     }
 
@@ -60,13 +60,13 @@ class PlaylistsView extends View {
             addPlaylistButton : null
         }
 
-        const returnValues = this.createHTMLContainer('Your Playlists', 'playlists_view');
-        this.#viewHTML = returnValues.container
-        this.#HTMLContent = returnValues.contentContainer
+        const RETURN_VALUES = this.createHTMLContainer('Your Playlists', 'playlists_view');
+        this.#viewHTML = RETURN_VALUES.container
+        this.#HTMLContent = RETURN_VALUES.contentContainer
 
-        this.#createHTMLPlaylistLikedSongs(returnValues.contentContainer);
-        this.#createHTMLUserPlaylists(returnValues.contentContainer, data);
-        this.#createHTMLNewPlaylistButton(returnValues.contentContainer);
+        this.#createHTMLPlaylistLikedSongs(RETURN_VALUES.contentContainer);
+        this.#createHTMLUserPlaylists(RETURN_VALUES.contentContainer, data);
+        this.#createHTMLNewPlaylistButton(RETURN_VALUES.contentContainer);
     }
 
     async updateView() {
@@ -105,9 +105,9 @@ class PlaylistsView extends View {
      * @returns {Array} An array of playlist objects
      */
     async #getPlaylistsFromDB() {
-        const playlists = await getFromDB("SELECT * FROM playlists")
-        this.#playlists = playlists
-        return playlists
+        const PLAYLISTS = await getFromDB("SELECT * FROM playlists")
+        this.#playlists = PLAYLISTS
+        return PLAYLISTS
     }
 
     /**
@@ -117,9 +117,9 @@ class PlaylistsView extends View {
      * @returns {Object} - the playlist object from the database.
      */
     async #getPlaylistFromDB(playlistId) {
-        playlistName = 'playlist' + playlistId;
-        playlist = await getFromDB("SELECT * FROM " + playlistName)
-        return playlist;
+        const PLAYLIST_NAME = 'playlist' + playlistId;
+        const PLAYLIST = await getFromDB("SELECT * FROM " + PLAYLIST_NAME)
+        return PLAYLIST;
     }
 
     /**
@@ -128,22 +128,23 @@ class PlaylistsView extends View {
      * @returns {Promise<number>} - The ID of the created playlist.
      */
     async createPlaylist() {
-        const playlists = this.getPlaylists()
-        const playlistNewLength = playlists.length + 1
-        const data = {
-            name: "Your Playlist " + playlistNewLength,
+        const PLAYLISTS = this.getPlaylists()
+        const PLAYLISTS_NEW_LENGTH = PLAYLISTS.length + 1
+        const DATA = {
+            name: "Your Playlist " + PLAYLISTS_NEW_LENGTH,
             remote: 0,
             locked: 0,
             spotifyId: "",
             imageUrl: "standardImages/cover.jpg",
-            author: "You"
+            author: "You",
+            id: PLAYLISTS_NEW_LENGTH
         }
         
-        const id = await createPlaylistDB(data)
-        playlists.push(data)
-        this.#updatePlaylistsView(playlists);
+        const ID = await createPlaylistDB(DATA)
+        PLAYLISTS.push(DATA)
+        this.#updatePlaylistsView(PLAYLISTS);
     
-        return id;
+        return ID;
     }
 
     /**
@@ -156,8 +157,8 @@ class PlaylistsView extends View {
      * @returns {Promise<string>} The ID of the newly created playlist.
      */
     async createSpecificPlaylist(name, author, imageUrl, locked) {
-        const playlists = getPlaylists()
-        const data = {
+        const PLAYLISTS = getPlaylists()
+        const DATA = {
             name: name,
             remote: 0,
             locked: locked,
@@ -166,11 +167,11 @@ class PlaylistsView extends View {
             author: author
         }
     
-        const id = await createPlaylistDB(data)
-        playlists.push(data)
-        this.#updatePlaylistsView(playlists);
+        const ID = await createPlaylistDB(DATA)
+        PLAYLISTS.push(DATA)
+        this.#updatePlaylistsView(PLAYLISTS);
     
-        return id;
+        return ID;
     }
 
     /**
@@ -193,14 +194,14 @@ class PlaylistsView extends View {
         } else {
             data = this.#playlists[playlistId - 1];
         }
-        const result = await getPlaylistSongs(playlistId);
+        const RESULT = await getPlaylistSongs(playlistId);
 
-        const playlistData = {
+        const PLAYLIST_DATA = {
             playlistInfo: data,
-            songs: result
+            songs: RESULT
         }
 
-        this.#viewController.switchView('playlist', playlistData);
+        this.#viewController.switchView('playlist', PLAYLIST_DATA);
     }
 
     /**
@@ -255,15 +256,15 @@ class PlaylistsView extends View {
         }
 
         for (let index = 0; index < playlists.length; index++) {
-            let name = playlists[index].name;
-            const id = playlists[index].id;
-            const imageUrlString = playlists[index].imageUrl;
-            const imageUrls = imageUrlString.split(",");
-            const imageUrl = imageUrls[0];
+            let NAME = playlists[index].name;
+            const ID = playlists[index].id;
+            const IMAGE_URL_STRING = playlists[index].imageUrl;
+            const IMAGE_URLS = IMAGE_URL_STRING.split(",");
+            const IMAGE_URL = IMAGE_URLS[0];
             const that = this;
     
-            if (name == "") {
-                name = "Playlist " + id;
+            if (NAME == "") {
+                NAME = "Playlist " + ID;
             }
     
             const playlistItem = document.createElement("div");
@@ -274,15 +275,15 @@ class PlaylistsView extends View {
     
             const playlistTitle = document.createElement("p");
             playlistTitle.classList.add("playlists_item_text");
-            playlistTitle.innerHTML = name;
+            playlistTitle.innerHTML = NAME;
     
             playlistTextContainer.appendChild(playlistTitle);
     
-            if (imageUrls.length == 1) {
+            if (IMAGE_URLS.length == 1) {
                 //singe image
                 const playlistImage = document.createElement("img");
                 playlistImage.classList.add("playlist_item_image");
-                playlistImage.src = imageUrl;
+                playlistImage.src = IMAGE_URL;
                 playlistItem.appendChild(playlistImage);
             } else {
                 //quad image
@@ -293,7 +294,7 @@ class PlaylistsView extends View {
                 for (let i = 0; i < 4; i++) {
                     var playlistImage = document.createElement("img");
                     playlistImage.classList.add("playlist_item_quad_image");
-                    playlistImage.src = imageUrls[i];
+                    playlistImage.src = IMAGE_URLS[i];
                     playlistImageContainer.appendChild(playlistImage);
                 }        
     
@@ -303,7 +304,7 @@ class PlaylistsView extends View {
             playlistItem.appendChild(playlistTextContainer);
     
             playlistItem.addEventListener("click", function () {
-                that.openPlaylist(id);
+                that.openPlaylist(ID);
             });
     
             contentContainer.appendChild(playlistItem);
@@ -346,21 +347,21 @@ class PlaylistsView extends View {
      * @param {Array} newPlaylists - The new playlists to display.
      */
     #updatePlaylistsView(newPlaylists) {
-        const createPlaylistButton = this.#playlistsHTMLPointers.addPlaylistButton;
-        const contentContainer = this.#HTMLContent;
-        const playlistsHTML = this.#playlistsHTMLPointers.playlists;
+        const CREATE_PLAYLIST_BUTTON = this.#playlistsHTMLPointers.addPlaylistButton;
+        const CONTENT_CONTAINER = this.#HTMLContent;
+        const PLAYLISTS_HTML = this.#playlistsHTMLPointers.playlists;
 
-        contentContainer.removeChild(createPlaylistButton);
+        CONTENT_CONTAINER.removeChild(CREATE_PLAYLIST_BUTTON);
 
         //remove all playlists
-        for (let index = 0; index < playlistsHTML.length; index++) {
-            const playlistElement = playlistsHTML[index];
-            contentContainer.removeChild(playlistElement);
+        for (let index = 0; index < PLAYLISTS_HTML.length; index++) {
+            const PLAYLIST_ELEMENT = PLAYLISTS_HTML[index];
+            CONTENT_CONTAINER.removeChild(PLAYLIST_ELEMENT);
         }
 
-        this.#createHTMLUserPlaylists(contentContainer, newPlaylists);
+        this.#createHTMLUserPlaylists(CONTENT_CONTAINER, newPlaylists);
         
-        contentContainer.appendChild(createPlaylistButton);
+        CONTENT_CONTAINER.appendChild(CREATE_PLAYLIST_BUTTON);
     }
 
     //this will prob. be changed/removed later when a better solution is found

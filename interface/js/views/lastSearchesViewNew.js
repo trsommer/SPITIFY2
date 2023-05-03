@@ -18,8 +18,8 @@ class LastSearchesView extends View {
      * @param {Object} data - The data to be used for the construction. (useless here)
      */
     async #constructorMethod(data, viewController) {
-        const lastSearches = await getLastSearches();
-        await this.#createView(lastSearches, viewController);
+        const LAST_SERACHES = await getLastSearches();
+        await this.#createView(LAST_SERACHES, viewController);
         return this
     }
 
@@ -52,13 +52,13 @@ class LastSearchesView extends View {
         this.#viewController = viewController;
         this.#type = "lastSearches_view";
         
-        const returnValues = this.createHTMLContainer('Recently Searched', 'lastSearches_view');
-        this.#viewHTML = returnValues.container
-        this.#HTMLContent = returnValues.contentContainer
+        const RETURN_VALUES = this.createHTMLContainer('Recently Searched', 'lastSearches_view');
+        this.#viewHTML = RETURN_VALUES.container
+        this.#HTMLContent = RETURN_VALUES.contentContainer
 
         //create the last searches container
 
-        this.#createLastSearchesButtons(returnValues.contentContainer, data);
+        this.#createLastSearchesButtons(RETURN_VALUES.contentContainer, data);
     }
 
     async updateView() {
@@ -90,10 +90,10 @@ class LastSearchesView extends View {
     //last searches specific methods
 
     #removeLastSearch(lastSearchId, lastSearchItem) {
-        const contentContainer = this.#HTMLContent;
+        const CONTENT_CONTAINER = this.#HTMLContent;
 
         //remove the item from the dom
-        contentContainer.removeChild(lastSearchItem);
+        CONTENT_CONTAINER.removeChild(lastSearchItem);
 
         //remove the item from the database
         deleteSpecificLastSearch(lastSearchId);
@@ -115,14 +115,14 @@ class LastSearchesView extends View {
      * @param {string} additionalInfo - Additional information about the search result.
      */
     async addLastSearch(type, name, spotifyId, imageUrl, additionalInfo) {
-        const prevLastSearches = await getLastSearches()
-        const prevLastSearchesLength = Object.keys(prevLastSearches).length
+        const PREVIOUS_LAST_SEARCHES = await getLastSearches()
+        const PREVIOUS_LAST_SEARCHES_LENGTH = Object.keys(PREVIOUS_LAST_SEARCHES).length
 
-        if (prevLastSearchesLength == 16) {
+        if (PREVIOUS_LAST_SEARCHES_LENGTH == 16) {
             let found = false
     
-            for (let index = 0; index < lastSearches.length; index++) {
-                const lastSearch = lastSearches[index];
+            for (let index = 0; index < PREVIOUS_LAST_SEARCHES.length; index++) {
+                const lastSearch = PREVIOUS_LAST_SEARCHES[index];
                 if (lastSearch.spotifyId == spotifyId) {
                     found = true;
                     await deleteSpecificLastSearch(spotifyId);
@@ -162,7 +162,7 @@ class LastSearchesView extends View {
                 continue;
             }
 
-            const lastSearchId = lastSearch.spotifyId;
+            const LAST_SEARCH_ID = lastSearch.spotifyId;
 
             const lastSearchItem = document.createElement("div");
             lastSearchItem.classList.add("last_search_item");
@@ -202,11 +202,11 @@ class LastSearchesView extends View {
             const that = this;
 
             lastSearchItemClickZone.addEventListener("click", function () {
-                that.#openLastSearch(lastSearchId, lastSearch.type);
+                that.#openLastSearch(LAST_SEARCH_ID, lastSearch.type);
             });
 
             lastSearchCloseButton.addEventListener("click", function () {
-                that.#removeLastSearch(lastSearchId, lastSearchItem);
+                that.#removeLastSearch(LAST_SEARCH_ID, lastSearchItem);
             });
 
 

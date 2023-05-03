@@ -38,8 +38,8 @@ class ViewController {
     }
 
     async #testFunc() {
-        const view = await new PlaylistsView({}, this);
-        view.show();
+        const VIEW = await new PlaylistsView({}, this);
+        VIEW.show();
     }
 
     async #viewFactory(viewType, data) {

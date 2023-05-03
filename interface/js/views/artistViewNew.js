@@ -22,9 +22,9 @@ class ArtistView extends View {
      * @param {Object} data - The data to be used for the construction. (useless here)
      */
     async #constructorMethod(data, viewController) {
-        const check = await this.#checkIfIdExists(data)
-        if (check != true) {
-            data = await getSpotifyArtist(check)
+        const CHECK = await this.#checkIfIdExists(data)
+        if (CHECK != true) {
+            data = await getSpotifyArtist(CHECK)
         }
         await this.#createView(data, viewController);
         return this
@@ -62,11 +62,11 @@ class ArtistView extends View {
         this.#artistData = data
         this.#viewController = viewController
 
-        const returnValues = this.createHTMLContainer("unbound", 'artist_view');
-        this.#viewHTML = returnValues.container
-        this.#HTMLContent = returnValues.contentContainer
+        const RETURN_VALUES = this.createHTMLContainer("unbound", 'artist_view');
+        this.#viewHTML = RETURN_VALUES.container
+        this.#HTMLContent = RETURN_VALUES.contentContainer
 
-        this.#spawnHTMLArtistContent(returnValues.contentContainer, data);
+        this.#spawnHTMLArtistContent(RETURN_VALUES.contentContainer, data);
 
         const that = this
         this.#resizeUpdate = async function (e) {
@@ -125,37 +125,37 @@ class ArtistView extends View {
     }
 
     #calcAppropriateAlbumCarouselWidth() {
-        const albumWidth = 300;
-        const contentWidth = window.innerWidth - 72; //60 for menuLeft, 12 for scrollbar (always visible on artistPage)
-        const nrAlbums = Math.floor((contentWidth - 50) / albumWidth);
-        const carouselWidth = albumWidth * nrAlbums
+        const ALBUM_WIDTH = 300;
+        const CONTENT_WIDTH = window.innerWidth - 72; //60 for menuLeft, 12 for scrollbar (always visible on artistPage)
+        const NR_ALBUMS = Math.floor((CONTENT_WIDTH - 50) / ALBUM_WIDTH);
+        const CAROUSEL_WIDTH = ALBUM_WIDTH * NR_ALBUMS
 
         return {
-            carouselWidth: carouselWidth,
-            nrAlbums: nrAlbums
+            carouselWidth: CAROUSEL_WIDTH,
+            nrAlbums: NR_ALBUMS
         }
     }
 
     async #updateAlbumCarouselWidth() {
-        const newDims = this.#calcAppropriateAlbumCarouselWidth();
-        const oldCarouselWidth = this.#carouselWidth
-        const newCarouselWidth = newDims.carouselWidth;
-        if (oldCarouselWidth == newCarouselWidth) {
+        const NEW_DIMS = this.#calcAppropriateAlbumCarouselWidth();
+        const OLD_CAROUSEL_WIDTH = this.#carouselWidth
+        const NEW_CAROUSEL_WIDTH = NEW_DIMS.carouselWidth;
+        if (OLD_CAROUSEL_WIDTH == NEW_CAROUSEL_WIDTH) {
             return
         }
-        const carousels = this.#carouselControls;
-        this.#carouselWidth = newCarouselWidth
-        const nrAlbumsNew = newDims.nrAlbums
+        const CAROUSELS = this.#carouselControls;
+        this.#carouselWidth = NEW_CAROUSEL_WIDTH
+        const NR_ALBUMS_NEW = NEW_DIMS.nrAlbums
 
-        for (let i = 0; i < carousels.length; i++) {
-            const carouselObject = carousels[i];
-            const carousel = carouselObject.carousel;
-            const carouselNavigatorContainer = carouselObject.carouselNavigatorContainer;
-            const albums = carouselObject.albums;
-            const title = carouselObject.title;
-            carousel.style.width = `${newCarouselWidth}px`;
+        for (let i = 0; i < CAROUSELS.length; i++) {
+            const CAROUSEL_OBJECT = CAROUSELS[i];
+            const CAROUSEL = CAROUSEL_OBJECT.carousel;
+            const CAROUSEL_NAVIGATOR_OBJECT = CAROUSEL_OBJECT.carouselNavigatorContainer;
+            const ALBUMS = CAROUSEL_OBJECT.albums;
+            const TITLE = CAROUSEL_OBJECT.title;
+            CAROUSEL.style.width = `${NEW_CAROUSEL_WIDTH}px`;
 
-            this.#createAlbumNavigator(carouselNavigatorContainer, carousel, albums, nrAlbumsNew, title);
+            this.#createAlbumNavigator(CAROUSEL_NAVIGATOR_OBJECT, CAROUSEL, ALBUMS, NR_ALBUMS_NEW, TITLE);
         }
     }
 
@@ -170,7 +170,7 @@ class ArtistView extends View {
     }
 
     #createBackgroundImage(container, data) {
-        const artistBGImage = 
+        const ARTIST_BACKGROUND_IMAGE = 
         data.visuals.headerImage?.sources[0].url || 
         data.visuals.avatarImage?.sources[0].url || 
         "standardImages/bgArtist.jpg";
@@ -180,7 +180,7 @@ class ArtistView extends View {
 
         const backgroundImage = document.createElement('img');
         backgroundImage.setAttribute("id", "artist_background_image");
-        backgroundImage.src = artistBGImage;
+        backgroundImage.src = ARTIST_BACKGROUND_IMAGE;
 
         backgroundImageContainer.appendChild(backgroundImage);
 
@@ -188,8 +188,8 @@ class ArtistView extends View {
     }
 
     async #createHeaderContainer(container, data) {
-        const artistName = data.profile.name
-        const artistBGImage = 
+        const ARTIST_NAME = data.profile.name
+        const ARTIST_BACKGROUND_IMAGE = 
             data.visuals.headerImage?.sources[0].url || 
             data.visuals.avatarImage?.sources[0].url || 
             "standardImages/bgArtist.jpg";
@@ -199,7 +199,7 @@ class ArtistView extends View {
 
         const headerImage = document.createElement('img');
         headerImage.setAttribute("id", "artist_header_image");
-        this.#setCustomColors(headerImage, artistBGImage);
+        this.#setCustomColors(headerImage, ARTIST_BACKGROUND_IMAGE);
 
         const headerGradient = document.createElement('div');
         headerGradient.setAttribute("id", "artist_header_gradient");
@@ -209,7 +209,7 @@ class ArtistView extends View {
 
         const headerText = document.createElement('h1');
         headerText.setAttribute("id", "artist_header_text");
-        headerText.innerHTML = artistName;
+        headerText.innerHTML = ARTIST_NAME;
 
         const headerPlayButton = document.createElement('div');
         headerPlayButton.setAttribute("class", "artist_header_button");
@@ -248,18 +248,18 @@ class ArtistView extends View {
     }
 
     async #createMostPopularContent(container, data) {
-        const latestRelease = data.discography.latest
+        const LATEST_RELEASE = data.discography.latest
 
         const mostPopularContainer = document.createElement('div');
         mostPopularContainer.setAttribute("id", "artist_most_popular_container");
 
         const popularSongsContainer = document.createElement('div');
 
-        if (latestRelease !== undefined) {
+        if (LATEST_RELEASE !== undefined) {
             const lastReleaseContainer = document.createElement('div');
             lastReleaseContainer.setAttribute("id", "artist_last_release_container");
 
-            this.#createLatestRelease(lastReleaseContainer, latestRelease);
+            this.#createLatestRelease(lastReleaseContainer, LATEST_RELEASE);
 
             mostPopularContainer.appendChild(lastReleaseContainer);
 
@@ -282,12 +282,12 @@ class ArtistView extends View {
     }
 
     #createLatestRelease(container, data) {
-        const name = data.name
-        const nrTracks = data.tracks.totalCount
-        const songNumber = nrTracks == 1 ? "1 Song" : nrTracks + " Songs";
-        const typeAlbum = data.type
-        const date = data.date.year
-        const imageURL = data.coverArt.sources[0]?.url || "standardImages/cover.jpg"
+        const NAME = data.name
+        const NR_TRACKS = data.tracks.totalCount
+        const SONG_NUMBER = NR_TRACKS == 1 ? "1 Song" : NR_TRACKS + " Songs";
+        const TYPE_ALBUM = data.type
+        const RELEASE_DATE = data.date.year
+        const IMAGE_URL = data.coverArt.sources[0]?.url || "standardImages/cover.jpg"
 
         const latestReleaseWrapper = document.createElement('div');
         latestReleaseWrapper.setAttribute("id", "artist_latest_release_wrapper");
@@ -310,22 +310,22 @@ class ArtistView extends View {
 
         const latestReleaseImage = document.createElement('img');
         latestReleaseImage.setAttribute("id", "artist_latest_release_image");
-        latestReleaseImage.src = imageURL
+        latestReleaseImage.src = IMAGE_URL
 
         const latestReleaseTextContainer = document.createElement('div');
         latestReleaseTextContainer.setAttribute("id", "artist_latest_release_text_container");
 
         const latestReleaseTextName = document.createElement('h3');
         latestReleaseTextName.setAttribute("id", "artist_latest_release_text_name");
-        latestReleaseTextName.innerHTML = name
+        latestReleaseTextName.innerHTML = NAME
 
         const latestReleaseTextNrSongs = document.createElement('p');
         latestReleaseTextNrSongs.setAttribute("id", "artist_latest_release_text_nr_songs");
-        latestReleaseTextNrSongs.innerHTML = songNumber
+        latestReleaseTextNrSongs.innerHTML = SONG_NUMBER
 
         const latestReleaseTextDate = document.createElement('p');
         latestReleaseTextDate.setAttribute("id", "artist_latest_release_text_date");
-        latestReleaseTextDate.innerHTML = date
+        latestReleaseTextDate.innerHTML = RELEASE_DATE
 
         latestReleaseTextContainer.appendChild(latestReleaseTextName);
         latestReleaseTextContainer.appendChild(latestReleaseTextNrSongs);
@@ -347,9 +347,9 @@ class ArtistView extends View {
     }
 
     #createPopularSongs(container, data, size) {
-        const topSongs = data.discography.topTracks?.items || []
-        const maxLength = size == "small" ? 6 : 9;
-        const realLength = topSongs.length > maxLength ? maxLength : topSongs.length;
+        const TOP_SONGS = data.discography.topTracks?.items || []
+        const MAX_LENGTH = size == "small" ? 6 : 9;
+        const REAL_LENGTH = TOP_SONGS.length > MAX_LENGTH ? MAX_LENGTH : TOP_SONGS.length;
 
         const popularSongsWrapper = document.createElement('div');
         popularSongsWrapper.setAttribute("id", "artist_popular_songs_wrapper");
@@ -367,12 +367,12 @@ class ArtistView extends View {
 
         popularSongsTitleContainer.appendChild(popularSongsTitle);
 
-        for (let i = 0; i < realLength; i++) {
-            const topSongData = topSongs[i].track;
-            const songId = topSongData.id;
-            const songName = topSongData.name;
-            const songArtists = getArtistsAsString(topSongData.artists.items);
-            const songImageURL = getImageCoverUrl(topSongData);
+        for (let i = 0; i < REAL_LENGTH; i++) {
+            const TOP_SONG_DATA = TOP_SONGS[i].track;
+            const SONG_ID = TOP_SONG_DATA.id;
+            const SONG_NAME = TOP_SONG_DATA.name;
+            const SONG_ARTISTS_STRING = getArtistsAsString(TOP_SONG_DATA.artists.items);
+            const SONG_IMAGE_URL = getImageCoverUrl(TOP_SONG_DATA);
 
             const songContainer = document.createElement('div');
             songContainer.setAttribute("class", "artist_grid_song_container");
@@ -382,18 +382,18 @@ class ArtistView extends View {
 
             const songImage = document.createElement('img');
             songImage.setAttribute("class", "artist_grid_song_image");
-            songImage.src = songImageURL
+            songImage.src = SONG_IMAGE_URL
 
             const songTextContainer = document.createElement('div');
             songTextContainer.setAttribute("class", "artist_grid_song_text_container");
 
             const songTextName = document.createElement('h3');
             songTextName.setAttribute("class", "artist_grid_song_text_name");
-            songTextName.innerHTML = songName
+            songTextName.innerHTML = SONG_NAME
 
             const songTextArtists = document.createElement('p');
             songTextArtists.setAttribute("class", "artist_grid_song_text_artists");
-            songTextArtists.innerHTML = songArtists
+            songTextArtists.innerHTML = SONG_ARTISTS_STRING
 
             songImageContainer.appendChild(songImage);
 
@@ -413,17 +413,17 @@ class ArtistView extends View {
     }
 
     #createAlbumsAndSingles(container, data) {
-        const albums = data.discography.albums.items
-        this.#createAlbumCarousel(container, albums, "Albums")
+        const ALBUMS = data.discography.albums.items
+        this.#createAlbumCarousel(container, ALBUMS, "Albums")
 
-        const singles = data.discography.singles.items
-        this.#createAlbumCarousel(container, singles, "Singles")
+        const SINGLES = data.discography.singles.items
+        this.#createAlbumCarousel(container, SINGLES, "Singles")
     }
 
     #createAlbumCarousel(container, albums, title) {
-        const dims = this.#calcAppropriateAlbumCarouselWidth()
-        const carouselWidth = dims.carouselWidth
-        const nrAlbumsShown = dims.nrAlbums
+        const DIMS = this.#calcAppropriateAlbumCarouselWidth()
+        const CAROUSEL_WIDTH = DIMS.carouselWidth
+        const NR_ALBUMS_SHOWN = DIMS.nrAlbums
 
         const albumsContainer = document.createElement('div');
         albumsContainer.setAttribute("class", "artist_albums_container");
@@ -437,16 +437,16 @@ class ArtistView extends View {
 
         const albumsCarousel = document.createElement('div');
         albumsCarousel.setAttribute("class", "artist_albums_carousel");
-        albumsCarousel.style.width = `${carouselWidth}px`
+        albumsCarousel.style.width = `${CAROUSEL_WIDTH}px`
 
         for (let i = 0; i < albums.length; i++) {
-            const album = albums[i].releases.items[0];
-            let name = album.name;
-            const year = album.date.year;
-            const imageURL = album.coverArt.sources[0].url;
+            const ALBUM = albums[i].releases.items[0];
+            let NAME = ALBUM.name;
+            const RELEASE_DATE = ALBUM.date.year;
+            const IMAGE_URL = ALBUM.coverArt.sources[0].url;
             
-            if (name.length > 15) {
-                name = name.substring(0, 15) + "...";
+            if (NAME.length > 15) {
+                NAME = NAME.substring(0, 15) + "...";
             }
 
             const albumContainer = document.createElement('div');
@@ -460,15 +460,15 @@ class ArtistView extends View {
 
             const albumImage = document.createElement('img');
             albumImage.setAttribute("class", "artist_album_image");
-            albumImage.src = imageURL
+            albumImage.src = IMAGE_URL
 
             const albumName = document.createElement('p');
             albumName.setAttribute("class", "artist_album_name");
-            albumName.innerHTML = name
+            albumName.innerHTML = NAME
 
             const albumDate = document.createElement('p');
             albumDate.setAttribute("class", "artist_album_date");
-            albumDate.innerHTML = year
+            albumDate.innerHTML = RELEASE_DATE
 
             albumImageContainer.appendChild(albumImage);
 
@@ -484,7 +484,7 @@ class ArtistView extends View {
         const carouselNavigatorContainer = document.createElement('div');
         carouselNavigatorContainer.setAttribute("class", "artist_album_navigator_container");
 
-        this.#createAlbumNavigator(carouselNavigatorContainer, albumsCarousel, albums, nrAlbumsShown, title)
+        this.#createAlbumNavigator(carouselNavigatorContainer, albumsCarousel, albums, NR_ALBUMS_SHOWN, title)
 
         albumsTitleContainer.appendChild(albumsTitle);
 
@@ -505,46 +505,46 @@ class ArtistView extends View {
     }
 
     #createAlbumNavigator(container, target, albums, appropriateNrAlbumsCarousel, title) {
-        const widthSmallNavigatorIncrement = 80 / appropriateNrAlbumsCarousel;
-        const nrBigNavigators = Math.floor(albums.length / appropriateNrAlbumsCarousel);
-        const smallNavigatorIncrements = albums.length - (nrBigNavigators * appropriateNrAlbumsCarousel);
-        const smallNavigatorWidth = widthSmallNavigatorIncrement * smallNavigatorIncrements;
-        const smallNavigatorWidthHover = smallNavigatorWidth * 1.4;
+        const WIDTH_SMALL_NAVIGATOR_INCREMENT = 80 / appropriateNrAlbumsCarousel;
+        const NR_BIG_NAVIGATORS = Math.floor(albums.length / appropriateNrAlbumsCarousel);
+        const SMALL_NAVIGATORS_INCREMENTS = albums.length - (NR_BIG_NAVIGATORS * appropriateNrAlbumsCarousel);
+        const SMALL_NAVIGATOR_WIDTH = WIDTH_SMALL_NAVIGATOR_INCREMENT * SMALL_NAVIGATORS_INCREMENTS;
+        const SMALL_NAVIGATOR_WIDTH_HOVER = SMALL_NAVIGATOR_WIDTH * 1.4;
 
         container.innerHTML = "";
     
-        for (let i = 0; i < nrBigNavigators; i++) {
+        for (let i = 0; i < NR_BIG_NAVIGATORS; i++) {
             const bigNavigator = document.createElement('div');
             bigNavigator.setAttribute("class", "artist_album_navigator");
     
             bigNavigator.addEventListener("click", function () {
-                const scrollWidth = 300 * appropriateNrAlbumsCarousel * i;
-                target.scrollTo({ left: scrollWidth, behavior: "smooth" });
+                const SCROLL_WIDTH = 300 * appropriateNrAlbumsCarousel * i;
+                target.scrollTo({ left: SCROLL_WIDTH, behavior: "smooth" });
             });
     
             container.appendChild(bigNavigator);
         }
     
-        if (smallNavigatorIncrements > 0) {1
+        if (SMALL_NAVIGATORS_INCREMENTS > 0) {1
             const smallNavigator = document.createElement('div');
             smallNavigator.setAttribute("class", "artist_album_navigator");
             const id = "artist_smallNavigator" + title;
             smallNavigator.setAttribute("id", id);
-            const css = 
+            const CSS = 
                 `
                 #${id} {
-                    width: ${smallNavigatorWidth}px;
+                    width: ${SMALL_NAVIGATOR_WIDTH}px;
                 }
                 
                 #${id}:hover {
-                    width: ${smallNavigatorWidthHover}px;
+                    width: ${SMALL_NAVIGATOR_WIDTH_HOVER}px;
                 }
             `
             const style = document.createElement('style');
             if (style.styleSheet) {
-                style.styleSheet.cssText = css;
+                style.styleSheet.cssText = CSS;
             } else {
-                style.appendChild(document.createTextNode(css));
+                style.appendChild(document.createTextNode(CSS));
             }
             document.head.appendChild(style);
     
@@ -557,18 +557,18 @@ class ArtistView extends View {
     }
 
     #createBiography(container, data) {
-        const bioText = data.profile.biography?.text || null;
-        const images = data.visuals.gallery?.items || null;
+        const BIO_TEXT = data.profile.biography?.text || null;
+        const IMAGES = data.visuals.gallery?.items || null;
 
-        if (bioText == null && images == null) {
+        if (BIO_TEXT == null && IMAGES == null) {
             return;
         }
 
         const biographyContainer = document.createElement('div');
         biographyContainer.setAttribute("class", "artist_biography_container");
 
-        if (bioText != null) {
-            this.#createBiographyText(biographyContainer, bioText);
+        if (BIO_TEXT != null) {
+            this.#createBiographyText(biographyContainer, BIO_TEXT);
         }
 
         container.appendChild(biographyContainer);
@@ -577,23 +577,23 @@ class ArtistView extends View {
     #createBiographyText(container, bioText) {
         const bioTextContainer = document.createElement('div');
         bioTextContainer.setAttribute("class", "artist_biography_text_container");
-        const split1Array = bioText.split("<a");
+        const SPLIT_ARRAY = bioText.split("<a");
 
-        for (let i = 0; i < split1Array.length; i++) {
-            const splitString = split1Array[i];
-            const split2 = splitString.split("</a>");
-            const linkPart = split2[0];
-            const remainingText = split2[1];
-            const button = this.#getReplacementTag(linkPart);
+        for (let i = 0; i < SPLIT_ARRAY.length; i++) {
+            const SPLIT_STRING = SPLIT_ARRAY[i];
+            const SPLIT2 = SPLIT_STRING.split("</a>");
+            const LINK_PART = SPLIT2[0];
+            const REMAINING_TEXT = SPLIT2[1];
+            const BUTTON = this.#getReplacementTag(LINK_PART);
 
             if (i == 0) {
                 const textContainer = document.createElement('span')
-                textContainer.innerHTML = linkPart;
+                textContainer.innerHTML = LINK_PART;
                 bioTextContainer.appendChild(textContainer);
             } else {
-                bioTextContainer.appendChild(button);
+                bioTextContainer.appendChild(BUTTON);
                 const textContainer = document.createElement('span')
-                textContainer.innerHTML = remainingText;
+                textContainer.innerHTML = REMAINING_TEXT;
                 bioTextContainer.appendChild(textContainer);
             }
         }
@@ -601,20 +601,20 @@ class ArtistView extends View {
     }
 
     #getReplacementTag(str) {
-        const firstQuotationMark = str.indexOf('"') + 1;
-        const secondQuotationMark = nth_ocurrence(str, '"', 2);
-        const spotifyId = str
-          .substring(firstQuotationMark, secondQuotationMark)
+        const FIRST_QUOTATION_MARK = str.indexOf('"') + 1;
+        const SECOND_QUOTATION_MARK = nth_ocurrence(str, '"', 2);
+        const SPOTIFY_ID = str
+          .substring(FIRST_QUOTATION_MARK, SECOND_QUOTATION_MARK)
           .split(":")[2];
       
-        const firstOcurrence = str.indexOf(">") + 1;
-        const name = str.substring(firstOcurrence, str.length);  
+        const FIRST_OCCURRENCE = str.indexOf(">") + 1;
+        const NAME = str.substring(FIRST_OCCURRENCE, str.length);  
 
         const button = document.createElement('div');
         button.setAttribute("class", "artist_biography_button");
-        button.innerHTML = name
+        button.innerHTML = NAME
         button.addEventListener("click", function () {
-            console.log(spotifyId)
+            console.log(SPOTIFY_ID)
         })
 
         return button;

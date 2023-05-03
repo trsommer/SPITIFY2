@@ -19,8 +19,8 @@ class DownloadView extends View {
      * @param {Object} data - The data to be used for the construction. (useless here)
      */
     async #constructorMethod(data, viewController) {
-        const downloadedSongs = await this.#getDownloadedSongs();
-        await this.#createView(downloadedSongs, viewController);
+        const DOWNLOADED_SONGS = await this.#getDownloadedSongs();
+        await this.#createView(DOWNLOADED_SONGS, viewController);
         return this
     }
 
@@ -53,11 +53,11 @@ class DownloadView extends View {
         this.#type = "downloads_view";
         this.#viewController = viewController;
         
-        const returnValues = this.createHTMLContainer('Your Downloads', 'downloads_view');
-        this.#viewHTML = returnValues.container
-        this.#HTMLContent = returnValues.contentContainer
+        const RETURN_VALUES = this.createHTMLContainer('Your Downloads', 'downloads_view');
+        this.#viewHTML = RETURN_VALUES.container
+        this.#HTMLContent = RETURN_VALUES.contentContainer
 
-        await this.#spawnDownloadedSongs(data, returnValues.contentContainer);
+        await this.#spawnDownloadedSongs(data, RETURN_VALUES.contentContainer);
 
     }
 
@@ -90,59 +90,59 @@ class DownloadView extends View {
     //downloads specific methods
 
     async #getDownloadedSongs() {
-        const songIds = await getDownloadIdsFromDB();
-        const songs = await getDownloadedSongs(songIds);
+        const SONG_IDS = await getDownloadIdsFromDB();
+        const SONGS = await getDownloadedSongs(SONG_IDS);
 
-        return songs;
+        return SONGS;
     }
 
     async #spawnDownloadedSongs(songs, contentContainer) {
         for (let i = 0; i < songs.length; i++) {
-            const song = songs[i];
-            const songInfo =  JSON.parse(song.info);
-            const songId = song.id;
-            const songImageUrl = songInfo.songImageUrl;
-            const songTitle = songInfo.songTitle;
-            const artistsText = getArtistsAsString(JSON.parse(songInfo.songArtistArray).items);
+            const SONG = songs[i];
+            const SONG_INFO =  JSON.parse(SONG.info);
+            const SONG_ID = SONG.id;
+            const SONG_IMAGE_URL = SONG_INFO.songImageUrl;
+            const SONG_TITLE = SONG_INFO.songTitle;
+            const ARITIST_TEXT = getArtistsAsString(JSON.parse(SONG_INFO.songArtistArray).items);
 
-            await this.#addHTMLSong(songId, songImageUrl, songTitle, artistsText, contentContainer, 0, 0, song.id);
+            await this.#addHTMLSong(SONG_ID, SONG_IMAGE_URL, SONG_TITLE, ARITIST_TEXT, contentContainer, 0, 0, SONG.id);
         }
     }
 
     async downloadSong(song) {
-        const songTitle = song.getSongTitle();
-        const songArtist = song.getSongArtistString();
-        const songImageUrl = song.getSongImageUrl();
-        const songId = song.getSongSpotifyId();
-        const index = downloadedSongInfo.length;
+        const SONG_TITLE = song.getSongTitle();
+        const SONG_ARTIST = song.getSongArtistString();
+        const SONG_IMAGE_URL = song.getSongImageUrl();
+        const SONG_ID = song.getSongSpotifyId();
+        const INDEX = downloadedSongInfo.length;
         downloadedSongInfo.push(song);
 
-        await this.#addHTMLSong(songId, songImageUrl, songTitle, songArtist, this.#HTMLContent, 0, index, songId);
+        await this.#addHTMLSong(SONG_ID, SONG_IMAGE_URL, SONG_TITLE, SONG_ARTIST, this.#HTMLContent, 0, INDEX, SONG_ID);
     }
 
     updateDownloadProgress(songId, progress) {
-        const songHTMLPointer = this.#htmlDownloadedSongs[songId];
-        const progressElem = songHTMLPointer.trackProgress;
-        const progressFloat = parseFloat(progress.toFixed(2));
+        const SONG_HTML_POINTER = this.#htmlDownloadedSongs[songId];
+        const PROGRESS_ELEM = SONG_HTML_POINTER.trackProgress;
+        const PROGRESS_FLOAT = parseFloat(progress.toFixed(2));
 
-        if (progressFloat >= 99) {
-            progressElem.innerHTML = "done";
+        if (PROGRESS_FLOAT >= 99) {
+            PROGRESS_ELEM.innerHTML = "done";
         } else {
-            progressElem.innerHTML = parseFloat(progress.toFixed(2)) + "%";
+            PROGRESS_ELEM.innerHTML = parseFloat(progress.toFixed(2)) + "%";
         }
     }
 
     purgeDownloadsHTML() {
-        const contentContainer = this.#HTMLContent;
-        contentContainer.innerHTML = "";
+        const CONTENT_CONTAINER = this.#HTMLContent;
+        CONTENT_CONTAINER.innerHTML = "";
     }
 
     async #playDownloadedSong(id) {
-        const songInfoJSON = this.#downloadedSongs.find(song => song.id === id);
-        const songInfo = JSON.parse(songInfoJSON.info);
-        const originalSongInfo = songInfo.songInfo;
+        const SONG_INFO_JSON = this.#downloadedSongs.find(song => song.id === id);
+        const SONG_INFO = JSON.parse(SONG_INFO_JSON.info);
+        const ORIGINAL_SONG_INFO = SONG_INFO.songInfo;
 
-        playSongNow(originalSongInfo)
+        playSongNow(ORIGINAL_SONG_INFO)
     }
 
 

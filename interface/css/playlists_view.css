@@ -76,8 +76,10 @@
     /* height: 100%; */
     width: var(--playlistsItemImageWidth);
     /* overflow: hidden; */
-    margin-left: 10%;
+    margin-left: var(--playlistsItemImageTopMargin);
     margin-top: 10px;
+    position: relative;
+    /* left: 20px; */
 }
 
 #playlists_liked_songs_text_Container p {

@@ -48,9 +48,9 @@ class View {
     container.setAttribute('id', id);
 
     //create the inner container that contains the view content
+    const CONTENT_CONTAINER_NAME = id + '_content';
     const contentContainer = document.createElement('div');
-    const contentContainerName = id + '_content';
-    contentContainer.setAttribute('id', contentContainerName);
+    contentContainer.setAttribute('id', CONTENT_CONTAINER_NAME);
 
     if (title == "unbound") {
       contentContainer.classList.add('view_content_unbound');

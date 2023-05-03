@@ -33,17 +33,17 @@ class SearchListView extends View {
      */
     show() {
         const viewPort = document.getElementById('viewport');
+        const DATA = this.#data
         const that = this;
-        const data = this.#data
         viewPort.innerHTML = '';
         viewPort.appendChild(this.#viewHTML);
-        this.#setSelectorPosition(data.position);
+        this.#setSelectorPosition(DATA.position);
         this.#displayed = true
 
         window.electronAPI.updateSpotifySpecificSerach((event, response) => {
-            const data = response.data.searchV2;
-            that.#saveSearchResults(data);
-            that.#spawnSearchResults(data);
+            const DATA = response.data.searchV2;
+            that.#saveSearchResults(DATA);
+            that.#spawnSearchResults(DATA);
         });
     }
 
@@ -69,13 +69,13 @@ class SearchListView extends View {
         this.#selectedPosition = data.position;
         this.#query = data.query;
 
-        const returnValues = this.createHTMLContainer(null, 'searchlist_view');
-        this.#viewHTML = returnValues.container
-        this.#HTMLContent = returnValues.contentContainer
+        const RETURN_VALUES = this.createHTMLContainer(null, 'searchlist_view');
+        this.#viewHTML = RETURN_VALUES.container
+        this.#HTMLContent = RETURN_VALUES.contentContainer
 
-        this.#setHeader(returnValues.contentContainer, data);
+        this.#setHeader(RETURN_VALUES.contentContainer, data);
         this.#selectView(data.position);
-        this.#createSearchResultsContainer(returnValues.contentContainer);
+        this.#createSearchResultsContainer(RETURN_VALUES.contentContainer);
     }
 
     async updateView() {
@@ -176,56 +176,56 @@ class SearchListView extends View {
     }
 
     #setSelectorPosition(position) {
-        const selector = this.#htmlSelector;
-        const selectorDims = this.#getSelectorDims(position);
+        const SELECTOR = this.#htmlSelector;
+        const SELECTOR_DIMS = this.#getSelectorDims(position);
 
-        selector.style.width = selectorDims.width + 'px';
-        selector.style.left = selectorDims.leftOffset + 'px';
+        SELECTOR.style.width = SELECTOR_DIMS.width + 'px';
+        SELECTOR.style.left = SELECTOR_DIMS.leftOffset + 'px';
 
         if (position != this.#selectedPosition) {
-            selector.classList.remove('searchList_header_selected_selector');
+            SELECTOR.classList.remove('searchList_header_selected_selector');
         } else {
             //check if the selector is already selected
-            if (!selector.classList.contains('searchList_header_selected_selector')) {
-                selector.classList.add('searchList_header_selected_selector');
+            if (!SELECTOR.classList.contains('searchList_header_selected_selector')) {
+                SELECTOR.classList.add('searchList_header_selected_selector');
             }
         }
     }
 
     #getSelectorDims(position) {
-        const headingElem = this.#htmlHeadings[position];
-        const offsetLeft = headingElem.offsetLeft;
-        const clientWidth = headingElem.clientWidth;
+        const HEADING_ELEM = this.#htmlHeadings[position];
+        const OFFSET_LEFT = HEADING_ELEM.offsetLeft;
+        const CLIENT_WIDTH = HEADING_ELEM.clientWidth;
 
-        const selectorWidth = Math.floor(clientWidth * 0.8);
-        const selectorLeftOffset = Math.floor(offsetLeft + (clientWidth - selectorWidth) / 2);
+        const SELECTOR_WIDTH = Math.floor(CLIENT_WIDTH * 0.8);
+        const SELECTOR_LEFT_OFFSET = Math.floor(OFFSET_LEFT + (CLIENT_WIDTH - SELECTOR_WIDTH) / 2);
 
         return {
-            width : selectorWidth,
-            leftOffset : selectorLeftOffset
+            width : SELECTOR_WIDTH,
+            leftOffset : SELECTOR_LEFT_OFFSET
         }
     }
 
     #selectView(position) {
-        const headingElem = this.#htmlHeadings[position];
-        const selector = this.#htmlSelector;
-        const oldSelectionPosition = this.#selectedPosition;
-        const oldHeadingElem = this.#htmlHeadings[oldSelectionPosition];
+        const HEADING_ELEMENT = this.#htmlHeadings[position];
+        const SELECTOR = this.#htmlSelector;
+        const OLD_SELECTOR_POSITION = this.#selectedPosition;
+        const OLD_HEADING_ELEMENT = this.#htmlHeadings[OLD_SELECTOR_POSITION];
         this.#selectedPosition = position;
         const types = ['Artists', 'Tracks', 'Albums', 'Playlists'];
 
-        headingElem.classList.add('searchList_header_selected_text');
-        selector.classList.add('searchList_header_selected_selector');
+        HEADING_ELEMENT.classList.add('searchList_header_selected_text');
+        SELECTOR.classList.add('searchList_header_selected_selector');
 
-        if (headingElem != oldHeadingElem) {
-            oldHeadingElem.classList.remove('searchList_header_selected_text');
+        if (HEADING_ELEMENT != OLD_HEADING_ELEMENT) {
+            OLD_HEADING_ELEMENT.classList.remove('searchList_header_selected_text');
 
         }
 
-        const oldSerachResult = this.#loadSearchResults(position);
+        const OLD_SEARCH_RESULT = this.#loadSearchResults(position);
 
-        if (oldSerachResult != null) {
-            this.#spawnSearchResults(oldSerachResult);
+        if (OLD_SEARCH_RESULT != null) {
+            this.#spawnSearchResults(OLD_SEARCH_RESULT);
         } else {
             this.#getData(this.#query, types[position], 100, 0);
         }
@@ -236,8 +236,8 @@ class SearchListView extends View {
     }
 
     #saveSearchResults(data) {
-        const position = this.#selectedPosition;
-        this.#searchResults[position] = data;
+        const POSITION = this.#selectedPosition;
+        this.#searchResults[POSITION] = data;
     }
 
     #loadSearchResults(position) {
@@ -245,30 +245,30 @@ class SearchListView extends View {
     }
 
     #createSearchResultsContainer(container) {
-        const searchResultsContainer = document.createElement('div');
-        searchResultsContainer.setAttribute('id', 'searchList_results_container');
+        const SEARCH_RESULTS_CONTAINER = document.createElement('div');
+        SEARCH_RESULTS_CONTAINER.setAttribute('id', 'searchList_results_container');
 
-        this.#searchResultsContainer = searchResultsContainer;
+        this.#searchResultsContainer = SEARCH_RESULTS_CONTAINER;
 
-        container.appendChild(searchResultsContainer);
+        container.appendChild(SEARCH_RESULTS_CONTAINER);
     }
 
     #spawnSearchResults(data) {
-        const position = this.#selectedPosition;
-        const contentContainer = this.#searchResultsContainer;
+        const POSITION = this.#selectedPosition;
+        const CONTENT_CONTAINER = this.#searchResultsContainer;
 
-        switch (position) {
+        switch (POSITION) {
             case 0:
-                this.#spawnArtistSearchResults(contentContainer, data);
+                this.#spawnArtistSearchResults(CONTENT_CONTAINER, data);
                 break;
             case 1:
-                this.#spawnTrackSearchResults(contentContainer, data);
+                this.#spawnTrackSearchResults(CONTENT_CONTAINER, data);
                 break;
             case 2:
-                this.#spawnAlbumSearchResults(contentContainer, data);
+                this.#spawnAlbumSearchResults(CONTENT_CONTAINER, data);
                 break;
             case 3:
-                this.#spawnPlaylistSearchResults(contentContainer, data);
+                this.#spawnPlaylistSearchResults(CONTENT_CONTAINER, data);
                 break;
             default:
                 break;
@@ -277,9 +277,8 @@ class SearchListView extends View {
     }
 
     #spawnArtistSearchResults(contentContainer, data) {
-        console.log(data);
         contentContainer.innerHTML = '';
-        const artistsData = data.artists.items;
+        const ARTISTS_DATA = data.artists.items;
         const that = this;
         
         const artistsContainer = document.createElement('div');
@@ -287,20 +286,20 @@ class SearchListView extends View {
 
         this.#setArtistCSS(artistsContainer, contentContainer);
 
-        for (let i = 0; i < artistsData.length; i++) {
-            const artistData = artistsData[i].data;
-            const artistImageUrl = artistData.visuals.avatarImage?.sources[0].url || "standardImages/cover.jpg";
-            const artistName = artistData.profile.name;
+        for (let i = 0; i < ARTISTS_DATA.length; i++) {
+            const ARTIST_DATA = ARTISTS_DATA[i].data;
+            const ARTIST_IMAGE_URL = ARTIST_DATA.visuals.avatarImage?.sources[0].url || "standardImages/cover.jpg";
+            const ARTIST_NAME = ARTIST_DATA.profile.name;
 
-            const artistContainer = this.#createTileElement(artistImageUrl, artistName);
+            const ARTIST_CONTAINER = this.#createTileElement(ARTIST_IMAGE_URL, ARTIST_NAME);
 
             //event listeners
 
-            artistContainer.addEventListener('click', () => {
-                that.#viewController.switchView('artist', artistData);
+            ARTIST_CONTAINER.addEventListener('click', () => {
+                that.#viewController.switchView('artist', ARTIST_DATA);
             });
 
-            artistsContainer.appendChild(artistContainer);
+            artistsContainer.appendChild(ARTIST_CONTAINER);
         }
 
         contentContainer.appendChild(artistsContainer);
@@ -310,18 +309,18 @@ class SearchListView extends View {
     #spawnTrackSearchResults(contentContainer, data) {
         console.log(data);
         contentContainer.innerHTML = '';
-        const songsData = data.tracksV2.items;
+        const SONG_DATA = data.tracksV2.items;
 
         const songsContainer = document.createElement('div');
         songsContainer.setAttribute('id', 'searchList_songs_container');
 
-        for (let i = 0; i < songsData.length; i++) {
-            const songData = songsData[i].item.data;
-            const songName = songData.name;
-            const artistString = getArtistsAsString(songData.artists.items);
-            const durationMS = songData.duration.totalMilliseconds;
-            const durationString = getTrackLengthFromMS(durationMS);
-            const imageURL = songData.albumOfTrack.coverArt?.sources[0].url || "standardImages/cover.jpg";
+        for (let i = 0; i < SONG_DATA.length; i++) {
+            const SONG_DATA = SONG_DATA[i].item.data;
+            const SONG_NAME = SONG_DATA.name;
+            const ARTIST_STRING = getArtistsAsString(SONG_DATA.artists.items);
+            const DURATION_MS = SONG_DATA.duration.totalMilliseconds;
+            const DURATION_STRING = getTrackLengthFromMS(DURATION_MS);
+            const IMAGE_URL = SONG_DATA.albumOfTrack.coverArt?.sources[0].url || "standardImages/cover.jpg";
 
             const trackItem = document.createElement('div');
             trackItem.setAttribute('class', 'track_item');
@@ -334,7 +333,7 @@ class SearchListView extends View {
 
             const trackImage = document.createElement('img');
             trackImage.setAttribute('class', 'track_image');
-            trackImage.src = imageURL;
+            trackImage.src = IMAGE_URL;
 
             const currentlyPlayingContainer = document.createElement('div');
             currentlyPlayingContainer.setAttribute('class', 'currently_playing_container');
@@ -348,15 +347,15 @@ class SearchListView extends View {
 
             const trackName = document.createElement('p');
             trackName.setAttribute('class', 'track_text_left');
-            trackName.innerHTML = songName;
+            trackName.innerHTML = SONG_NAME;
 
             const trackArtists = document.createElement('p');
             trackArtists.setAttribute('class', 'track_text_middle');
-            trackArtists.innerHTML = artistString;
+            trackArtists.innerHTML = ARTIST_STRING;
 
             const trackLength = document.createElement('p');
             trackLength.setAttribute('class', 'track_text_right');
-            trackLength.innerHTML = durationString;
+            trackLength.innerHTML = DURATION_STRING;
 
             currentlyPlayingContainer.appendChild(currentlyPlayingBG);
             currentlyPlayingContainer.appendChild(currentlyPlayingSVG);
@@ -378,24 +377,24 @@ class SearchListView extends View {
 
     #spawnAlbumSearchResults(contentContainer, data) {
         contentContainer.innerHTML = '';
-        const albumsData = data.albums.items;
+        const ALBUMS_DATA = data.albums.items;
 
         const albumsContainer = document.createElement('div');
         albumsContainer.setAttribute('id', 'searchList_tiles_container');
 
         this.#setArtistCSS(albumsContainer, contentContainer);
 
-        for (let i = 0; i < albumsData.length; i++) {
-            const albumData = albumsData[i].data;
-            const albumName = albumData.name;
-            const albumNameShort = shortenString(albumName, 20);
-            const albumImageUrl = albumData.coverArt?.sources[0].url || "standardImages/cover.jpg";
+        for (let i = 0; i < ALBUMS_DATA.length; i++) {
+            const ALBUM_DATA = ALBUMS_DATA[i].data;
+            const ALBUM_NAME = ALBUM_DATA.name;
+            const ALBUM_NAME_SHORT = shortenString(ALBUM_NAME, 20);
+            const ALBUM_IMAGE_URL = ALBUM_DATA.coverArt?.sources[0].url || "standardImages/cover.jpg";
 
-            const albumContainer = this.#createTileElement(albumImageUrl, albumNameShort);
+            const ALBUM_CONTAINER = this.#createTileElement(ALBUM_IMAGE_URL, ALBUM_NAME_SHORT);
 
             //event listeners
 
-            albumsContainer.appendChild(albumContainer);
+            albumsContainer.appendChild(ALBUM_CONTAINER);
         }
 
         contentContainer.appendChild(albumsContainer);
@@ -403,24 +402,24 @@ class SearchListView extends View {
 
     #spawnPlaylistSearchResults(contentContainer, data) {
         contentContainer.innerHTML = "";
-        const playlistsData = data.playlists.items;
+        const PLAYLISTS_DATA = data.playlists.items;
 
         const playlistsContainer = document.createElement('div');
         playlistsContainer.setAttribute('id', 'searchList_tiles_container');
 
         this.#setArtistCSS(playlistsContainer, contentContainer);
 
-        for (let i = 0; i < playlistsData.length; i++) {
-            const playlistData = playlistsData[i].data;
-            const playlistName = playlistData.name;
-            const playlistNameShort = shortenString(playlistName, 20);
-            const playlistImageUrl = playlistData.images.items[0]?.sources[0].url || "standardImages/cover.jpg";
+        for (let i = 0; i < PLAYLISTS_DATA.length; i++) {
+            const PLAYLIST_DATA = PLAYLISTS_DATA[i].data;
+            const PLAYLIST_NAME = PLAYLIST_DATA.name;
+            const PLAYLIST_NAME_SHORT = shortenString(PLAYLIST_NAME, 20);
+            const PLAYLIST_IMAGE_URL = PLAYLIST_DATA.images.items[0]?.sources[0].url || "standardImages/cover.jpg";
 
-            const playlistContainer = this.#createTileElement(playlistImageUrl, playlistNameShort);
+            const PLAYLIST_CONTAINER = this.#createTileElement(PLAYLIST_IMAGE_URL, PLAYLIST_NAME_SHORT);
 
             //event listeners
 
-            playlistsContainer.appendChild(playlistContainer);
+            playlistsContainer.appendChild(PLAYLIST_CONTAINER);
         }
 
         contentContainer.appendChild(playlistsContainer);
@@ -450,12 +449,12 @@ class SearchListView extends View {
     }
 
     #setArtistCSS(tileContainer, contentContainer) {
-        const width = contentContainer.clientWidth;
-        const nrContainers = Math.floor(width / 180);
-        const remainder = width % 180 - (nrContainers - 1) * 10; //added 10 for gap between containers
-        const newWidth = 180 + Math.floor(remainder / nrContainers);
-        const saveNewWidth = newWidth - 2;
+        const WIDTH = contentContainer.clientWidth;
+        const NUMBER_CONTAINERS = Math.floor(WIDTH / 180);
+        const REMAINDER = WIDTH % 180 - (NUMBER_CONTAINERS - 1) * 10; //added 10 for gap between containers
+        const NEW_WIDTH = 180 + Math.floor(REMAINDER / NUMBER_CONTAINERS);
+        const SAVE_NEW_WIDTH = NEW_WIDTH - 2;
 
-        tileContainer.style.gridTemplateColumns = `repeat(auto-fill, ${saveNewWidth}px)`;
+        tileContainer.style.gridTemplateColumns = `repeat(auto-fill, ${SAVE_NEW_WIDTH}px)`;
     }
 }
