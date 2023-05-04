@@ -31,7 +31,6 @@ class SearchView extends View {
         viewPort.innerHTML = '';
         viewPort.appendChild(this.#viewHTML);
         this.#displayed = true
-        this.#messageBroker.subscribe("searchInput", this.searchInput.bind(this));
         this.#messageBroker.subscribe("updateSpotifySearch", this.updateSpotifySearch.bind(this));
     }
 
@@ -42,7 +41,6 @@ class SearchView extends View {
         const viewPort = document.getElementById('viewport');
         viewPort.innerHTML = '';
         this.#displayed = false
-        this.#messageBroker.unsubscribe("searchInput", this.searchInput.bind(this));
         this.#messageBroker.unsubscribe("updateSpotifySearch", this.updateSpotifySearch.bind(this));
     }
 
@@ -90,17 +88,6 @@ class SearchView extends View {
     }
 
     //search specific methods
-
-    searchInput(input) {
-        const query = input.trim()
-        const lastSearch = this.#viewController.getLastSearch()
-        if (query == "") {
-            this.#viewController.switchView("lastSearches", null)
-        }
-        if (query == lastSearch) return
-        this.#viewController.setLastSearch(query)
-        getSpotifySearchResultsNoArgs(query)
-    }
 
     updateSpotifySearch(response) {
         const RESULT = response.data.searchV2

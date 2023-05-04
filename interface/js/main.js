@@ -2,7 +2,7 @@ searchSize = 0
 lastSearchResult = ''
 lastSearch = ""
 
-function onLoad() {
+async function onLoad() {
     window.scrollTo({ top: 0, behavior: 'smooth' })
     document.getElementsByTagName("body")[0].classList.add("flatTop")
 
@@ -13,7 +13,7 @@ function onLoad() {
     setupMenuMove()
     attachVolumeResetListener()
 
-    const viewController = new ViewController()
+    const viewController = await new ViewController()
 }
 
 function sleep(ms) {

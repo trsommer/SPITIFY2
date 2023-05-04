@@ -4,6 +4,7 @@ class ViewController {
     #menu = null;
     #lastSearch = ""; //will be replaced with object that stores various data
     #currentView = null;
+    #nextSearchView = null;
     #lastViews = [];
     constructor() {
         if (ViewController.instance) {
@@ -16,14 +17,13 @@ class ViewController {
     }
 
     async #constructorFunction() {
-        await this.#createSingletonViews();
         this.#messageBroker = new MessageBroker();
+        await this.#createSingletonViews();
+        this.#createNextSearchView();
         this.#menu = new Menu(this);
         this.#registerViewListeners();
-
-        this.#testFunc();
-
-        return this
+        this.#setInitialView();
+        return this;
     }
 
     /**
@@ -33,8 +33,26 @@ class ViewController {
     #registerViewListeners() {
         const searchInput = document.getElementById('top_search_input');
         searchInput.addEventListener('click', (event) => {
-            this.switchView("lastSearches", null);
+            const input = event.target.value;
+            const query = input.trim();
+            if (query == "" && !(this.#currentView instanceof LastSearchesView)) {
+                this.switchView("lastSearches", null);
+                return;
+            }
+            if (query != "" && !(this.#currentView instanceof SearchView)) {
+                this.switchView("search", null);
+            }
         });
+        searchInput.addEventListener('input', (event) => {
+            const query = event.target.value;
+            this.#handleSearchInput(query);
+        });
+    }
+
+    #setInitialView() {
+        const VIEW = this.#singletonViews["lastSearches"];
+        this.#currentView = VIEW
+        VIEW.show();
     }
 
     /**
@@ -51,7 +69,6 @@ class ViewController {
             case "artist":
             case "album":
             case "playlist":
-            case "search": 
             case "searchList":
                 newView = await this.#viewFactory(viewType, data);
                 break;
@@ -63,18 +80,15 @@ class ViewController {
                 newView = this.#singletonViews[viewType];
                 //await newView.updateView();
                 break;
+            case "search": 
+                newView = this.#getSearchView();
+                break;
             default: throw new Error("Invalid view type");
         }
         this.#currentView.hide();
         newView.show();
         this.#lastViews.push(this.#currentView);
         this.#currentView = newView;
-    }
-
-    async #testFunc() {
-        const VIEW = await new SearchView({}, this);
-        this.#currentView = VIEW;
-        VIEW.show();
     }
 
     /**
@@ -86,7 +100,6 @@ class ViewController {
      * @throws {Error} - If the view type is invalid.
      */
     async #viewFactory(viewType, data) {
-        const messageBroker = this.#messageBroker;
         switch (viewType) {
             case "artist": return new ArtistView(data, this);
             case "album": return new AlbumView(data, this);
@@ -111,10 +124,35 @@ class ViewController {
     async #createSingletonViews() {
         this.#singletonViews["playlists"] = await this.#viewFactory("playlists");
         //this.#singletonViews["settings"] = await this.#viewFactory("settings");
-        this.#singletonViews["download"] = await this.#viewFactory("download");
+        this.#singletonViews
+        ["download"] = await this.#viewFactory("download");
         this.#singletonViews["lastSearches"] = await this.#viewFactory("lastSearches");
     }
     
+    async #createNextSearchView() {
+        this.#nextSearchView = await this.#viewFactory("search");
+    }
+
+    #getSearchView() {
+        const nextSearchView = this.#nextSearchView;
+        return nextSearchView;
+    }
+
+    #handleSearchInput(input) {
+        const query = input.trim();
+        if (query.length === 0) {
+            this.switchView("lastSearches", null);
+            this.#lastSearch = "";
+            return
+        }
+        if (query === this.#lastSearch) return;
+        if (!(this.#currentView instanceof SearchView)) {
+            this.switchView("search", null);
+        }
+        this.#lastSearch = query;
+        getSpotifySearchResultsNoArgs(query);
+    }
+
     /**
      * Returns the private message broker of the class.
      *
@@ -122,13 +160,5 @@ class ViewController {
      */
     getMessageBroker() {
         return this.#messageBroker;
-    }
-
-    getLastSearch() {
-        return this.#lastSearch;
-    }
-
-    setLastSearch(lastSearch) {
-        this.#lastSearch = lastSearch;
     }
 }

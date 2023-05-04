@@ -9,12 +9,6 @@ class Menu {
     }
 
     #registerListeners() {
-        const searchInput = document.getElementById('top_search_input');
-        this.#messageBroker.createTopic('searchInput');
-        searchInput.addEventListener('input', (event) => {
-            const input = event.target.value;
-            this.#messageBroker.publish('searchInput', input);
-        });
     }
 
 

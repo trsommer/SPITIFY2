@@ -232,7 +232,7 @@ class SearchListView extends View {
     }
 
     #getData(query, type, limit, offset) {
-        getSpotifySearchResultsSpecificType(query, type, limit, offset)
+        getSpotifySearchResults(query, type, limit, offset)
     }
 
     #saveSearchResults(data) {
