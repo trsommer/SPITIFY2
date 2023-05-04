@@ -180,13 +180,14 @@ class SearchView extends View {
     #setHightlightContent(content) {
         const CONTAINER = this.#HTMLPointers.mostRelevantContainer
         CONTAINER.innerHTML = '';
-        const DATA = content["items"]["0"]["data"];
-        const ARTIST_NAME = DATA["profile"]["name"];
+        const that = this;
+        const ARTIST_DATA = content["items"]["0"]["data"];
+        const ARTIST_NAME = ARTIST_DATA["profile"]["name"];
         const ARTIST_NAME_LENGTH = ARTIST_NAME.length;
-        const SPOTIFY_URI = DATA["uri"];
+        const SPOTIFY_URI = ARTIST_DATA["uri"];
         const SPOTIFY_ID = SPOTIFY_URI.replace("spotify:artist:", "");
 
-        const AVATAR_IMAGE = DATA["visuals"]["avatarImage"];
+        const AVATAR_IMAGE = ARTIST_DATA["visuals"]["avatarImage"];
         const IMAGE_URL = AVATAR_IMAGE?.["sources"]["0"]["url"] ?? "standardImages/cover.jpg";
 
 
@@ -197,7 +198,7 @@ class SearchView extends View {
         const hightlightContainer = document.createElement("div");
         hightlightContainer.setAttribute("id", "search_most_relevant_result_image_container");
         hightlightContainer.addEventListener("click", () => {
-            //open artist
+            that.#viewController.switchView('artist', ARTIST_DATA);
         })
         const hightlightImageDarkener = document.createElement("div");
         hightlightImageDarkener.setAttribute("id", "search_most_relevant_image_darkener");
@@ -275,7 +276,7 @@ class SearchView extends View {
             const artistContainer = document.createElement("div");
             artistContainer.classList.add("search_results_artist");
             artistContainer.addEventListener("click", () => {
-                //play track
+                that.#viewController.switchView('artist', ARTIST_DATA);
             })
         
             const artistImageContainer = document.createElement("div");
@@ -463,7 +464,7 @@ class SearchView extends View {
             const albumContainer = document.createElement("div");
             albumContainer.classList.add("search_results_album");
             albumContainer.addEventListener("click", () => {
-                //open album
+                that.#viewController.switchView("album", ALBUM_DATA);
             })
         
             const albumImageContainer = document.createElement("div");

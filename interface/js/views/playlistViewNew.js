@@ -105,23 +105,6 @@ class PlaylistView extends View {
 
     //playlist specific methods
 
-    #getTimeString(ms) {
-        const SECOND = 1000;
-        const MINUTE = 60 * SECOND;
-        const HOUR = 60 * MINUTE;
-        const DAY = 24 * HOUR;
-      
-        if (ms < MINUTE) {
-          return `${Math.floor(ms / SECOND)} seconds`;
-        } else if (ms < HOUR) {
-          return `${Math.floor(ms / MINUTE)} minutes`;
-        } else if (ms < DAY) {
-          return `${Math.floor(ms / HOUR)} hours`;
-        } else {
-          return `${Math.floor(ms / DAY)} days`;
-        }
-    }
-
     #createPlaylistInfoString(songs) {
         let duration = 0;
         let nrSongs = 0;
@@ -132,7 +115,7 @@ class PlaylistView extends View {
             nrSongs++;
         }
 
-        const DURATION_STRING = this.#getTimeString(duration);
+        const DURATION_STRING = msToTimeString(duration);
         return `${nrSongs} songs, ${DURATION_STRING}`;
     }
       

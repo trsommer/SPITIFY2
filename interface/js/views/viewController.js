@@ -38,7 +38,7 @@ class ViewController {
     }
 
     async #testFunc() {
-        const VIEW = await new PlaylistsView({}, this);
+        const VIEW = await new SearchView({}, this);
         VIEW.show();
     }
 

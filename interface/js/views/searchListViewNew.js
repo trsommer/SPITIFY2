@@ -309,13 +309,13 @@ class SearchListView extends View {
     #spawnTrackSearchResults(contentContainer, data) {
         console.log(data);
         contentContainer.innerHTML = '';
-        const SONG_DATA = data.tracksV2.items;
+        const SONGS_DATA = data.tracksV2.items;
 
         const songsContainer = document.createElement('div');
         songsContainer.setAttribute('id', 'searchList_songs_container');
 
-        for (let i = 0; i < SONG_DATA.length; i++) {
-            const SONG_DATA = SONG_DATA[i].item.data;
+        for (let i = 0; i < SONGS_DATA.length; i++) {
+            const SONG_DATA = SONGS_DATA[i].item.data;
             const SONG_NAME = SONG_DATA.name;
             const ARTIST_STRING = getArtistsAsString(SONG_DATA.artists.items);
             const DURATION_MS = SONG_DATA.duration.totalMilliseconds;

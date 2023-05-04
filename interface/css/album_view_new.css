@@ -1,0 +1,76 @@
+#album_view {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+}
+
+#album_header_container {
+    position: relative;
+    top: 0;
+    height: 50vh;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+}
+
+#album_background_image_container {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+#album_background_image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    position: absolute;
+    z-index: -3;
+}
+
+#album_foreground_image_container {
+    height: calc(100% - 60px);
+    margin-top: 60px;
+    margin-left: 20px;
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+#album_foreground_image {
+    height: 80%;
+    aspect-ratio: 1/1;
+    border-radius: 25px;
+}
+
+#album_text_container {
+    position: relative;
+    height: calc(100% - 60px);
+    top: 60px;
+    display: flex;
+    z-index: 4;
+    flex-direction: column;
+    color: white;
+    justify-content: center;
+    left: 20px;
+}
+
+#album_name_text {
+    margin: 0;
+    font-size: 34px;
+    letter-spacing: 1.2px;
+    font-weight: 500;
+}
+
+#album_author_text {
+    color: var(--accentColor);
+}
+
+#album_duration_text {
+    color: var(--accentColor);
+}
+
+div#album_songs_container {
+    margin-top: 10px;
+}

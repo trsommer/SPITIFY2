@@ -82,3 +82,29 @@ function getTrackLengthFromMS(ms) {
   return `${minutes}:${(seconds < 10 ? "0" : "")}${seconds}`;
 }
 
+/**
+ * Converts a given number of milliseconds into a human-readable time string.
+ * @param {number} totalMs - The total number of milliseconds.
+ * @returns {string} - A string representing the time in days, hours, and minutes.
+ */
+function msToTimeString(totalMs) {
+  const totalSeconds = Math.floor(totalMs / 1000);
+  const minutes = Math.floor(totalSeconds / 60);
+  const seconds = totalSeconds % 60;
+  const hours = Math.floor(minutes / 60);
+  const days = Math.floor(hours / 24);
+
+  const timeStringParts = [];
+  if (days > 0) {
+    timeStringParts.push(`${days} day${days > 1 ? 's' : ''}`);
+  }
+  if (hours > 0) {
+    timeStringParts.push(`${hours} hour${hours > 1 ? 's' : ''}`);
+  }
+  if (minutes > 0) {
+    timeStringParts.push(`${minutes} minute${minutes > 1 ? 's' : ''}`);
+  }
+
+  return timeStringParts.join(' and ');
+}
+
