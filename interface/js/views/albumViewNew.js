@@ -14,13 +14,19 @@ class AlbumView extends View {
     //implemeneted methods
 
     /**
+     * if (typeof myVar === 'string' || myVar instanceof String)
      * This method fetches the users last Searches from a database and creates the last seraches view for them.
      * @param {Object} data - The data to be used for the construction. (useless here)
      */
     async #constructorMethod(data, viewController) {
-        const ALBUM_ID = data.uri.split(':')[2];
-        const ALBUM_DATA = await getSpotifyAlbum(ALBUM_ID);
-        const ALBUM_METADATA = await getAlbumMetadata(ALBUM_ID);
+        let albumID = null; 
+        if (this.#checkIfId(data)) {
+            albumID = data;
+        } else {
+            albumID = data.uri.split(':')[2];
+        }
+        const ALBUM_DATA = await getSpotifyAlbum(albumID);
+        const ALBUM_METADATA = await getAlbumMetadata(albumID);
         const ALBUM_COMBINED_DATA = {
             metadata : ALBUM_METADATA,
             songs : ALBUM_DATA.data.album.tracks.items
@@ -97,6 +103,13 @@ class AlbumView extends View {
     }
 
     //playlist specific methods
+
+    #checkIfId(data) {
+        if (typeof data === 'string' || data instanceof String) {
+            return true;
+        }
+        return false;
+    }
 
     #createAlbumInfoString(songs) {
         let duration = 0;

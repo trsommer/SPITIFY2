@@ -99,8 +99,18 @@ class LastSearchesView extends View {
         deleteSpecificLastSearch(lastSearchId);
     }
 
-    #openLastSearch(lastSearchId, type) {
-        console.log("open last search: " + lastSearchId + " type: " + type);
+    async #openLastSearch(lastSearchId, type) {
+        switch (type) {
+            case "artist":
+                const ARTIST = await getSpotifyArtist(lastSearchId);
+                this.#viewController.switchView("artist", ARTIST);
+                break;
+            case "album":
+                this.#viewController.switchView("album", lastSearchId);
+                break;
+            default:
+                break;
+        }
     }
 
     /**
