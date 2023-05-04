@@ -32,25 +32,6 @@ async function setDisplayMode(element, mode, delay){
     }
 }
 
-async function mainSearch(query) {
-    //const viewController = new ViewController()
-    query = query.trim()
-    //if (query == "") {
-        //changeSearchClearVisibility(false)
-        //viewController.switchView("last_searches_view", null)
-        //return
-    //}
-    //changeSearchClearVisibility(true)
-    //switchView("search_view")
-
-    if (query == lastSearch) return
-
-    lastSearch = query
-    console.log(query)
-
-    getSpotifySearchResults(query)
-}
-
 function clearSearchText() {
     document.getElementById("top_search_input").value = ""
     mainSearch("")

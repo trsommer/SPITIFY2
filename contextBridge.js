@@ -29,6 +29,7 @@ contextBridge.exposeInMainWorld('electronAPI',{
   updateDownloads: (progress, spotifyId) => ipcRenderer.on('update:downloads', progress, spotifyId),
   addDownloadedSong: (songId) => ipcRenderer.invoke('add:downloadedSong', songId),
   removeDownloadedSong: (songId) => ipcRenderer.invoke('remove:downloadedSong', songId),
+  getDownloadedSongs: () => ipcRenderer.invoke('get:getDownloadedSongs'),
   updateSpotifySearch: (result) => ipcRenderer.on('searchSpotify:event', result),
   updateSpotifySpecificSerach: (result) => ipcRenderer.on('searchSpotifySpecificType:event', result),
   getFollowedArtists: () => ipcRenderer.invoke('get:followedArtists'),

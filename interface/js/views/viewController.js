@@ -2,18 +2,39 @@ class ViewController {
     #singletonViews = {};
     #messageBroker = null;
     #menu = null;
+    #lastSearch = ""; //will be replaced with object that stores various data
+    #currentView = null;
+    #lastViews = [];
     constructor() {
         if (ViewController.instance) {
             return ViewController.instance;
         }
+        ViewController.instance = this;
         this.views = {};
         this.currentView = null;
+        return this.#constructorFunction();
+    }
+
+    async #constructorFunction() {
+        await this.#createSingletonViews();
         this.#messageBroker = new MessageBroker();
         this.#menu = new Menu(this);
-        ViewController.instance = this;
-        //this.#createSingletonViews();
+        this.#registerViewListeners();
 
         this.#testFunc();
+
+        return this
+    }
+
+    /**
+     * Registers Listeners that are not related to any single view (e.g. search click because search view is not static)
+     * but control the view switching.
+     */
+    #registerViewListeners() {
+        const searchInput = document.getElementById('top_search_input');
+        searchInput.addEventListener('click', (event) => {
+            this.switchView("lastSearches", null);
+        });
     }
 
     /**
@@ -40,16 +61,19 @@ class ViewController {
             case "download":
             case "lastSearches":
                 newView = this.#singletonViews[viewType];
-                await newView.updateView();
+                //await newView.updateView();
                 break;
             default: throw new Error("Invalid view type");
         }
-
+        this.#currentView.hide();
         newView.show();
+        this.#lastViews.push(this.#currentView);
+        this.#currentView = newView;
     }
 
     async #testFunc() {
         const VIEW = await new SearchView({}, this);
+        this.#currentView = VIEW;
         VIEW.show();
     }
 
@@ -86,7 +110,7 @@ class ViewController {
      */
     async #createSingletonViews() {
         this.#singletonViews["playlists"] = await this.#viewFactory("playlists");
-        this.#singletonViews["settings"] = await this.#viewFactory("settings");
+        //this.#singletonViews["settings"] = await this.#viewFactory("settings");
         this.#singletonViews["download"] = await this.#viewFactory("download");
         this.#singletonViews["lastSearches"] = await this.#viewFactory("lastSearches");
     }
@@ -98,5 +122,13 @@ class ViewController {
      */
     getMessageBroker() {
         return this.#messageBroker;
+    }
+
+    getLastSearch() {
+        return this.#lastSearch;
+    }
+
+    setLastSearch(lastSearch) {
+        this.#lastSearch = lastSearch;
     }
 }

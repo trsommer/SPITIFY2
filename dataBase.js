@@ -22,6 +22,7 @@ module.exports = {
   updatePlaylist,
   addDownloadedSong,
   removeDownloadedSong,
+  getDownloadedSongs,
   getFollowedArtists,
   getFollowStatus,
   followArtist,
@@ -235,6 +236,17 @@ async function addDownloadedSong(spotifyId, timestamp) {
 async function removeDownloadedSong(spotifyId) {
   db = await getDB();
   db.prepare(`DELETE * FROM downloadedSongs WHERE id = ?`).run(spotifyId);
+}
+
+async function getDownloadedSongs() {
+    result = await accessDatabase(`SELECT * FROM downloadedSongs`);
+    let results = []
+    for (let index = 0; index < result.length; index++) {
+      const id = result[index].id;
+      let song = await db.prepare(`SELECT * FROM songs WHERE id='${id}'`).all();
+      results.push(song[0]);
+    }
+    return results;
 }
 
 //returns all followed artists with their latest release (as id)

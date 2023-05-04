@@ -122,6 +122,10 @@ async function removeDownloadedSong(songId) {
     window.electronAPI.removeDownloadedSong(songId)
 }
 
+async function getDownloadedSongs() {
+    return window.electronAPI.getDownloadedSongs()
+}
+
 async function addLastSearch(type, name, spotifyId, imageUrl, additionalInfo) {
     var lastSearches = await getLastSearches()
     var lastSearchesLength = Object.keys(lastSearches).length

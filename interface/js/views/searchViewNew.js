@@ -93,12 +93,12 @@ class SearchView extends View {
 
     searchInput(input) {
         const query = input.trim()
-
-        //if (query == lastSearch) return
-
-        lastSearch = query
-        console.log(query)
-
+        const lastSearch = this.#viewController.getLastSearch()
+        if (query == "") {
+            this.#viewController.switchView("lastSearches", null)
+        }
+        if (query == lastSearch) return
+        this.#viewController.setLastSearch(query)
         getSpotifySearchResultsNoArgs(query)
     }
 

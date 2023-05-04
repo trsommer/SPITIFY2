@@ -19,7 +19,7 @@ class DownloadView extends View {
      * @param {Object} data - The data to be used for the construction. (useless here)
      */
     async #constructorMethod(data, viewController) {
-        const DOWNLOADED_SONGS = await this.#getDownloadedSongs();
+        const DOWNLOADED_SONGS = await getDownloadedSongs();
         await this.#createView(DOWNLOADED_SONGS, viewController);
         return this
     }

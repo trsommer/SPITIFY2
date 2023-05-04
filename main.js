@@ -133,6 +133,9 @@ app.whenReady().then(() => {
   ipcMain.handle("remove:downloadedSong", async (event, songId) => {
     dataBase.removeDownloadedSong(songId);
   })
+  ipcMain.handle("get:getDownloadedSongs", async (event) => {
+    return dataBase.getDownloadedSongs();
+  })
 
   //Followed Artists
 
