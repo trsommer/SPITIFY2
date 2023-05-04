@@ -9,9 +9,15 @@ class ViewController {
         ViewController.instance = this;
         //this.#createSingletonViews();
         this.#testFunc();
-
     }
 
+    /**
+     * Asynchronously switches to a new view based on the provided view type and data.
+     * @param {string} viewType - The type of view to switch to.
+     * @param {*} data - The data to pass to the new view.
+     * @throws {Error} If an invalid view type is provided.
+     * @returns {Promise<void>}
+     */
     async switchView(viewType, data) {
         let newView = null;
         switch (viewType) {
@@ -42,6 +48,14 @@ class ViewController {
         VIEW.show();
     }
 
+    /**
+     * Creates and returns a new view based on the given view type and data.
+     * @async
+     * @param {string} viewType - The type of view to create.
+     * @param {*} data - The data to pass to the view.
+     * @returns {Promise<View>} - A Promise that resolves with the created view.
+     * @throws {Error} - If the view type is invalid.
+     */
     async #viewFactory(viewType, data) {
         switch (viewType) {
             case "artist": return new ArtistView(data, this);

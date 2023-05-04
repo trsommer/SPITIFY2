@@ -41,6 +41,12 @@ class View {
 
   // common methods
 
+  /**
+   * Creates the content container for all views.
+   * @param {string} title - The title for the view.
+   * @param {string} id - The ID for the outer container.
+   * @returns {Object} The html content container 
+   */
   createHTMLContainer(title, id) {
     //create the outer container that contains the view
     const container = document.createElement('div');
