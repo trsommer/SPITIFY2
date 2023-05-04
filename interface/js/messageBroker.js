@@ -1,7 +1,24 @@
-class Messagebroker {
+class MessageBroker {
     #topics = {};
 
     constructor() {
+        this.#registerListeners();
+    }
+
+    #registerListeners() {
+        const that = this;
+        this.createTopic("scroll");
+        window.addEventListener("scroll", (event) => {
+            that.publish("scroll", event);
+        });
+        this.createTopic("resize");
+        window.addEventListener("resize", (event) => {
+            that.publish("resize", event);
+        });
+        this.createTopic("updateSpotifySearch");
+        window.electronAPI.updateSpotifySearch((event, response) => {
+            that.publish("updateSpotifySearch", response);
+        });
     }
 
     /**
@@ -26,6 +43,7 @@ class Messagebroker {
      */
     subscribe(topicName, callback) {
         if (!this.#topics[topicName]) {
+            console.log(this.#topics);
             throw new Error("Topic does not exist");
         }
         this.#topics[topicName].push(callback);
@@ -58,6 +76,7 @@ class Messagebroker {
         if (!this.#topics[topicName]) {
             throw new Error("Topic does not exist");
         }
+        console.log(this.#topics);
         this.#topics[topicName].forEach(callback => {
             callback(data);
         });

@@ -45,6 +45,8 @@
     <script src="js/views/artistViewNew.js"></script>
     <script src="js/views/searchListViewNew.js"></script>
     <script src="js/views/playlistViewNew.js"></script>
+    <script src="js/messageBroker.js"></script>
+    <script src="js/menu.js"></script>
     <script src="js/views/viewController.js"></script>
     <script src="js/views/albumViewNew.js"></script>
     <!-- libraries -->
@@ -181,7 +183,7 @@
                 <div id="top_search_container">
                     <div id="top_search_container_box">
                         <img src="icons/search.svg" alt="" id="top_search_icon">
-                        <input type="text" id="top_search_input" oninput="mainSearch(this.value)">
+                        <input type="text" id="top_search_input">
                         <div id="top_search_clear_container">
                             <img id="top_search_clear_icon" src="icons/close.svg" alt="" onclick="clearSearchText()">
                         </div>

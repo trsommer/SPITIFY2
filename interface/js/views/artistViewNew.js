@@ -18,7 +18,7 @@ class ArtistView extends View {
     //implemeneted methods
 
     /**
-     * This method fetches the users last Searches from a database and creates the last seraches view for them.
+     * This method fetches the artists metadata from the spotify API and creates the corresponding view.
      * @param {Object} data - The data to be used for the construction. (useless here)
      */
     async #constructorMethod(data, viewController) {

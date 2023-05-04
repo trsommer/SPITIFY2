@@ -5,6 +5,7 @@ class SearchView extends View {
     #displayed = false
     #HTMLPointers = null;
     #viewController = null;
+    #messageBroker = null;
 
     constructor(data, viewController) {
         super();
@@ -30,19 +31,8 @@ class SearchView extends View {
         viewPort.innerHTML = '';
         viewPort.appendChild(this.#viewHTML);
         this.#displayed = true
-        const that = this
-
-
-        //change this so that the message broker has the listener and
-        //this object subscribes to be notified instead.
-        //This way, only one search view recieves the updates and
-        //the search state can be preserved for undo 
-        //the input in the menu search would need to be restored as well
-        window.electronAPI.updateSpotifySearch((event, response) => {
-            const RESULT = response.data.searchV2
-            console.log(RESULT)
-            that.#populateContent(RESULT)
-        });
+        this.#messageBroker.subscribe("searchInput", this.searchInput.bind(this));
+        this.#messageBroker.subscribe("updateSpotifySearch", this.updateSpotifySearch.bind(this));
     }
 
     /**
@@ -52,6 +42,8 @@ class SearchView extends View {
         const viewPort = document.getElementById('viewport');
         viewPort.innerHTML = '';
         this.#displayed = false
+        this.#messageBroker.unsubscribe("searchInput", this.searchInput.bind(this));
+        this.#messageBroker.unsubscribe("updateSpotifySearch", this.updateSpotifySearch.bind(this));
     }
 
     /**
@@ -62,14 +54,13 @@ class SearchView extends View {
      */
     async #createView(data, viewController) {
         this.#type = "search_view";
-        this.#viewController = viewController
-
+        this.#viewController = viewController;
+        this.#messageBroker = viewController.getMessageBroker();
         const RETURN_VALUES = this.createHTMLContainer(null, 'search_view');
         this.#viewHTML = RETURN_VALUES.container
         this.#HTMLContent = RETURN_VALUES.contentContainer
 
         this.#createHTMLContainers(RETURN_VALUES.contentContainer)
-
     }
 
     async updateView() {
@@ -99,6 +90,24 @@ class SearchView extends View {
     }
 
     //search specific methods
+
+    searchInput(input) {
+        const query = input.trim()
+
+        //if (query == lastSearch) return
+
+        lastSearch = query
+        console.log(query)
+
+        getSpotifySearchResultsNoArgs(query)
+    }
+
+    updateSpotifySearch(response) {
+        const RESULT = response.data.searchV2
+        console.log(RESULT)
+        console.log(this);
+        this.#populateContent(RESULT)
+    }
 
     #openSearchList(position) {
         const QUERY = document.getElementById("top_search_input").value;

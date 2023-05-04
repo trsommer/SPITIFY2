@@ -20,11 +20,11 @@ async function getSongInfo(ids) {
     return window.electronAPI.getSongInfo(ids)
 }
 
-async function getSpotifySearchResults(query) {
+async function getSpotifySearchResultsNoArgs(query) {
     window.electronAPI.searchSpotify(query)
 }
 
-async function getSpotifySearchResultsSpecificType(query, type, limit, offset) {
+async function getSpotifySearchResults(query, type, limit, offset) {
     window.electronAPI.searchSpotifySpecificType(query, type, limit, offset)
 }
 

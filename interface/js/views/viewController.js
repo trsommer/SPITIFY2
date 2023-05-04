@@ -1,13 +1,18 @@
 class ViewController {
     #singletonViews = {};
+    #messageBroker = null;
+    #menu = null;
     constructor() {
         if (ViewController.instance) {
             return ViewController.instance;
         }
         this.views = {};
         this.currentView = null;
+        this.#messageBroker = new MessageBroker();
+        this.#menu = new Menu(this);
         ViewController.instance = this;
         //this.#createSingletonViews();
+
         this.#testFunc();
     }
 
@@ -57,6 +62,7 @@ class ViewController {
      * @throws {Error} - If the view type is invalid.
      */
     async #viewFactory(viewType, data) {
+        const messageBroker = this.#messageBroker;
         switch (viewType) {
             case "artist": return new ArtistView(data, this);
             case "album": return new AlbumView(data, this);
@@ -85,5 +91,12 @@ class ViewController {
         this.#singletonViews["lastSearches"] = await this.#viewFactory("lastSearches");
     }
     
-    
+    /**
+     * Returns the private message broker of the class.
+     *
+     * @returns {MessageBroker} The private message broker of the class.
+     */
+    getMessageBroker() {
+        return this.#messageBroker;
+    }
 }
