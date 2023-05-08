@@ -19,6 +19,7 @@ class MessageBroker {
         window.electronAPI.updateSpotifySearch((event, response) => {
             that.publish("updateSpotifySearch", response);
         });
+        this.createTopic("addLastSearch");
     }
 
     /**

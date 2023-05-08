@@ -96,6 +96,30 @@ class SearchView extends View {
         this.#populateContent(RESULT)
     }
 
+    #openArtist(artistID, artistName, artistImage, artistData) {
+        const data = {
+            type: "artist",
+            id: artistID,
+            name: artistName,
+            imageUrl: artistImage,
+            data: artistData
+        }
+        this.#messageBroker.publish("addLastSearch", data);
+        this.#viewController.switchView('artist', artistData);
+    }
+
+    #openAlbum(albumID, albumName, albumImage, albumData) {
+        const data = {
+            type: "album",
+            id: albumID,
+            name: albumName,
+            imageUrl: albumImage,
+            data: albumData
+        }
+        this.#messageBroker.publish("addLastSearch", data);
+        this.#viewController.switchView('album', albumData);
+    }
+
     #openSearchList(position) {
         const QUERY = document.getElementById("top_search_input").value;
         const DATA = {
@@ -194,7 +218,7 @@ class SearchView extends View {
         const hightlightContainer = document.createElement("div");
         hightlightContainer.setAttribute("id", "search_most_relevant_result_image_container");
         hightlightContainer.addEventListener("click", () => {
-            that.#viewController.switchView('artist', ARTIST_DATA);
+            that.#openArtist(SPOTIFY_ID, ARTIST_NAME, IMAGE_URL, ARTIST_DATA);
         })
         const hightlightImageDarkener = document.createElement("div");
         hightlightImageDarkener.setAttribute("id", "search_most_relevant_image_darkener");
@@ -272,7 +296,7 @@ class SearchView extends View {
             const artistContainer = document.createElement("div");
             artistContainer.classList.add("search_results_artist");
             artistContainer.addEventListener("click", () => {
-                that.#viewController.switchView('artist', ARTIST_DATA);
+                that.#openArtist(SPOTIFY_ID, ARTIST_NAME, imageUrl, ARTIST_DATA)
             })
         
             const artistImageContainer = document.createElement("div");
@@ -456,11 +480,13 @@ class SearchView extends View {
             const ALBUM_YEAR = ALBUM_DATA["date"]["year"];
             const ALBUM_IMAGE_URL = ALBUM_DATA["coverArt"]["sources"][0]["url"]
             const ALBUM_ARTISTS_STRING = getArtistsAsString(ALBUM_DATA.artists.items);
+            const ALBUM_URI = ALBUM_DATA["uri"];
+            const ALBUM_ID = ALBUM_URI.split(":")[2];
 
             const albumContainer = document.createElement("div");
             albumContainer.classList.add("search_results_album");
             albumContainer.addEventListener("click", () => {
-                that.#viewController.switchView("album", ALBUM_DATA);
+                that.#openAlbum(ALBUM_ID, ALBUM_NAME, ALBUM_IMAGE_URL, ALBUM_DATA);
             })
         
             const albumImageContainer = document.createElement("div");

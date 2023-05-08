@@ -53,7 +53,7 @@
 }
 
 #artist_last_release_container {
-    height: 50vh;
+    height: 100%;
     /* margin-left: 20px; */
     /* margin-right: 20px; */
     display: flex;
@@ -147,6 +147,7 @@
     display: flex;
     flex-direction: row;
     background: var(--accentColorDark);
+    height: 50vh;
 }
 
 #artist_latest_release_title_container {
@@ -257,6 +258,7 @@
 
 #artist_most_popular_divider {
     width: 20px;
+    height: 100%;
 }
 
 #artist_background_image_container {

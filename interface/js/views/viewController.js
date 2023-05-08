@@ -85,6 +85,7 @@ class ViewController {
                 break;
             default: throw new Error("Invalid view type");
         }
+        this.#menu.setMenu(viewType);
         this.#currentView.hide();
         newView.show();
         this.#lastViews.push(this.#currentView);

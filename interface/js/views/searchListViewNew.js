@@ -11,6 +11,7 @@ class SearchListView extends View {
     #searchResultsContainer = null;
     #query = "";
     #searchResults = [null, null, null, null]
+    #messageBroker = null;
 
     constructor(data, viewController) {
         super();
@@ -65,6 +66,7 @@ class SearchListView extends View {
     async #createView(data, viewController) {
         this.#data = data;
         this.#viewController = viewController;
+        this.#messageBroker = viewController.getMessageBroker();
         this.#type = "searchlist_view";
         this.#selectedPosition = data.position;
         this.#query = data.query;
@@ -103,7 +105,32 @@ class SearchListView extends View {
         return this.#type;
     }
 
-    //playlist specific methods
+    //searchlist specific methods
+
+
+    #openArtist(artistID, artistName, artistImage, artistData) {
+        const data = {
+            type: "artist",
+            id: artistID,
+            name: artistName,
+            imageUrl: artistImage,
+            data: artistData
+        }
+        this.#messageBroker.publish("addLastSearch", data);
+        this.#viewController.switchView('artist', artistData);
+    }
+
+    #openAlbum(albumID, albumName, albumImage, albumData) {
+        const data = {
+            type: "album",
+            id: albumID,
+            name: albumName,
+            imageUrl: albumImage,
+            data: albumData
+        }
+        this.#messageBroker.publish("addLastSearch", data);
+        this.#viewController.switchView('album', albumData);
+    }
 
 
     //HTML specific methods
@@ -290,16 +317,15 @@ class SearchListView extends View {
             const ARTIST_DATA = ARTISTS_DATA[i].data;
             const ARTIST_IMAGE_URL = ARTIST_DATA.visuals.avatarImage?.sources[0].url || "standardImages/cover.jpg";
             const ARTIST_NAME = ARTIST_DATA.profile.name;
+            const ARTIST_ID = ARTIST_DATA.id;
 
             const ARTIST_CONTAINER = this.#createTileElement(ARTIST_IMAGE_URL, ARTIST_NAME);
 
             //event listeners
 
             ARTIST_CONTAINER.addEventListener('click', () => {
-                that.#viewController.switchView('artist', ARTIST_DATA);
+                that.#openArtist(ARTIST_ID, ARTIST_NAME, ARTIST_IMAGE_URL, ARTIST_DATA);
             });
-
-            artistsContainer.appendChild(ARTIST_CONTAINER);
         }
 
         contentContainer.appendChild(artistsContainer);
@@ -378,6 +404,7 @@ class SearchListView extends View {
     #spawnAlbumSearchResults(contentContainer, data) {
         contentContainer.innerHTML = '';
         const ALBUMS_DATA = data.albums.items;
+        const that = this;
 
         const albumsContainer = document.createElement('div');
         albumsContainer.setAttribute('id', 'searchList_tiles_container');
@@ -389,10 +416,16 @@ class SearchListView extends View {
             const ALBUM_NAME = ALBUM_DATA.name;
             const ALBUM_NAME_SHORT = shortenString(ALBUM_NAME, 20);
             const ALBUM_IMAGE_URL = ALBUM_DATA.coverArt?.sources[0].url || "standardImages/cover.jpg";
+            const ALBUM_URI = ALBUM_DATA.uri;
+            const ALBUM_ID = ALBUM_URI.split(':')[2];
 
             const ALBUM_CONTAINER = this.#createTileElement(ALBUM_IMAGE_URL, ALBUM_NAME_SHORT);
 
             //event listeners
+
+            ALBUM_CONTAINER.addEventListener('click', () => {
+                that.#openAlbum(ALBUM_ID, ALBUM_NAME, ALBUM_IMAGE_URL, ALBUM_DATA);
+            });
 
             albumsContainer.appendChild(ALBUM_CONTAINER);
         }

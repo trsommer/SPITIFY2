@@ -5,6 +5,7 @@ class LastSearchesView extends View {
     #lastSearches = null; //the last searches
     #displayed = false
     #viewController = null
+    #messageBroker = null
 
     constructor(data, viewController) {
         super();
@@ -50,6 +51,7 @@ class LastSearchesView extends View {
     async #createView(data, viewController) {
         this.#lastSearches = data;
         this.#viewController = viewController;
+        this.#messageBroker = viewController.getMessageBroker();
         this.#type = "lastSearches_view";
         
         const RETURN_VALUES = this.createHTMLContainer('Recently Searched', 'lastSearches_view');
@@ -59,6 +61,8 @@ class LastSearchesView extends View {
         //create the last searches container
 
         this.#createLastSearchesButtons(RETURN_VALUES.contentContainer, data);
+
+        this.#messageBroker.subscribe("addLastSearch", this.addLastSearch.bind(this));
     }
 
     async updateView() {
@@ -124,36 +128,36 @@ class LastSearchesView extends View {
      * @param {string} imageUrl - The image URL of the search result.
      * @param {string} additionalInfo - Additional information about the search result.
      */
-    async addLastSearch(type, name, spotifyId, imageUrl, additionalInfo) {
-        const PREVIOUS_LAST_SEARCHES = await getLastSearches()
+    async addLastSearch(data) {
+        console.log(data);
+        const PREVIOUS_LAST_SEARCHES = this.#lastSearches;
         const PREVIOUS_LAST_SEARCHES_LENGTH = Object.keys(PREVIOUS_LAST_SEARCHES).length
+        let found = false;
 
-        if (PREVIOUS_LAST_SEARCHES_LENGTH == 16) {
-            let found = false
-    
-            for (let index = 0; index < PREVIOUS_LAST_SEARCHES.length; index++) {
-                const lastSearch = PREVIOUS_LAST_SEARCHES[index];
-                if (lastSearch.spotifyId == spotifyId) {
-                    found = true;
-                    await deleteSpecificLastSearch(spotifyId);
-                    break;
-                }
-            }
-    
-            if (!found) {
-                await deleteLastSearch();
+        //check if the search is already in the list
+        for (let i = 0; i < PREVIOUS_LAST_SEARCHES_LENGTH; i++) {
+            const LAST_SEARCH = PREVIOUS_LAST_SEARCHES[i];
+            if (LAST_SEARCH.spotifyId == data.id) {
+                found = true;
+                await deleteSpecificLastSearch(data.id);
             }
         }
 
-        const data = {
-            type: type,
-            name: name,
-            spotifyId: spotifyId,
-            imageUrl: imageUrl,
-            additionalInfo: additionalInfo
+        if (!found && PREVIOUS_LAST_SEARCHES_LENGTH == 16) {
+            await deleteSpecificLastSearch(PREVIOUS_LAST_SEARCHES[0].spotifyId);
+        }
+
+        const dataNew = {
+            type: data.type,
+            name: data.name,
+            spotifyId: data.id,
+            imageUrl: data.imageUrl,
+            additionalInfo: JSON.stringify(data.data)
         }
         
-        await insertLastSearch(data)
+        await insertLastSearch(dataNew)
+
+        this.#updateLastSearchesView();
     }
 
     async #updateLastSearchesView() {
@@ -166,7 +170,7 @@ class LastSearchesView extends View {
     #createLastSearchesButtons(contentContainer, lastSearches) {
         contentContainer.innerHTML = '';
 
-        for (let i = 0; i < lastSearches.length; i++) {
+        for (let i = lastSearches.length - 1; i >= 0; i--) {
             const lastSearch = lastSearches[i];
             if (lastSearch == null || lastSearch == undefined) {
                 continue;

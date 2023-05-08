@@ -9,6 +9,7 @@ class ArtistView extends View {
     #carouselWidth = 1200;
     #carouselControls = [];
     #resizeUpdate = null
+    #messageBroker = null
 
     constructor(data, viewController) {
         super();
@@ -38,7 +39,7 @@ class ArtistView extends View {
         viewPort.innerHTML = '';
         viewPort.appendChild(this.#viewHTML);
         this.#displayed = true
-        window.addEventListener('resize', this.#resizeUpdate, false);
+        this.#messageBroker.subscribe("resize", this.#resizeUpdate.bind(this))
     }
 
     /**
@@ -48,7 +49,7 @@ class ArtistView extends View {
         const viewPort = document.getElementById('viewport');
         viewPort.innerHTML = '';
         this.#displayed = false
-        window.removeEventListener('resize', this.#resizeUpdate, false);
+        this.#messageBroker.unsubscribe("resize", this.#resizeUpdate.bind(this))
     }
 
     /**
@@ -61,6 +62,7 @@ class ArtistView extends View {
         this.#type = "search_view";
         this.#artistData = data
         this.#viewController = viewController
+        this.#messageBroker = viewController.getMessageBroker()
 
         const RETURN_VALUES = this.createHTMLContainer("unbound", 'artist_view');
         this.#viewHTML = RETURN_VALUES.container
@@ -255,7 +257,7 @@ class ArtistView extends View {
 
         const popularSongsContainer = document.createElement('div');
 
-        if (LATEST_RELEASE !== undefined) {
+        if (LATEST_RELEASE !== null) {
             const lastReleaseContainer = document.createElement('div');
             lastReleaseContainer.setAttribute("id", "artist_last_release_container");
 
@@ -414,10 +416,14 @@ class ArtistView extends View {
 
     #createAlbumsAndSingles(container, data) {
         const ALBUMS = data.discography.albums.items
-        this.#createAlbumCarousel(container, ALBUMS, "Albums")
+        if (ALBUMS.length != 0){
+            this.#createAlbumCarousel(container, ALBUMS, "Albums")
+        }
 
         const SINGLES = data.discography.singles.items
-        this.#createAlbumCarousel(container, SINGLES, "Singles")
+        if (SINGLES.length != 0){
+            this.#createAlbumCarousel(container, SINGLES, "Singles")
+        }
     }
 
     #createAlbumCarousel(container, albums, title) {
