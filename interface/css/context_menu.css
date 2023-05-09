@@ -1,0 +1,25 @@
+.context_menu {
+    border-radius: 20px;
+    background-color: rgba(187, 187, 187, 0.65);
+    backdrop-filter: blur(3px);
+    position: absolute;
+    z-index: 10;
+    min-width: 150px;
+    text-align: center;
+    overflow: hidden;
+}
+
+.context_menu_item {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    height: 25px;
+    align-items: center;
+    transition: 0.15s ease;
+}
+
+.context_menu_item:hover {
+    background: var(--accentColor);
+    transition: 0.15s ease;
+    border-radius: 20px;
+}

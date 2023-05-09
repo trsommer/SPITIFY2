@@ -2,6 +2,8 @@ class Menu {
     #viewController = null;
     #messageBroker = null;
     #buttons = null;
+    #topBarVisible = true;
+    #menuLogoColorChangeStopped = false;
 
     constructor(viewController) {
         this.#viewController = viewController;
@@ -21,7 +23,7 @@ class Menu {
 
         const DOWNLOADS_BUTTON = BUTTONS[1];
         DOWNLOADS_BUTTON.addEventListener("click", () => {
-            this.#viewController.switchView("downloads");
+            this.#viewController.switchView("download");
             this.#setButtonsActive(1);
         });
 
@@ -96,10 +98,62 @@ class Menu {
 
     #setTopBarVisibility(visibility) {
         const topBar = document.getElementById("menu_top");
-        topBar.style.opacity = visibility ? "1" : "0";
+        topBar.style.opacity = visibility ? "0.95" : "0";
+        this.#topBarVisible = visibility;
     }
 
-    #topBarScroll(e) {
-        console.log(e);
-    }   
+    #topBarScroll(scrollData) {
+        const currentViewType = this.#viewController.getCurrentView().getType();
+        if (currentViewType != "artist_view") return;
+
+        const SCROLL_Y = scrollData.scrollY;
+
+        if (SCROLL_Y > 300 && !this.#topBarVisible) {
+            this.#stopMenuLogoColorChange(false);
+            this.#setTopBarVisibility(true);
+            this.#changeHiddenHeadingVisibility(true, "menu_top_heading");
+            this.#changeHiddenHeadingVisibility(true, "menu_top_button_play");
+            this.#changeHiddenHeadingVisibility(true, "menu_top_button_follow");
+          } else if (scrollY <= 300 && this.#topBarVisible) {
+            this.#stopMenuLogoColorChange(true);
+            this.#setTopBarVisibility(false);
+            this.#changeHiddenHeadingVisibility(false, "menu_top_heading");
+            this.#changeHiddenHeadingVisibility(false, "menu_top_button_play");
+            this.#changeHiddenHeadingVisibility(false, "menu_top_button_follow");
+          }
+    }
+
+    #changeHiddenHeadingVisibility(mode, id) {
+        const element = document.getElementById(id);
+        if (!mode) {
+            element.style.transform = "translateX(-20px)"
+            element.style.opacity = 0
+            element.style.pointerEvents = "none"
+        } else {
+            element.style.transform = "translateX(0px)"
+            element.style.opacity = 1
+            element.style.pointerEvents = null
+        }
+    }
+
+    #stopMenuLogoColorChange(mode) {
+        const menuTopLogo = document.getElementById("menu_top_logo");
+        const menuTopText = document.getElementById("menu_top_text");
+        if (mode && !this.#menuLogoColorChangeStopped) {
+            this.#menuLogoColorChangeStopped = true;
+            menuTopLogo.classList.remove("menu_top_logo");
+            menuTopText.classList.remove("menu_top_text");
+        }
+        if (!mode && menuLogoColorChangeStopped) {
+            this.#menuLogoColorChangeStopped = false;
+            menuTopLogo.classList.add("menu_top_logo");
+            menuTopText.classList.add("menu_top_text");
+        }
+    }
+
+    setTopHeading(text) {
+        const menuTopHeading = document.getElementById("menu_top_heading");
+        menuTopHeading.innerHTML = text;
+    }
+
 }

@@ -9,7 +9,13 @@ class MessageBroker {
         const that = this;
         this.createTopic("scroll");
         window.addEventListener("scroll", (event) => {
-            that.publish("scroll", event);
+            const SCROLL_X = window.scrollX;
+            const SCROLL_Y = window.scrollY;
+            const SCROLL_DATA = {
+                scrollX: SCROLL_X,
+                scrollY: SCROLL_Y
+            };
+            that.publish("scroll", SCROLL_DATA);
         });
         this.createTopic("resize");
         window.addEventListener("resize", (event) => {
@@ -18,6 +24,10 @@ class MessageBroker {
         this.createTopic("updateSpotifySearch");
         window.electronAPI.updateSpotifySearch((event, response) => {
             that.publish("updateSpotifySearch", response);
+        });
+        this.createTopic("keyUp");
+        window.addEventListener("keyup", (event) => {
+            that.publish("keyUp", event);
         });
         this.createTopic("addLastSearch");
     }

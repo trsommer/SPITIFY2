@@ -49,10 +49,42 @@ class ViewController {
         });
     }
 
+        /*
+     *  data: [
+            entry1: {
+                title: "title",
+                callback: function() {},
+                suMenu: null
+            },
+
+        ]
+    */
+
     #setInitialView() {
         const VIEW = this.#singletonViews["lastSearches"];
         this.#currentView = VIEW
         VIEW.show();
+
+        const CONTEXT_DATA_TEST = [
+            {
+                title: "play next",
+                callback: function() {
+                    console.log("test");
+                },
+                subMenu: null
+            },
+            {
+                title: "add to Playlist",
+                callback: function() {
+                    console.log("test");
+                },
+                subMenu: null
+            }
+        ]
+
+        const CONTEXT_MENU = new ContextMenu(CONTEXT_DATA_TEST, null, this);
+
+        CONTEXT_MENU.show();
     }
 
     /**
@@ -161,5 +193,13 @@ class ViewController {
      */
     getMessageBroker() {
         return this.#messageBroker;
+    }
+
+    getCurrentView() {      
+        return this.#currentView;
+    }
+
+    getMenu() {
+        return this.#menu;
     }
 }

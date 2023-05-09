@@ -59,7 +59,7 @@ class ArtistView extends View {
      * @param {Object} data - The data to use in the view.
      */
     async #createView(data, viewController) {
-        this.#type = "search_view";
+        this.#type = "artist_view";
         this.#artistData = data
         this.#viewController = viewController
         this.#messageBroker = viewController.getMessageBroker()
@@ -161,6 +161,10 @@ class ArtistView extends View {
         }
     }
 
+    #setMenuTopHeading(name) {
+        this.#viewController.getMenu().setTopHeading(name)
+    }
+
     //html creation methods
 
     #spawnHTMLArtistContent(container, data) {
@@ -196,6 +200,8 @@ class ArtistView extends View {
             data.visuals.avatarImage?.sources[0].url || 
             "standardImages/bgArtist.jpg";
 
+        this.#setMenuTopHeading(ARTIST_NAME)
+        
         const headerContainer = document.createElement('div');
         headerContainer.setAttribute("id", "artist_header_container");
 
