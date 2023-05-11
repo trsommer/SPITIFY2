@@ -4,22 +4,51 @@
     backdrop-filter: blur(3px);
     position: absolute;
     z-index: 10;
-    min-width: 150px;
+    min-width: 180px;
     text-align: center;
+    padding: 5px;
     overflow: hidden;
+}
+
+.context_subMenu {
+    border-radius: 0 20px 20px 20px;
 }
 
 .context_menu_item {
     display: flex;
-    width: 100%;
-    justify-content: center;
-    height: 25px;
+    justify-content: left;
+    height: 32px;
     align-items: center;
     transition: 0.15s ease;
+    padding-left: 10px;
 }
 
 .context_menu_item:hover {
     background: var(--accentColor);
     transition: 0.15s ease;
     border-radius: 20px;
+}
+
+#context_menu_mouse_listener {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    z-index: 9;
+    display: none;
+}
+
+.context_right_bottom {
+    border-radius: 0 20px 20px 20px;
+}
+
+.context_right_top {
+    border-radius: 20px 20px 20px 0;
+}
+
+.context_left_bottom {
+    border-radius: 0 0 20px 20px;
+}
+
+.context_left_top {
+    border-radius: 20px 20px 0 20px;
 }

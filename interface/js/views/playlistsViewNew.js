@@ -306,6 +306,8 @@ class PlaylistsView extends View {
             playlistItem.addEventListener("click", function () {
                 that.openPlaylist(ID);
             });
+
+            this.#addContextMenu(playlistItem)
     
             contentContainer.appendChild(playlistItem);
 
@@ -376,5 +378,61 @@ class PlaylistsView extends View {
             document.documentElement.style.setProperty("--playlistsItemImageTopMargin", "23.16px");
         }
     }
+
+    #addContextMenu(elem) {
+        const CONTEXT_DATA_TEST = [
+            {
+                title: "Open",
+                callback: function() {
+                    console.log("test");
+                },
+                subMenu: null
+            },
+            {
+                title: "Remove from list",
+                callback: function() {
+                    console.log("test");
+                },
+                subMenu: null
+            },
+            {
+                title: "Play now",
+                callback: function() {
+                    console.log("test");
+                },
+                subMenu: null
+            },
+            {
+                title: "Play next",
+                callback: function() {
+                    console.log("test");
+                },
+                subMenu: null
+            },
+            {
+                title: "Download",
+                callback: function() {
+                    console.log("test");
+                },
+                subMenu: null
+            },
+            {
+                title: "Share",
+                callback: function() {
+                    console.log("test");
+                },
+                subMenu: null
+            }
+        ]
+
+        elem.addEventListener("contextmenu", (e) => {
+            e.preventDefault();
+            const CORD_X = e.clientX;
+            const CORD_Y = e.clientY;
+            const CONTEXT_MENU = new ContextMenu(CONTEXT_DATA_TEST, CORD_X, CORD_Y, this.#viewController);
+
+            CONTEXT_MENU.show();
+        });
+    } 
 
 }

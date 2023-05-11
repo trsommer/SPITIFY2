@@ -6,6 +6,7 @@ class ViewController {
     #currentView = null;
     #nextSearchView = null;
     #lastViews = [];
+    #contextMenus = [];
     constructor() {
         if (ViewController.instance) {
             return ViewController.instance;
@@ -64,27 +65,6 @@ class ViewController {
         const VIEW = this.#singletonViews["lastSearches"];
         this.#currentView = VIEW
         VIEW.show();
-
-        const CONTEXT_DATA_TEST = [
-            {
-                title: "play next",
-                callback: function() {
-                    console.log("test");
-                },
-                subMenu: null
-            },
-            {
-                title: "add to Playlist",
-                callback: function() {
-                    console.log("test");
-                },
-                subMenu: null
-            }
-        ]
-
-        const CONTEXT_MENU = new ContextMenu(CONTEXT_DATA_TEST, null, this);
-
-        CONTEXT_MENU.show();
     }
 
     /**
@@ -122,6 +102,7 @@ class ViewController {
         newView.show();
         this.#lastViews.push(this.#currentView);
         this.#currentView = newView;
+        this.#hideContextMenu();
     }
 
     /**
@@ -201,5 +182,15 @@ class ViewController {
 
     getMenu() {
         return this.#menu;
+    }
+
+    addContextMenu(contextMenu) {
+        this.#contextMenus.push(contextMenu);
+    }
+
+    #hideContextMenu() {
+        this.#contextMenus.forEach(contextMenu => {
+            contextMenu.hide();
+        });
     }
 }

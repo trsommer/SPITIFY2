@@ -345,6 +345,8 @@ class PlaylistView extends View {
             trackItem.appendChild(songArtistHTML);
             trackItem.appendChild(songDurationHTML);
 
+            this.#addSongContextMenu(trackItem);
+
             playlistSongsContainer.appendChild(trackItem);
         }
 
@@ -378,4 +380,74 @@ class PlaylistView extends View {
         return buttonContainer;
     }
 
+
+    #addSongContextMenu(elem) {
+        const CONTEXT_DATA_TEST = [
+            {
+                title: "Play now",
+                callback: function() {
+                    console.log("test");
+                },
+                subMenu: null
+            },
+            {
+                title: "Play next",
+                callback: function() {
+                    console.log("test");
+                },
+                subMenu: null
+            },
+            {
+                title: "Download",
+                callback: function() {
+                    console.log("test");
+                },
+                subMenu: null
+            },
+            {
+                title: "Like",
+                callback: function() {
+                    console.log("test");
+                },
+                subMenu: null
+            },
+            {
+                title: "Open Artist",
+                callback: function() {
+                    console.log("test");
+                },
+                subMenu: null
+            },
+            {
+                title: "Open Album",
+                callback: function() {
+                    console.log("test");
+                },
+                subMenu: null
+            },
+            {
+                title: "Add to playlist",
+                callback: function() {
+                    console.log("test");
+                },
+                subMenu: null
+            },
+            {
+                title: "Remove from Playlist",
+                callback: function() {
+                    console.log("test");
+                },
+                subMenu: null
+            }
+        ]
+
+        elem.addEventListener("contextmenu", (e) => {
+            e.preventDefault();
+            const CORD_X = e.clientX;
+            const CORD_Y = e.clientY;
+            const CONTEXT_MENU = new ContextMenu(CONTEXT_DATA_TEST, CORD_X, CORD_Y, this.#viewController);
+
+            CONTEXT_MENU.show();
+        });
+    } 
 }

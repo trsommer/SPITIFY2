@@ -219,6 +219,8 @@ class LastSearchesView extends View {
                 that.#openLastSearch(LAST_SEARCH_ID, lastSearch.type);
             });
 
+            this.#addContextMenu(lastSearchItemClickZone)
+
             lastSearchCloseButton.addEventListener("click", function () {
                 that.#removeLastSearch(LAST_SEARCH_ID, lastSearchItem);
             });
@@ -229,5 +231,33 @@ class LastSearchesView extends View {
 
 
     }
+
+    #addContextMenu(elem) {
+        const CONTEXT_DATA_TEST = [
+            {
+                title: "Open",
+                callback: function() {
+                    console.log("test");
+                },
+                subMenu: null
+            },
+            {
+                title: "Remove from list",
+                callback: function() {
+                    console.log("test");
+                },
+                subMenu: null
+            }
+        ]
+
+        elem.addEventListener("contextmenu", (e) => {
+            e.preventDefault();
+            const CORD_X = e.clientX;
+            const CORD_Y = e.clientY;
+            const CONTEXT_MENU = new ContextMenu(CONTEXT_DATA_TEST, CORD_X, CORD_Y, this.#viewController);
+
+            CONTEXT_MENU.show();
+        });
+    } 
 
 }
