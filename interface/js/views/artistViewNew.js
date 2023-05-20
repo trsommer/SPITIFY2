@@ -10,6 +10,7 @@ class ArtistView extends View {
     #carouselControls = [];
     #resizeUpdate = null
     #messageBroker = null
+    #bioTextContainer = null
 
     constructor(data, viewController) {
         super();
@@ -72,7 +73,7 @@ class ArtistView extends View {
 
         const that = this
         this.#resizeUpdate = async function (e) {
-            await that.#updateAlbumCarouselWidth();
+            await that.#updateContentWidth();
         };
     }
 
@@ -113,10 +114,15 @@ class ArtistView extends View {
     }
 
     async #checkIfIdExists(data) {
+        if (typeof data == "string") {
+            return data
+        }
+
         if (data.id == undefined) {
             const id = getIdFromSongInfo(data)
             return id
         }
+        
         return true
     }
 
@@ -138,7 +144,7 @@ class ArtistView extends View {
         }
     }
 
-    async #updateAlbumCarouselWidth() {
+    async #updateContentWidth() {
         const NEW_DIMS = this.#calcAppropriateAlbumCarouselWidth();
         const OLD_CAROUSEL_WIDTH = this.#carouselWidth
         const NEW_CAROUSEL_WIDTH = NEW_DIMS.carouselWidth;
@@ -159,6 +165,10 @@ class ArtistView extends View {
 
             this.#createAlbumNavigator(CAROUSEL_NAVIGATOR_OBJECT, CAROUSEL, ALBUMS, NR_ALBUMS_NEW, TITLE);
         }
+
+        const NEW_BIO_WIDTH = NEW_CAROUSEL_WIDTH - 75;
+        
+        this.#bioTextContainer.style.width = `${NEW_BIO_WIDTH}px`;
     }
 
     #setMenuTopHeading(name) {
@@ -184,10 +194,14 @@ class ArtistView extends View {
         const backgroundImageContainer = document.createElement('div');
         backgroundImageContainer.setAttribute("id", "artist_background_image_container");
 
+        const backgroundImageDarkener = document.createElement('div');
+        backgroundImageDarkener.setAttribute("id", "artist_background_image_darkener");
+
         const backgroundImage = document.createElement('img');
         backgroundImage.setAttribute("id", "artist_background_image");
         backgroundImage.src = ARTIST_BACKGROUND_IMAGE;
 
+        backgroundImageContainer.appendChild(backgroundImageDarkener);
         backgroundImageContainer.appendChild(backgroundImage);
 
         container.appendChild(backgroundImageContainer);
@@ -358,6 +372,7 @@ class ArtistView extends View {
         const TOP_SONGS = data.discography.topTracks?.items || []
         const MAX_LENGTH = size == "small" ? 6 : 9;
         const REAL_LENGTH = TOP_SONGS.length > MAX_LENGTH ? MAX_LENGTH : TOP_SONGS.length;
+        const BLANK_LENGTH = MAX_LENGTH - REAL_LENGTH;
 
         const popularSongsWrapper = document.createElement('div');
         popularSongsWrapper.setAttribute("id", "artist_popular_songs_wrapper");
@@ -414,6 +429,14 @@ class ArtistView extends View {
             songsContainer.appendChild(songContainer);
         }
 
+        for (let i = 0; i < BLANK_LENGTH; i++) {
+            const songContainer = document.createElement('div');
+            songContainer.setAttribute("class", "artist_grid_song_container_blank");
+
+            songsContainer.appendChild(songContainer);
+
+        }
+
         popularSongsWrapper.appendChild(popularSongsTitleContainer);
         popularSongsWrapper.appendChild(songsContainer);
 
@@ -450,6 +473,12 @@ class ArtistView extends View {
         const albumsCarousel = document.createElement('div');
         albumsCarousel.setAttribute("class", "artist_albums_carousel");
         albumsCarousel.style.width = `${CAROUSEL_WIDTH}px`
+
+        if (albums.length <= 4) {
+            albumsCarousel.style.justifyContent = "center"
+        } else {
+            albumsCarousel.style.justifyContent = "left"
+        }
 
         for (let i = 0; i < albums.length; i++) {
             const ALBUM = albums[i].releases.items[0];
@@ -496,13 +525,15 @@ class ArtistView extends View {
         const carouselNavigatorContainer = document.createElement('div');
         carouselNavigatorContainer.setAttribute("class", "artist_album_navigator_container");
 
-        this.#createAlbumNavigator(carouselNavigatorContainer, albumsCarousel, albums, NR_ALBUMS_SHOWN, title)
-
         albumsTitleContainer.appendChild(albumsTitle);
 
         albumsContainer.appendChild(albumsTitleContainer);
         albumsContainer.appendChild(albumsCarousel);
-        albumsContainer.appendChild(carouselNavigatorContainer);
+
+        if (albums.length > 4) {
+            this.#createAlbumNavigator(carouselNavigatorContainer, albumsCarousel, albums, NR_ALBUMS_SHOWN, title)
+            albumsContainer.appendChild(carouselNavigatorContainer);
+        }
 
         container.appendChild(albumsContainer);
 
@@ -572,12 +603,23 @@ class ArtistView extends View {
         const BIO_TEXT = data.profile.biography?.text || null;
         const IMAGES = data.visuals.gallery?.items || null;
 
-        if (BIO_TEXT == null && IMAGES == null) {
+        if (BIO_TEXT == null) {
             return;
         }
 
+        const biographyTitleContainer = document.createElement('div');
+        biographyTitleContainer.setAttribute("id", "artist_biography_title_container");
+
+        const biographyTitle = document.createElement('h2');
+        biographyTitle.setAttribute("id", "artist_biography_title");
+        biographyTitle.innerHTML = "Biography";
+
+        biographyTitleContainer.appendChild(biographyTitle);
+
         const biographyContainer = document.createElement('div');
         biographyContainer.setAttribute("class", "artist_biography_container");
+
+        biographyContainer.appendChild(biographyTitleContainer);
 
         if (BIO_TEXT != null) {
             this.#createBiographyText(biographyContainer, BIO_TEXT);
@@ -587,8 +629,17 @@ class ArtistView extends View {
     }
 
     #createBiographyText(container, bioText) {
+        const DIMS = this.#calcAppropriateAlbumCarouselWidth()
+        const IDEAL_WIDTH = DIMS.carouselWidth - 75;
+
         const bioTextContainer = document.createElement('div');
         bioTextContainer.setAttribute("class", "artist_biography_text_container");
+        bioTextContainer.style.width = IDEAL_WIDTH + "px";
+        this.#bioTextContainer = bioTextContainer;
+
+        const bioTextInnerContainer = document.createElement('div');
+        bioTextInnerContainer.setAttribute("class", "artist_biography_text_inner_container");
+
         const SPLIT_ARRAY = bioText.split("<a");
 
         for (let i = 0; i < SPLIT_ARRAY.length; i++) {
@@ -601,34 +652,33 @@ class ArtistView extends View {
             if (i == 0) {
                 const textContainer = document.createElement('span')
                 textContainer.innerHTML = LINK_PART;
-                bioTextContainer.appendChild(textContainer);
+                bioTextInnerContainer.appendChild(textContainer);
             } else {
-                bioTextContainer.appendChild(BUTTON);
+                bioTextInnerContainer.appendChild(BUTTON);
                 const textContainer = document.createElement('span')
                 textContainer.innerHTML = REMAINING_TEXT;
-                bioTextContainer.appendChild(textContainer);
+                bioTextInnerContainer.appendChild(textContainer);
             }
         }
+        bioTextContainer.appendChild(bioTextInnerContainer);
         container.appendChild(bioTextContainer);
     }
 
     #getReplacementTag(str) {
-        const FIRST_QUOTATION_MARK = str.indexOf('"') + 1;
-        const SECOND_QUOTATION_MARK = nth_ocurrence(str, '"', 2);
-        const SPOTIFY_ID = str
-          .substring(FIRST_QUOTATION_MARK, SECOND_QUOTATION_MARK)
-          .split(":")[2];
+        const firstQuoteIndex = str.indexOf('"') + 1;
+        const secondQuoteIndex = str.indexOf('"', firstQuoteIndex);
+        const spotifyId = str.substring(firstQuoteIndex, secondQuoteIndex).split(":")[2];
       
-        const FIRST_OCCURRENCE = str.indexOf(">") + 1;
-        const NAME = str.substring(FIRST_OCCURRENCE, str.length);  
-
+        const name = str.substring(str.indexOf(">") + 1);
+      
         const button = document.createElement('div');
-        button.setAttribute("class", "artist_biography_button");
-        button.innerHTML = NAME
+        const text = document.createTextNode(name);
+        button.classList.add("artist_biography_button");
+        button.appendChild(text);
         button.addEventListener("click", function () {
-            console.log(SPOTIFY_ID)
-        })
-
+          console.log(spotifyId);
+        });
+      
         return button;
       }
 

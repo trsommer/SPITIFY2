@@ -214,12 +214,18 @@ class LastSearchesView extends View {
             lastSearchItem.appendChild(lastSearchCloseButton);
 
             const that = this;
+            const DATA = {
+                type: lastSearch.type,
+                id : LAST_SEARCH_ID,
+                item : lastSearchItem
+            }
+
 
             lastSearchItemClickZone.addEventListener("click", function () {
                 that.#openLastSearch(LAST_SEARCH_ID, lastSearch.type);
             });
 
-            this.#addContextMenu(lastSearchItemClickZone)
+            this.#addContextMenu(lastSearchItemClickZone, DATA)
 
             lastSearchCloseButton.addEventListener("click", function () {
                 that.#removeLastSearch(LAST_SEARCH_ID, lastSearchItem);
@@ -232,19 +238,20 @@ class LastSearchesView extends View {
 
     }
 
-    #addContextMenu(elem) {
+    #addContextMenu(elem, data) {
+        const that = this;
         const CONTEXT_DATA_TEST = [
             {
                 title: "Open",
-                callback: function() {
-                    console.log("test");
+                callback: function(data) {
+                    that.#openLastSearch(data.id, data.type);
                 },
                 subMenu: null
             },
             {
                 title: "Remove from list",
-                callback: function() {
-                    console.log("test");
+                callback: function(data) {
+                    that.#removeLastSearch(data.id, data.item);
                 },
                 subMenu: null
             }
@@ -256,8 +263,14 @@ class LastSearchesView extends View {
             const CORD_Y = e.clientY;
             const CONTEXT_MENU = new ContextMenu(CONTEXT_DATA_TEST, CORD_X, CORD_Y, this.#viewController);
 
-            CONTEXT_MENU.show();
+            CONTEXT_MENU.show(data);
         });
     } 
+
+    //callback methods
+    
+    #openFromContextMenu(data) {
+
+    }
 
 }

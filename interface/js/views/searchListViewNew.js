@@ -326,6 +326,8 @@ class SearchListView extends View {
             ARTIST_CONTAINER.addEventListener('click', () => {
                 that.#openArtist(ARTIST_ID, ARTIST_NAME, ARTIST_IMAGE_URL, ARTIST_DATA);
             });
+
+            artistsContainer.appendChild(ARTIST_CONTAINER);
         }
 
         contentContainer.appendChild(artistsContainer);
@@ -444,6 +446,7 @@ class SearchListView extends View {
 
         for (let i = 0; i < PLAYLISTS_DATA.length; i++) {
             const PLAYLIST_DATA = PLAYLISTS_DATA[i].data;
+            if (PLAYLIST_DATA.__typename == "NotFound") continue;
             const PLAYLIST_NAME = PLAYLIST_DATA.name;
             const PLAYLIST_NAME_SHORT = shortenString(PLAYLIST_NAME, 20);
             const PLAYLIST_IMAGE_URL = PLAYLIST_DATA.images.items[0]?.sources[0].url || "standardImages/cover.jpg";

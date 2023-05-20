@@ -36,10 +36,11 @@ class ContextMenu {
         this.#container = Container;
     }
 
-    show() {
+    show(data) {
         if (this.#displayed) {
             return;
         }
+        this.#data = data;
         this.#displayed = true;
         const MENU_CONTAINER = this.#container;
         const contextMenuContainer = document.getElementById("context_menu_container");
@@ -76,7 +77,12 @@ class ContextMenu {
 
             const entryContainer = document.createElement('div');
             entryContainer.classList.add('context_menu_item');
-            entryContainer.addEventListener('click', entry.callback);
+            const that = this;
+            entryContainer.addEventListener('click', function() {
+                entry.callback(that.#data);
+                that.hideSubMenues();
+                that.hide();
+            });
 
             const entryTitle = document.createElement('p');
             entryTitle.classList.add('context_menu_item_title');

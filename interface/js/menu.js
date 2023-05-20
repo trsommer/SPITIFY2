@@ -144,7 +144,7 @@ class Menu {
             menuTopLogo.classList.remove("menu_top_logo");
             menuTopText.classList.remove("menu_top_text");
         }
-        if (!mode && menuLogoColorChangeStopped) {
+        if (!mode && this.#menuLogoColorChangeStopped) {
             this.#menuLogoColorChangeStopped = false;
             menuTopLogo.classList.add("menu_top_logo");
             menuTopText.classList.add("menu_top_text");

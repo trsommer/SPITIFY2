@@ -19,13 +19,13 @@
     justify-content: left;
     height: 32px;
     align-items: center;
-    transition: 0.15s ease;
+    transition: 0.1s ease;
     padding-left: 10px;
 }
 
 .context_menu_item:hover {
     background: var(--accentColor);
-    transition: 0.15s ease;
+    transition: 0.1s ease;
     border-radius: 20px;
 }
 

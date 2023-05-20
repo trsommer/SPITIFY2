@@ -175,9 +175,30 @@ class AlbumView extends View {
         nameText.setAttribute('contenteditable', 'true');
         nameText.innerHTML = NAME;
 
-        const autorText = document.createElement('p');
-        autorText.setAttribute('id', 'album_author_text');
-        autorText.innerHTML = "by " + ARTIST_STRING + " • " + YEAR_STRING;
+        const autorTextContainer = document.createElement('div');
+        autorTextContainer.setAttribute('id', 'album_author_text_container');
+
+        const span1 = document.createElement('span');
+        span1.innerHTML = "by ";
+        autorTextContainer.appendChild(span1);
+
+        for (let i = 0; i < ARTISTS.length; i++) {
+            const ARTIST = ARTISTS[i];
+            const ARTIST_NAME = ARTIST.profile.name;
+            const ARTIST_ID = ARTIST.id;
+            
+            const span = document.createElement('span');
+            span.className = 'album_author_text';
+            span.innerHTML = ARTIST_NAME;
+            span.addEventListener('click', () => {
+                this.#viewController.switchView('artist', ARTIST_ID);
+            });
+            autorTextContainer.appendChild(span);
+        }
+
+        const span2 = document.createElement('span');
+        span2.innerHTML = " • " + YEAR_STRING;
+        autorTextContainer.appendChild(span2);
 
         const durationText = document.createElement('p');
         durationText.setAttribute('id', 'album_duration_text');
@@ -189,7 +210,7 @@ class AlbumView extends View {
         foregroundImageContainer.appendChild(foregroundImage);
 
         textContainer.appendChild(nameText);
-        textContainer.appendChild(autorText);
+        textContainer.appendChild(autorTextContainer);
         textContainer.appendChild(durationText);
         textContainer.appendChild(buttonContainer);
 

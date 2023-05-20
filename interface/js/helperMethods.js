@@ -67,6 +67,9 @@ function getIdFromSongInfo(songInfo) {
  * @returns {string} The shortened string.
  */
 function shortenString(str, len) {
+  if (str == null) {
+    return "";
+  }
   const strLen = str.length;
   return strLen > len ? str.substring(0, len) + "..." : str;
 }
