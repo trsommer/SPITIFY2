@@ -4,8 +4,11 @@ class PlaylistView extends View {
     #HTMLContent = null; //the HTML container that contains all the views content (excluding title)
     #displayed = false
     #viewController = null
+    #messageBroker = null
     #playlistData = null
     #headerPointers = null
+    #selectedSongHTML = null
+    #boundUnSelectSong = null
 
     constructor(data, viewController) {
         super();
@@ -67,6 +70,7 @@ class PlaylistView extends View {
     async #createView(data, viewController) {
         this.#playlistData = data;
         this.#viewController = viewController;
+        this.#messageBroker = viewController.getMessageBroker();
         this.#type = "playlist_view";
         
         const returnValues = this.createHTMLContainer('unbound', 'playlist_view');
@@ -345,7 +349,7 @@ class PlaylistView extends View {
             trackItem.appendChild(songArtistHTML);
             trackItem.appendChild(songDurationHTML);
 
-            this.#addSongContextMenu(trackItem);
+            this.#addSongContextMenu(trackItem, SONG_DATA);
 
             playlistSongsContainer.appendChild(trackItem);
         }
@@ -381,7 +385,9 @@ class PlaylistView extends View {
     }
 
 
-    #addSongContextMenu(elem) {
+    async #addSongContextMenu(elem, SONG_DATA) {
+        const PLAYLIST_SUBMENU = await this.#getPlaylistSubMenu();
+
         const CONTEXT_DATA_TEST = [
             {
                 title: "Play now",
@@ -430,7 +436,7 @@ class PlaylistView extends View {
                 callback: function() {
                     console.log("test");
                 },
-                subMenu: null
+                subMenu: PLAYLIST_SUBMENU
             },
             {
                 title: "Remove from Playlist",
@@ -441,13 +447,51 @@ class PlaylistView extends View {
             }
         ]
 
+        const that = this;
+
         elem.addEventListener("contextmenu", (e) => {
             e.preventDefault();
             const CORD_X = e.clientX;
             const CORD_Y = e.clientY;
             const CONTEXT_MENU = new ContextMenu(CONTEXT_DATA_TEST, CORD_X, CORD_Y, this.#viewController);
 
-            CONTEXT_MENU.show();
+            CONTEXT_MENU.show(SONG_DATA);
+            
+            that.#selectSong(elem);
         });
-    } 
+    }
+
+    #selectSong(elem) {
+        this.#selectedSongHTML = elem;
+        elem.classList.add("track_selected");
+        elem.getElementsByClassName("track_image")[0].classList.add("track_image_selected");
+        this.#boundUnSelectSong = this.#unSelectSong.bind(this);
+        this.#messageBroker.subscribe("closeContextMenu", this.#boundUnSelectSong);
+    }
+
+    #unSelectSong() {
+        const SELECTED_SONG = this.#selectedSongHTML;
+        SELECTED_SONG.classList.remove("track_selected");
+        SELECTED_SONG.getElementsByClassName("track_image")[0].classList.remove("track_image_selected");
+        this.#selectedSongHTML = null;
+        this.#messageBroker.unsubscribe("closeContextMenu", this.#boundUnSelectSong);
+    }
+
+    async #getPlaylistSubMenu() {
+        const PLAYLISTS_DATA = await this.#messageBroker.pull("playlistsData");
+
+        const SUB_MENU_DATA = [];
+
+        for (let i = 0; i < PLAYLISTS_DATA.length; i++) {
+            const PLAYLIST_DATA = PLAYLISTS_DATA[i];
+            SUB_MENU_DATA.push({
+                title: PLAYLIST_DATA.name,
+                callback: function(DATA) {
+                    console.log(DATA);
+                }
+            });
+        }
+
+        return SUB_MENU_DATA;
+    }
 }

@@ -3,12 +3,13 @@ class ContextMenu {
     #parent = null;
     #container = null;
     #viewController = null;
-    #offsetTop = 0;
+    #cursorHeight = 0;
     #displayed = false;
     #subMenuTimeout = null;
     #subMenu = null;
     #messageBroker = null;
     #height = 0;
+    #subMenues = [];
 
     /*
      *  data: [
@@ -24,12 +25,12 @@ class ContextMenu {
     //create 1 context menu for each type of context in a view. Then add the specific content via show() method.
     // e.g. playSong gets data via the show method
 
-    constructor(data, parent, offsetTop, viewController) {
+    constructor(data, parent, cursorHeight, viewController) {
         this.#data = data;
         this.#parent = parent;
         this.#viewController = viewController;
         this.#messageBroker = viewController.getMessageBroker();
-        this.#offsetTop = offsetTop;
+        this.#cursorHeight = cursorHeight;
 
         const Container = this.#createContextMenu(data, parent);
 
@@ -64,6 +65,9 @@ class ContextMenu {
         this.#messageBroker.unsubscribe("keyUp", this.#closeContextMenuKeyUpCallback.bind(this));            this.#hideContextClickPlain();
         this.#hideContextClickPlain();
         contextMenuContainer.removeChild(MENU_CONTAINER);
+        if (Number.isInteger(this.#parent)) {
+            this.#messageBroker.publish("closeContextMenu", null);
+        }
     }
 
     #createContextMenu(data, parent) {
@@ -92,13 +96,13 @@ class ContextMenu {
 
             if (entry.subMenu != null) {
 
-                const OFFSET_TOP = this.#offsetTop + 5 + (i * 32) + 16;
+                const CURSOR_OFFSET = 5 + (i * 32) + 16;
 
-                const SUB_MENU = new ContextMenu(entry.subMenu, this, OFFSET_TOP, this.#viewController);
+                const SUB_MENU = new ContextMenu(entry.subMenu, this, CURSOR_OFFSET, this.#viewController);
                 const subMenuConatainer = SUB_MENU.getContainer();
 
                 entryContainer.addEventListener('mouseenter', () => {
-                    SUB_MENU.show();
+                    SUB_MENU.show(this.#data);
                     this.#subMenu = SUB_MENU;
                     //hide open submenu stack
                 });
@@ -165,13 +169,20 @@ class ContextMenu {
     }
 
     #getTop() {
-        const OFFSET_TOP = this.#offsetTop;
+        const PARENT = this.#parent;
+        let PARENT_OFFSET_TOP = 0;
+        if (!Number.isInteger(PARENT)) {
+            PARENT_OFFSET_TOP = PARENT.#getTop().offsetTop;
+        }
+        const CURSOR_HEIGHT = this.#cursorHeight;
         const HEIGHT = this.#height;
 
-        const SPACE_BOTTOM = window.innerHeight - OFFSET_TOP - HEIGHT;
+        const SPACE_BOTTOM = window.innerHeight - PARENT_OFFSET_TOP - CURSOR_HEIGHT - HEIGHT;
 
         if (SPACE_BOTTOM > 25) {
             //enough space to the bottom
+
+            const OFFSET_TOP = PARENT_OFFSET_TOP + CURSOR_HEIGHT;
 
             return {
                 offsetTop: OFFSET_TOP,
@@ -181,10 +192,10 @@ class ContextMenu {
 
         //not enough space to the bottom
 
-        const NEW_OFFSET_TOP = OFFSET_TOP - HEIGHT;
+        const OFFSET_TOP = PARENT_OFFSET_TOP + CURSOR_HEIGHT - HEIGHT;
 
         return {
-            offsetTop: NEW_OFFSET_TOP,
+            offsetTop: OFFSET_TOP,
             direction: "top"
         };
     }

@@ -24,6 +24,15 @@
     transition: 0.15s ease;
 }
 
+.track_selected {
+    background-color: rgba(255, 255, 255, 0.3);
+}
+
+.track_image_selected {
+    width: 80% !important;
+    height: 80% !important;
+}
+
 .track_item:hover .track_image {
     width: 80%;
     height: 80%;

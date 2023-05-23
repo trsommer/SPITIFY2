@@ -1,13 +1,16 @@
 class MessageBroker {
-    #topics = {};
+    #PushTopics = {};
+    #PullTopics = {};
 
     constructor() {
         this.#registerListeners();
     }
 
+    //Push
+
     #registerListeners() {
         const that = this;
-        this.createTopic("scroll");
+        this.createPushTopic("scroll");
         window.addEventListener("scroll", (event) => {
             const SCROLL_X = window.scrollX;
             const SCROLL_Y = window.scrollY;
@@ -17,32 +20,33 @@ class MessageBroker {
             };
             that.publish("scroll", SCROLL_DATA);
         });
-        this.createTopic("resize");
+        this.createPushTopic("resize");
         window.addEventListener("resize", (event) => {
             that.publish("resize", event);
         });
-        this.createTopic("updateSpotifySearch");
+        this.createPushTopic("updateSpotifySearch");
         window.electronAPI.updateSpotifySearch((event, response) => {
             that.publish("updateSpotifySearch", response);
         });
-        this.createTopic("keyUp");
+        this.createPushTopic("keyUp");
         window.addEventListener("keyup", (event) => {
             that.publish("keyUp", event);
         });
-        this.createTopic("addLastSearch");
+        this.createPushTopic("addLastSearch");
+        this.createPushTopic("closeContextMenu");
     }
 
     /**
-     * Creates a new topic with the given name.
+     * Creates a new push topic (listener is notifed)
      * 
      * @param {string} topicName - The name of the topic to create.
      * @throws {Error} If the topic already exists.
      */
-    createTopic(topicName) {
-        if (this.#topics[topicName]) {
+    createPushTopic(topicName) {
+        if (this.#PushTopics[topicName]) {
             throw new Error("Topic already exists");
         }
-        this.#topics[topicName] = [];
+        this.#PushTopics[topicName] = [];
     }
 
     /**
@@ -53,11 +57,11 @@ class MessageBroker {
      * @throws {Error} If the topic does not exist.
      */
     subscribe(topicName, callback) {
-        if (!this.#topics[topicName]) {
-            console.log(this.#topics);
+        if (!this.#PushTopics[topicName]) {
+            console.log(this.#PushTopics);
             throw new Error("Topic does not exist");
         }
-        this.#topics[topicName].push(callback);
+        this.#PushTopics[topicName].push(callback);
     }
 
     /**
@@ -68,12 +72,12 @@ class MessageBroker {
      * @throws {Error} If the topic does not exist in the list of topics.
      */
     unsubscribe(topicName, callback) {
-        if (!this.#topics[topicName]) {
+        if (!this.#PushTopics[topicName]) {
             throw new Error("Topic does not exist");
         }
-        const index = this.#topics[topicName].indexOf(callback);
+        const index = this.#PushTopics[topicName].indexOf(callback);
         if (index > -1) {
-            this.#topics[topicName].splice(index, 1);
+            this.#PushTopics[topicName].splice(index, 1);
         }
     }
 
@@ -84,12 +88,39 @@ class MessageBroker {
      * @throws {Error} If the specified topic does not exist.
      */
     publish(topicName, data) {
-        if (!this.#topics[topicName]) {
+        if (!this.#PushTopics[topicName]) {
             throw new Error("Topic does not exist");
         }
-        console.log(this.#topics);
-        this.#topics[topicName].forEach(callback => {
+        console.log(this.#PushTopics);
+        this.#PushTopics[topicName].forEach(callback => {
             callback(data);
         });
     }
+
+    //Pull
+
+    /**
+     * Creates a new pull topic (listener must request data)
+     * 
+     * @param {string} topicName - The name of the topic to create.
+     * @throws {Error} If the topic already exists.
+     */
+    createPullTopic(topicName, callBack) {
+        if (this.#PullTopics[topicName]) {
+            throw new Error("Topic already exists");
+        }
+        this.#PullTopics[topicName] = callBack;
+    }
+
+    async pull(topicName) {
+        if (!this.#PullTopics[topicName]) {
+            throw new Error("Topic does not exist");
+        }
+        
+        const CALLBACK = this.#PullTopics[topicName];
+        const DATA = await CALLBACK(); //maybe add error handling here
+
+        return DATA;
+    }
+    
 }

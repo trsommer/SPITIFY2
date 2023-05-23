@@ -6,6 +6,7 @@ class PlaylistsView extends View {
     #playlistsHTMLPointers = {}; //all of the playlists HTML pointers
     #displayed = false
     #viewController = null;
+    #messageBroker = null;
 
     constructor(data, viewController) {
         super();
@@ -52,7 +53,10 @@ class PlaylistsView extends View {
     async #createView(data, viewController) {
         this.#playlists = data;
         this.#viewController = viewController;
+        this.#messageBroker = viewController.getMessageBroker();
         this.#type = "playlists_view";
+
+        this.#messageBroker.createPullTopic("playlistsData", this.playlistsDataCallback.bind(this));
 
         this.#playlistsHTMLPointers = {
             playlists : [],
@@ -433,6 +437,10 @@ class PlaylistsView extends View {
 
             CONTEXT_MENU.show();
         });
-    } 
+    }
+
+    playlistsDataCallback() {
+        return this.#playlists;
+    }
 
 }
