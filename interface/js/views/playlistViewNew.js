@@ -422,7 +422,7 @@ class PlaylistView extends View {
                 callback: function() {
                     console.log("test");
                 },
-                subMenu: null
+                subMenu: this.submenuGetArtistsCallback.bind(this)
             },
             {
                 title: "Open Album",
@@ -482,12 +482,39 @@ class PlaylistView extends View {
 
         const SUB_MENU_DATA = [];
 
+        SUB_MENU_DATA.push({
+            title: "New playlist",
+            callback: function(DATA) {
+                console.log(DATA);
+            }
+        });
+
         for (let i = 0; i < PLAYLISTS_DATA.length; i++) {
             const PLAYLIST_DATA = PLAYLISTS_DATA[i];
             SUB_MENU_DATA.push({
                 title: PLAYLIST_DATA.name,
                 callback: function(DATA) {
                     console.log(DATA);
+                }
+            });
+        }
+
+        return SUB_MENU_DATA;
+    }
+
+    submenuGetArtistsCallback(data) {
+        const SONGINFO = JSON.parse(data.info);        
+        const songArtistArray = JSON.parse(SONGINFO.songArtistArray).items;
+        const SUB_MENU_DATA = [];
+
+        for (let i = 0; i < songArtistArray.length; i++) {
+            const ARTIST_DATA = songArtistArray[i];
+            const ARTIST_NAME = ARTIST_DATA.profile.name;
+            const ARTIST_ID = ARTIST_DATA.uri.split(":")[2];
+            SUB_MENU_DATA.push({
+                title: ARTIST_NAME,
+                callback: function() {
+                    console.log(ARTIST_ID);
                 }
             });
         }

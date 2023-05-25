@@ -9,21 +9,7 @@ class ContextMenu {
     #subMenu = null;
     #messageBroker = null;
     #height = 0;
-    #subMenues = [];
-
-    /*
-     *  data: [
-            entry1: {
-                title: "title",
-                callback: function() {},
-                suMenu: null
-            },
-
-        ]
-    */
-
-    //create 1 context menu for each type of context in a view. Then add the specific content via show() method.
-    // e.g. playSong gets data via the show method
+    #dynSubMenues = [];
 
     constructor(data, parent, cursorHeight, viewController) {
         this.#data = data;
@@ -46,8 +32,11 @@ class ContextMenu {
         const MENU_CONTAINER = this.#container;
         const contextMenuContainer = document.getElementById("context_menu_container");
         this.#setDimsAndShape(MENU_CONTAINER);
-        this.#registerCloseClickListener();
         this.#messageBroker.subscribe("keyUp", this.#closeContextMenuKeyUpCallback.bind(this));
+        if (Number.isInteger(this.#parent)) {
+            this.#registerCloseClickListener();
+        }
+        this.#createDynSubMenues();
 
         contextMenuContainer.appendChild(MENU_CONTAINER);
 
@@ -62,8 +51,7 @@ class ContextMenu {
         const MENU_CONTAINER = this.#container;
         const contextMenuContainer = document.getElementById("context_menu_container");
 
-        this.#messageBroker.unsubscribe("keyUp", this.#closeContextMenuKeyUpCallback.bind(this));            this.#hideContextClickPlain();
-        this.#hideContextClickPlain();
+        this.#messageBroker.unsubscribe("keyUp", this.#closeContextMenuKeyUpCallback.bind(this));
         contextMenuContainer.removeChild(MENU_CONTAINER);
         if (Number.isInteger(this.#parent)) {
             this.#messageBroker.publish("closeContextMenu", null);
@@ -86,6 +74,8 @@ class ContextMenu {
                 entry.callback(that.#data);
                 that.hideSubMenues();
                 that.hide();
+                that.hideParentMenues();
+                that.#hideContextClickPlain();
             });
 
             const entryTitle = document.createElement('p');
@@ -93,19 +83,27 @@ class ContextMenu {
             entryTitle.innerHTML = entry.title;
 
             entryContainer.appendChild(entryTitle);
+            const CURSOR_OFFSET = 5 + (i * 32) + 16;
 
-            if (entry.subMenu != null) {
-
-                const CURSOR_OFFSET = 5 + (i * 32) + 16;
+            if (Array.isArray(entry.subMenu)) {
+                //static submenu
 
                 const SUB_MENU = new ContextMenu(entry.subMenu, this, CURSOR_OFFSET, this.#viewController);
-                const subMenuConatainer = SUB_MENU.getContainer();
-
                 entryContainer.addEventListener('mouseenter', () => {
                     SUB_MENU.show(this.#data);
                     this.#subMenu = SUB_MENU;
                     //hide open submenu stack
                 });
+            } else if (entry.subMenu != null){ 
+                //dynamic submenu
+                const DYN_SUBMENU_ENTRY = {
+                    offset: CURSOR_OFFSET,
+                    callback: entry.subMenu,
+                    entryContainer: entryContainer
+                }
+
+                this.#dynSubMenues.push(DYN_SUBMENU_ENTRY);
+                // dynamic submenu will be created when this.show is called
             } else {
                 entryContainer.addEventListener('mouseenter', () => {
                     this.hideSubMenues();
@@ -213,6 +211,15 @@ class ContextMenu {
         }
     }
 
+    hideParentMenues() {
+        const PARENT = this.#parent;
+
+        if (!Number.isInteger(PARENT)) {
+            PARENT.hideParentMenues();
+            PARENT.hide();
+        }
+    }
+
     #registerCloseClickListener() {
         const that  = this;
         const context_click_plain = document.getElementById("context_menu_mouse_listener");
@@ -220,6 +227,8 @@ class ContextMenu {
 
         context_click_plain.addEventListener('click', () => {
             that.hide();
+            that.hideSubMenues();
+            that.#hideContextClickPlain();
         }, {once: true});
     }
 
@@ -231,6 +240,21 @@ class ContextMenu {
     #closeContextMenuKeyUpCallback(event) {
         if (event.key === "Escape") {
             this.hide();
+            this.hideSubMenues();
+            this.#hideContextClickPlain();
+        }
+    }
+
+    #createDynSubMenues() {
+        for (let i = 0; i < this.#dynSubMenues.length; i++) {
+            const DYN_SUBMENU = this.#dynSubMenues[i];
+            const SUBMENU_DATA = DYN_SUBMENU.callback(this.#data);
+
+            const SUB_MENU = new ContextMenu(SUBMENU_DATA, this, DYN_SUBMENU.offset, this.#viewController);
+            DYN_SUBMENU.entryContainer.addEventListener('mouseenter', () => {
+                SUB_MENU.show(this.#data);
+                this.#subMenu = SUB_MENU;
+            });
         }
     }
 }

@@ -105,6 +105,12 @@ class ArtistView extends View {
 
     //search specific methods
 
+    /**
+     * preloads an image
+     * @param {string} url - the url of the image to be loaded
+     * @param {HTMLElement} elem - the element to be loaded into
+     * @returns {Promise} - a promise that resolves when the image is loaded
+     */
     async #loadImage(url, elem) {
         return new Promise((resolve, reject) => {
           elem.onload = () => resolve(elem);
@@ -113,6 +119,13 @@ class ArtistView extends View {
         });
     }
 
+    /**
+     * checks the data give to the object and returns the id of the artist if it exists
+     * @param {Object} data - the data to be checked
+     * @returns {string} - the id of the artist
+     * @returns {boolean} - true if the id exists
+     * @returns {Object} - the data if the id is not found
+     */
     async #checkIfIdExists(data) {
         if (typeof data == "string") {
             return data
@@ -126,12 +139,19 @@ class ArtistView extends View {
         return true
     }
 
+    /**
+     * Sets the accent color for the app - will be moved to a more appropriate place later
+     */
     async #setCustomColors(elem, imageURL) {
         await this.#loadImage(imageURL, elem)
         const colorString = await getColors(elem)
         document.documentElement.style.setProperty("--accentColor", colorString);
     }
 
+    /**
+     * Calcuates the appropriate width for the album carousel
+     * @returns {Object} - an object containing the width of the carousel and the number of albums that fit in it
+     */
     #calcAppropriateAlbumCarouselWidth() {
         const ALBUM_WIDTH = 300;
         const CONTENT_WIDTH = window.innerWidth - 72; //60 for menuLeft, 12 for scrollbar (always visible on artistPage)
@@ -144,6 +164,9 @@ class ArtistView extends View {
         }
     }
 
+    /**
+     * Updates the contend width for multiple parts of the view
+     */
     async #updateContentWidth() {
         const NEW_DIMS = this.#calcAppropriateAlbumCarouselWidth();
         const OLD_CAROUSEL_WIDTH = this.#carouselWidth
@@ -171,6 +194,9 @@ class ArtistView extends View {
         this.#bioTextContainer.style.width = `${NEW_BIO_WIDTH}px`;
     }
 
+    /**
+     * Overrides the top menu heading - will be moved to a more appropriate place later
+     */
     #setMenuTopHeading(name) {
         this.#viewController.getMenu().setTopHeading(name)
     }
@@ -443,6 +469,9 @@ class ArtistView extends View {
         container.appendChild(popularSongsWrapper);
     }
 
+    /*
+     * creates the albums and singles carousels
+     */
     #createAlbumsAndSingles(container, data) {
         const ALBUMS = data.discography.albums.items
         if (ALBUMS.length != 0){
@@ -455,6 +484,13 @@ class ArtistView extends View {
         }
     }
 
+    /**
+     * Creates an album carousel and appends it to the given container element.
+     * @private
+     * @param {HTMLElement} container - The container element to append the album carousel to.
+     * @param {Array} albums - An array of album objects to display in the carousel.
+     * @param {string} title - The title of the album carousel.
+     */
     #createAlbumCarousel(container, albums, title) {
         const DIMS = this.#calcAppropriateAlbumCarouselWidth()
         const CAROUSEL_WIDTH = DIMS.carouselWidth
@@ -547,6 +583,15 @@ class ArtistView extends View {
 
     }
 
+    /**
+     * Creates album navigators for the given container and target element.
+     * @private
+     * @param {HTMLElement} container - The container element to append the navigators to.
+     * @param {HTMLElement} target - The target element to scroll to when a navigator is clicked.
+     * @param {Array} albums - The array of albums to create navigators for.
+     * @param {number} appropriateNrAlbumsCarousel - The appropriate number of albums to show in the carousel.
+     * @param {string} title - The title of the album.
+     */
     #createAlbumNavigator(container, target, albums, appropriateNrAlbumsCarousel, title) {
         const WIDTH_SMALL_NAVIGATOR_INCREMENT = 80 / appropriateNrAlbumsCarousel;
         const NR_BIG_NAVIGATORS = Math.floor(albums.length / appropriateNrAlbumsCarousel);
@@ -680,7 +725,7 @@ class ArtistView extends View {
         });
       
         return button;
-      }
+    }
 
 }
 
