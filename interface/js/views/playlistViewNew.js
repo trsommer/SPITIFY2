@@ -391,9 +391,7 @@ class PlaylistView extends View {
         const CONTEXT_DATA_TEST = [
             {
                 title: "Play now",
-                callback: function() {
-                    console.log("test");
-                },
+                callback: this.menuPlayNowCallback.bind(this),
                 subMenu: null
             },
             {
@@ -520,5 +518,13 @@ class PlaylistView extends View {
         }
 
         return SUB_MENU_DATA;
+    }
+
+    //menu callback functions
+
+    async menuPlayNowCallback(data) {
+        const SONGINFO = JSON.parse(data.info);
+
+        await playSongNow(SONGINFO.songInfo)
     }
 }

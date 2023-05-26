@@ -35,7 +35,7 @@ class Song {
 
   async #setup(songInfo, requestType) {
     //requestType is either "stream", "download" or "empty" - if empty, steam is default
-    id = getIdFromSongInfo(songInfo);
+    let id = getIdFromSongInfo(songInfo);
     this.#songSpotifyId = id;
 
     //get possible info of song from db
