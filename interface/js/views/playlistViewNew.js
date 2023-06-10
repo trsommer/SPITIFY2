@@ -523,8 +523,9 @@ class PlaylistView extends View {
     //menu callback functions
 
     async menuPlayNowCallback(data) {
-        const SONGINFO = JSON.parse(data.info);
-
-        await playSongNow(SONGINFO.songInfo)
+        const queue = this.#viewController.getQueue();
+        const player = this.#viewController.getPlayer();
+        await queue.enqueue(data.id);
+        player.play();
     }
 }

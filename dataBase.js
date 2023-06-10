@@ -26,7 +26,9 @@ module.exports = {
   getFollowedArtists,
   getFollowStatus,
   followArtist,
-  unfollowArtist
+  unfollowArtist,
+  getSong,
+  getSongLikeStatus
 };
 
 async function accessDatabase(query) {
@@ -274,4 +276,16 @@ async function followArtist(id, idLatestRelease) {
 async function unfollowArtist(id) {
   db = await getDB();
   db.prepare(`DELETE FROM followedArtists WHERE id = ?`).run(id);
+}
+
+async function getSong(id) {
+  db = await getDB();
+  let result = await db.prepare(`SELECT * FROM songs WHERE id = ?`).all(id);
+  return result;
+}
+
+async function getSongLikeStatus(id) {
+  db = await getDB();
+  let result = await db.prepare(`SELECT * FROM playlistLikes WHERE id = ?`).all(id);
+  return result;
 }

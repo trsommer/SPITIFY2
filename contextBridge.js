@@ -7,6 +7,7 @@ contextBridge.exposeInMainWorld('electronAPI',{
   getSongInfo: (songIDs) => ipcRenderer.invoke('get:songInfo', songIDs),
   getAlbumInfo: (albumID) => ipcRenderer.invoke('get:albumInfo', albumID),
   getAlbumMetadata: (albumID) => ipcRenderer.invoke('get:albumMetadata', albumID),
+  generateSong: (info) => ipcRenderer.invoke('generateSong:info', info),
   convertURL: (url) => ipcRenderer.invoke('convert:url', url),
   searchYoutube: (input) => ipcRenderer.invoke('searchYoutube:input', input),
   sendNotification: (data) => ipcRenderer.invoke('send:notification', data),

@@ -6,6 +6,7 @@ const dataBase = require("./dataBase");
 const spotify = require("./spotify");
 const youtube = require("./youtube");
 const downloader = require("./downloader");
+const song = require("./song");
 let mainWindow;
 
 async function showNotification(data) {
@@ -61,6 +62,10 @@ app.whenReady().then(() => {
     const response = await youtube.convertURL(url);
     return response;
   });
+  ipcMain.handle("generateSong:info", async (event, info) => {
+    const response  = await song.generateSong(info);
+    return response;
+  })
   ipcMain.handle("searchYoutube:input", async (event, input) => {
     const response = await youtube.searchYoutubeMusic(input);
     return response;

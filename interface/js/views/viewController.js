@@ -2,6 +2,8 @@ class ViewController {
     #singletonViews = {};
     #messageBroker = null;
     #menu = null;
+    #player = null;
+    #queue = null;
     #lastSearch = ""; //will be replaced with object that stores various data
     #currentView = null;
     #nextSearchView = null;
@@ -24,6 +26,8 @@ class ViewController {
         this.#menu = new Menu(this);
         this.#registerViewListeners();
         this.#setInitialView();
+        this.#player = await new Player(this)
+        this.#queue = await new Queue(this.#player, this)
         return this;
     }
 
@@ -192,5 +196,13 @@ class ViewController {
         this.#contextMenus.forEach(contextMenu => {
             contextMenu.hide();
         });
+    }
+
+    getQueue() {
+        return this.#queue;
+    }
+
+    getPlayer() {
+        return this.#player;
     }
 }

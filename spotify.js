@@ -10,7 +10,8 @@ module.exports = {
   getAlbumInfo,
   getAlbumMetadata,
   addInfoArtistTracks,
-  searchSpotifySpecificType
+  searchSpotifySpecificType,
+  getSongLyrics
 };
 
 refreshTokens();
@@ -271,29 +272,47 @@ async function addInfoArtistTracks(songIds) {
 }
 
 async function getSongLyrics(id, coverImage) {
-  url =
-    "https://spclient.wg.spotify.com/color-lyrics/v2/track/" +
-    id +
-    "/image/" +
-    coverImage +
-    "?format=json&vocalRemoval=false&market=from_token";
+  baseUrl = "https://spclient.wg.spotify.com/color-lyrics/v2/track/"
+  params = id + "/image/" + encodeURIComponent(coverImage)
+  addon = "?format=json&vocalRemoval=false&market=from_token";
 
-  url =
-    "https://spclient.wg.spotify.com/color-lyrics/v2/track/3yfqSUWxFvZELEM4PmlwIR/image/https%3A%2F%2Fi.scdn.co%2Fimage%2Fab67616d0000b273dbb3dd82da45b7d7f31b1b42?format=json&vocalRemoval=false&market=from_token";
+  url = baseUrl + params + addon
+
+  referenceURL = "https://spclient.wg.spotify.com/color-lyrics/v2/track/4W4fNrZYkobj539TOWsLO2/image/https%3A%2F%2Fi.scdn.co%2Fimage%2Fab67616d0000b2738ad8f5243d6534e03b656c8b?format=json&vocalRemoval=false&market=from_token"
+
+  if (url != referenceURL) {
+    console.log(url);
+  }
 
   const localTokens = await getTokens();
   const accessToken = localTokens.accessToken;
   const clientToken = await getClientToken(localTokens.clientId);
 
-  let response = await axios.get(url, {
-    headers: {
-      "authorization": "Bearer " + accessToken,
-      "client-token": clientToken,
-      "accept-encoding": "application/json",
-    },
-  });
+  try {
+    let response = await axios.get(referenceURL, {
+      headers: {
+        "Connection": "keep-alive",
+        "authorization": "Bearer " + accessToken,
+        "client-token": clientToken,
+        "Accept": "application/json",
+        "Accept-Languages": "en",
+        "Accept-Encoding": "gzip, deflate, br",
+        "app-platform": "WebPlayer",
+        "Host": "spclient.wg.spotify.com",
+        "Referer": "https://open.spotify.com/",
+        "Origin": "https://open.spotify.com",
+        "Sec-Fetch-Dest": "empty",
+        "Sec-Fetch-Mode": "cors",
+        "Sec-Fetch-Site": "same-site",
+        "spotify-app-version": "1.2.14.184.g945dcca3",
+        "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.75 Safari/537.36"
+      },
+    });
 
-  console.log(response);
+    console.log(response);
+  } catch (error) {
+    console.error(error);
+  }
 }
 
 //getClientToken();

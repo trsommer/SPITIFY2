@@ -179,3 +179,7 @@ async function followArtistDB(id, latestReleaseId) {
 async function unfollowArtistDB(id) {
     window.electronAPI.unfollowArtist(id)
 }
+
+async function generateSong(info) {
+    return window.electronAPI.generateSong(info)
+}

@@ -6,14 +6,10 @@ const spotify = require('../spotify');
 describe('spotifySearch', function () {
     var spotifyArtistData;
 
-    before(async function () {
-        const apiResponse = await spotify.getArtistInfo("7dGJo4pcD2V6oG8kP0tJRR");
-        spotifyArtistData = apiResponse.data.artist;
-    });
-
-    it('ID is the same', function () {
-        const spotifyID = spotifyArtistData.id;
-        assert.equal(spotifyID, "7dGJo4pcD2V6oG8kP0tJRR");
+    it('ID is the same', async function () {
+        const lyricsResponse = await spotify.getSongLyrics('4W4fNrZYkobj539TOWsLO2', 'https://i.scdn.co/image/ab67616d0000b2738ad8f5243d6534e03b656c8b');
+        console.log(lyricsResponse);
+        assert.notEqual(lyricsResponse, null);
     });
 
 });

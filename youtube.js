@@ -26,8 +26,6 @@ async function convertURL(url) {
   const video = new ytcog.Video(session, videoInfo);
   await video.fetch();
 
-  console.log(video);
-
   var audioStreams = video.audioStreams;
 
   if (audioStreams.length == 0) {
@@ -41,8 +39,6 @@ async function convertURL(url) {
   
   for (let index = 0; index < audioStreams.length; index++) {
     const audioStream = audioStreams[index];
-
-    console.log(audioStream);
 
     if (
       audioStream.type != "audio" ||

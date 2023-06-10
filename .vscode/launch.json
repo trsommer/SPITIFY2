@@ -1,6 +1,7 @@
 {
     "version": "0.2.0",
     "configurations": [
+
       {
         "name": "Debug Main Process",
         "type": "node",
@@ -12,6 +13,20 @@
         },
         "args" : ["."],
         "outputCapture": "std"
-      }
+      },
+      {
+        "type": "node",
+        "request": "launch",
+        "name": "Mocha Tests",
+        "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
+        "args": [
+          "--timeout",
+          "999999",
+          "--colors",
+          "${workspaceFolder}/test"
+        ],
+        "console": "integratedTerminal",
+        "internalConsoleOptions": "neverOpen"
+          }
     ]
   }

@@ -1,18 +1,4 @@
-searchSize = 0
-lastSearchResult = ''
-lastSearch = ""
-
 async function onLoad() {
-    window.scrollTo({ top: 0, behavior: 'smooth' })
-    document.getElementsByTagName("body")[0].classList.add("flatTop")
-
-    window.electronAPI.updateDownloads((event, progress, spotifyId) => {
-        updateDownloadProgress(spotifyId, progress)
-    });
-
-    setupMenuMove()
-    attachVolumeResetListener()
-
     const viewController = await new ViewController()
 }
 

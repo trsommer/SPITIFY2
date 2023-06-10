@@ -173,10 +173,10 @@ function setContinusProgress() {
     }
     sliderElement.value = progress
     sliderElement.style.backgroundSize = progress + '% 100%';
-
+    /*
     stretchedProgress = progress * 2.6
     roundSliderElement.style.strokeDashoffset = 6630 - stretchedProgress
-
+    */
     window.requestAnimationFrame(setContinusProgress)
 }
 

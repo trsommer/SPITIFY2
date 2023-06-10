@@ -20,15 +20,10 @@
     <link rel="stylesheet" href="css/tracklist.css">
     <link rel="stylesheet" href="css/context_menu.css">
     <script src="js/helperMethods.js"></script>
-    <script src="js/songs/song.js"></script>
-    <script src="js/songs/songComparisons.js"></script>
-    <script src="js/songs/queue.js"></script>
     <script src="js/contextMenuNew.js"></script>
     <script src="js/color/colorFacade.js"></script>
     <script src="js/color/colorAnalysis.js"></script>
     <script src="js/main.js"></script>
-    <script src="js/songs/player/player.js"></script>
-    <script src="js/songs/player/playerMove.js"></script>
     <script src="js/bridge.js"></script>
     <script src="js/views/view.js"></script>
     <script src="js/views/playlistsViewNew.js"></script>
@@ -42,6 +37,10 @@
     <script src="js/menu.js"></script>
     <script src="js/views/viewController.js"></script>
     <script src="js/views/albumViewNew.js"></script>
+    <script src="js/songs/songNew.js"></script>
+    <script src="js/songs/queueNew.js"></script>
+    <script src="js/songs/player/playerNew.js"></script>
+    <script src="js/songs/player/playerHtmlController.js"></script>
     <!-- libraries -->
     <script src="js/libraries/sortable.js"></script>
     <script src="js/libraries/colorThief.js"></script>
@@ -201,34 +200,7 @@
                 </div>  
             </div>
         </div>
-        <div id="menu_player_container" class="bottomLeft">
-            <div id="menu_player" class="mouseUpCursor">
-                <div id="menu_player_cover_container">
-                    <svg id="menu_player_circular_progress" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 80 80">
-                        <rect x="3" y="3" width="74" height="74" rx="21" ry="21"/>
-                    </svg>
-                    <div id="menu_player_image_shadow"></div>
-                    <img id="menu_player_cover" src="standardImages/cover.jpg" alt="">
-                </div>
-                <div id="menu_player_controls_container">
-                    <div id="menu_player_text_container">
-                        <p id="menu_player_text_title" class="menu_player_text">title</p>
-                        <p class="menu_player_text"> - </p>
-                        <p id="menu_player_text_artists" class="menu_player_text">artists</p>
-                    </div>
-                    <input type="range" min="1.0" max="100.0" value="0.0" step="0.0001" id="menu_player_slider" class="slider" oninput="skipTo(this)">
-                    <div id="menu_player_music_controls_container">
-                        <img src="icons/play/shuffle.svg" class="menu_player_music_control" id="menu_player_shuffle">
-                        <img src="icons/play/backward.svg" class="menu_player_music_control" id="menu_player_backward" onclick="goBackTrack()">
-                        <img src="icons/play/play.svg" class="menu_player_music_control" id="menu_player_play" onclick="changePlayState()">
-                        <img src="icons/play/forward.svg" class="menu_player_music_control" id="menu_player_forward" onclick="skipTrack()">
-                        <img src="icons/play/repeatOnce.svg" class="menu_player_music_control" id="menu_player_repeat">
-                        <input type="range" min="1" max="100" value="50" id="menu_player_volume_slider" class="slider">
-                        <img src="icons/play/heart.svg" class="menu_player_music_control" id="menu_player_like" onclick="likeCurrentSong()">
-                    </div>
-                </div>
-                <audio src="" id="menu_player_audio" onended="onEndPlay()" onplay="onPlaystateChange()" onpause="onPlaystateChange()"></audio>
-            </div>
+        <div id="menu_player_outer_container">
         </div>
     </div>
     <div id="viewport">
