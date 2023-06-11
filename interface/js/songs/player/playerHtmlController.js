@@ -9,7 +9,8 @@ class PlayerHtmlController {
     #shuffleButton = null
     #shuffleState = false;
     #repeatButton = null
-    #repeatState = false;
+    #repeatButtonOnce = null
+    #repeatState = 0;
 
 
     constructor(viewController, player) {
@@ -103,12 +104,18 @@ class PlayerHtmlController {
         playButton.id = 'menu_player_play_button';
         playButton.classList.add('menu_player_button');
         this.#playButton = playButton
+        playButton.addEventListener("click", () => {
+            this.#player.setPlayState(true);
+        })
 
         const pauseButton = await this.#convertSVGInline('icons/play/pause.svg');
         pauseButton.id = 'menu_player_pause_button';
         pauseButton.classList.add('menu_player_button');
         pauseButton.style.display = 'none'
         this.#pauseButton = pauseButton
+        pauseButton.addEventListener("click", () => {
+            this.#player.setPlayState(false);
+        })
 
         playPauseButtonContainer.appendChild(playButton);
         playPauseButtonContainer.appendChild(pauseButton);
@@ -130,7 +137,14 @@ class PlayerHtmlController {
         repeatButton.classList.add('menu_player_button');
         this.#repeatButton = repeatButton
 
+        const repeatButtonOnce = await this.#convertSVGInline('icons/play/repeatOnce.svg');
+        repeatButtonOnce.id = 'menu_player_repeat_button_once';
+        repeatButtonOnce.classList.add('menu_player_button');
+        repeatButtonOnce.style.display = 'none'
+        this.#repeatButtonOnce = repeatButtonOnce
+
         repeatButtonContainer.appendChild(repeatButton);
+        repeatButtonContainer.appendChild(repeatButtonOnce);
         repeatButtonContainer.addEventListener('click', () => {
             this.#toggleRepeat();
         })
@@ -243,12 +257,27 @@ class PlayerHtmlController {
     }
 
     #toggleRepeat() {
-        if (this.#repeatState) {
-            this.#repeatState = false
-            this.#repeatButton.style.fill = '#ffffff'
-        } else {
-            this.#repeatState = true
+        if (this.#repeatState == 0) {
+            //go from no repeat to repeat
+            this.#repeatState = 1
+            this.#repeatButtonOnce.style.display = 'none'
+            this.#repeatButton.style.display = 'block'
             this.#repeatButton.style.fill = 'red'
+
+        } else if (this.#repeatState == 1) {
+            //go from repeat to repeat once
+            this.#repeatState = 2
+            this.#repeatButtonOnce.style.display = 'block'
+            this.#repeatButton.style.display = 'none'
+            this.#repeatButtonOnce.style.fill = 'red'
+
+        } else {
+            //go from repeat once to no repeat
+            this.#repeatState = 0
+            this.#repeatButton.style.display = 'block'
+            this.#repeatButton.style.fill = '#ffffff'
+            this.#repeatButtonOnce.style.fill = '#ffffff'
+            this.#repeatButtonOnce.style.display = 'none'
         }
     }
 }

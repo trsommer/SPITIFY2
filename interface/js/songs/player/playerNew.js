@@ -1,6 +1,8 @@
 class Player {
     #viewController = null
-    #playing = false
+    #playState = false
+    #shuffleState = false
+    #repeatState = 0
     #playerHtmlController = null;
     #queue = null
 
@@ -26,7 +28,7 @@ class Player {
         this.#setSpecificProgress(0);
         this.#setAudioSource(nextSong.getSongStreamingUrl());
         this.#setSpecificVolume(nextSong.getSongPreferredVolume());
-        this.#setPlayState(true);
+        this.setPlayState(true);
     }
 
     async addSongToPlayer() {
@@ -78,10 +80,18 @@ class Player {
         this.#playerHtmlController.setVolume(volume);
     }
 
-    #setPlayState(state) {
-        this.#playing = state
+    setPlayState(state) {
+        this.#playState = state
         this.#playerHtmlController.setPlayState(state);
         this.#playerHtmlController.setPlayIcon(state);
+    }
+
+    setShuffleState(state) {
+        this.#shuffleState = state
+    }
+
+    setRepeatState(state) {
+        this.#repeatState = state
     }
 
     #setPlayerImage(src) {
@@ -89,6 +99,7 @@ class Player {
     }
 
     getPlayState() {
-        return this.#playing;
+        return this.#playState;
     }
+    
 }
