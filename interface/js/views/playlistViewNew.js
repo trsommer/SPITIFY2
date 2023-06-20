@@ -396,9 +396,7 @@ class PlaylistView extends View {
             },
             {
                 title: "Play next",
-                callback: function() {
-                    console.log("test");
-                },
+                callback: this.menuPlayNextCallback.bind(this),
                 subMenu: null
             },
             {
@@ -417,16 +415,13 @@ class PlaylistView extends View {
             },
             {
                 title: "Open Artist",
-                callback: function() {
-                    console.log("test");
-                },
-                subMenu: this.submenuGetArtistsCallback.bind(this)
+                callback: this.menuOpenSingleArtistCallback.bind(this),
+                subMenu: this.submenuGetArtistsCallback.bind(this), //will be shown if condition true
+                conditionSubMenu: this.menuOpenArtistCondition.bind(this), //condition to show submenu
             },
             {
                 title: "Open Album",
-                callback: function() {
-                    console.log("test");
-                },
+                callback: this.menuOpenAlbumCallback.bind(this),
                 subMenu: null
             },
             {
@@ -511,9 +506,7 @@ class PlaylistView extends View {
             const ARTIST_ID = ARTIST_DATA.uri.split(":")[2];
             SUB_MENU_DATA.push({
                 title: ARTIST_NAME,
-                callback: function() {
-                    console.log(ARTIST_ID);
-                }
+                callback: this.menuOpenSpecificArtist.bind(this, ARTIST_DATA)
             });
         }
 
@@ -526,6 +519,59 @@ class PlaylistView extends View {
         const queue = this.#viewController.getQueue();
         const player = this.#viewController.getPlayer();
         await queue.enqueue(data.id);
-        player.play();
+        player.playQueue();
     }
+
+    async menuPlayNextCallback(data) {
+        const queue = this.#viewController.getQueue();
+        await queue.enqueue(data.id);
+    }
+
+    async menuDownloadCallback(data) {
+        //TODO: download
+    }
+
+    async menuLikeCallback(data) {
+        //TODO: like
+    }
+    
+    async menuOpenSingleArtistCallback(data) {
+        const SONGINFO = JSON.parse(data.info);
+        const SONG_ARTIST_ARRAY = JSON.parse(SONGINFO.songArtistArray).items;
+        const ARTIST_ID = SONG_ARTIST_ARRAY[0].uri.split(":")[2];
+
+        this.#viewController.switchView("artist", ARTIST_ID);
+    }
+
+    async menuOpenSpecificArtist(artist) {
+        const ARTIST_ID = artist.uri.split(":")[2];
+        this.#viewController.switchView("artist", ARTIST_ID);
+    }
+
+    menuOpenArtistCondition(data) {
+        const SONGINFO = JSON.parse(data.info);
+        const SONG_ARTIST_ARRAY = JSON.parse(SONGINFO.songArtistArray).items;
+        const LENGTH = SONG_ARTIST_ARRAY.length;
+        if (LENGTH > 1) {
+            return true;
+        }
+
+        return false;
+    }
+
+    async menuOpenAlbumCallback(data) {
+        const SONGINFO = JSON.parse(data.info);
+        const ALBUM_ID = SONGINFO.songAlbum.uri.split(":")[2];
+
+        this.#viewController.switchView("album", ALBUM_ID);
+    }
+
+    async menuAddToPlaylistCallback(data) {
+        //TODO: add to playlist
+    }
+
+    async menuRemoveFromPlaylistCallback(data) {
+        //TODO: remove from playlist
+    }
+
 }

@@ -70,13 +70,6 @@ class ContextMenu {
             const entryContainer = document.createElement('div');
             entryContainer.classList.add('context_menu_item');
             const that = this;
-            entryContainer.addEventListener('click', function() {
-                entry.callback(that.#data);
-                that.hideSubMenues();
-                that.hide();
-                that.hideParentMenues();
-                that.#hideContextClickPlain();
-            });
 
             const entryTitle = document.createElement('p');
             entryTitle.classList.add('context_menu_item_title');
@@ -98,7 +91,9 @@ class ContextMenu {
                 //dynamic submenu
                 const DYN_SUBMENU_ENTRY = {
                     offset: CURSOR_OFFSET,
-                    callback: entry.subMenu,
+                    callback: entry.callback,
+                    subMenu: entry.subMenu,
+                    condition: entry.conditionSubMenu,
                     entryContainer: entryContainer
                 }
 
@@ -108,12 +103,21 @@ class ContextMenu {
                 entryContainer.addEventListener('mouseenter', () => {
                     this.hideSubMenues();
                 });
+                entryContainer.addEventListener('click', this.#startCallback.bind(this, entry));
             }
 
             menuContainer.appendChild(entryContainer);
         }
 
         return menuContainer;
+    }
+
+    #startCallback(entry) {
+        entry.callback(this.#data);
+        this.hideSubMenues();
+        this.hide();
+        this.hideParentMenues();
+        this.#hideContextClickPlain();
     }
 
     #setDimsAndShape(MENU_CONTAINER) {
@@ -248,13 +252,20 @@ class ContextMenu {
     #createDynSubMenues() {
         for (let i = 0; i < this.#dynSubMenues.length; i++) {
             const DYN_SUBMENU = this.#dynSubMenues[i];
-            const SUBMENU_DATA = DYN_SUBMENU.callback(this.#data);
-
-            const SUB_MENU = new ContextMenu(SUBMENU_DATA, this, DYN_SUBMENU.offset, this.#viewController);
-            DYN_SUBMENU.entryContainer.addEventListener('mouseenter', () => {
-                SUB_MENU.show(this.#data);
-                this.#subMenu = SUB_MENU;
-            });
+            const CONDITION_RESULT = DYN_SUBMENU.condition(this.#data);
+            if (CONDITION_RESULT) {
+                const SUBMENU_DATA = DYN_SUBMENU.subMenu(this.#data);
+                const SUB_MENU = new ContextMenu(SUBMENU_DATA, this, DYN_SUBMENU.offset, this.#viewController);
+                DYN_SUBMENU.entryContainer.addEventListener('mouseenter', () => {
+                    SUB_MENU.show(this.#data);
+                    this.#subMenu = SUB_MENU;
+                });
+            } else {
+                DYN_SUBMENU.entryContainer.addEventListener('mouseenter', () => {
+                    this.hideSubMenues();
+                });
+                DYN_SUBMENU.entryContainer.addEventListener('click', this.#startCallback.bind(this, DYN_SUBMENU));
+            }
         }
     }
 }

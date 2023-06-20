@@ -452,6 +452,10 @@ class ArtistView extends View {
             songContainer.appendChild(songImageContainer);
             songContainer.appendChild(songTextContainer);
 
+            songContainer.addEventListener("click", () => {
+                this.#playPopularSong(TOP_SONG_DATA);
+            });
+
             songsContainer.appendChild(songContainer);
         }
 
@@ -725,6 +729,13 @@ class ArtistView extends View {
         });
       
         return button;
+    }
+
+    async #playPopularSong(data) {
+        const queue = this.#viewController.getQueue();
+        const player = this.#viewController.getPlayer();
+        await queue.enqueue(data);
+        player.playQueue();
     }
 
 }

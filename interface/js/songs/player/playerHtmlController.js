@@ -3,7 +3,8 @@ class PlayerHtmlController {
     #player = null
     #player_image = null
     #player_slider = null
-    #audioElement = null
+    #audioElements = []
+    #currentAudioElementIndex = 0
     #playButton = null
     #pauseButton = null
     #shuffleButton = null
@@ -11,6 +12,9 @@ class PlayerHtmlController {
     #repeatButton = null
     #repeatButtonOnce = null
     #repeatState = 0;
+    #crossfadeOffset = 5;
+    #crossfadeUpdates = 8;
+    #crossfadeInProgress = false;
 
 
     constructor(viewController, player) {
@@ -95,6 +99,9 @@ class PlayerHtmlController {
         prevSongButton.classList.add('menu_player_button');
 
         prevSongButtonContainer.appendChild(prevSongButton);
+        prevSongButtonContainer.addEventListener('click', () => {
+            this.#prevSongButton();
+        })
 
         const playPauseButtonContainer = document.createElement('div');
         playPauseButtonContainer.classList.add('menu_player_button_container')
@@ -128,6 +135,9 @@ class PlayerHtmlController {
         nextSongButton.classList.add('menu_player_button');
 
         nextSongButtonContainer.appendChild(nextSongButton);
+        nextSongButtonContainer.addEventListener('click', () => {
+            this.#player.playNextSong();
+        })
 
         const repeatButtonContainer = document.createElement('div');
         repeatButtonContainer.classList.add('menu_player_button_container');
@@ -149,12 +159,21 @@ class PlayerHtmlController {
             this.#toggleRepeat();
         })
 
-        const audioElem = document.createElement('audio');
-        audioElem.id = 'menu_player_audio';
-        audioElem.addEventListener('ended', () => {
-            //tell player that song has ended
+        //create audio elements (2 for crossfade)
+
+        const audioElem1 = document.createElement('audio');
+        audioElem1.id = 'menu_player_audio';
+        this.#audioElements.push(audioElem1);
+        audioElem1.addEventListener('ended', () => {
+            this.#nonCrossfadeNextSong();
         })
-        this.#audioElement = audioElem
+
+        const audioElem2 = document.createElement('audio');
+        audioElem2.id = 'menu_player_audio2';
+        this.#audioElements.push(audioElem2);
+        audioElem2.addEventListener('ended', () => {
+            this.#nonCrossfadeNextSong();
+        })
 
         buttonsContainer.appendChild(shuffleButtonContainer);
         buttonsContainer.appendChild(prevSongButtonContainer);
@@ -167,7 +186,9 @@ class PlayerHtmlController {
 
         playerContainer.appendChild(iconContainer);
         playerContainer.appendChild(playButtonContainer);
-        playerContainer.appendChild(audioElem);
+
+        playerContainer.appendChild(audioElem1);
+        playerContainer.appendChild(audioElem2);
 
         container.appendChild(playerContainer);
     }
@@ -184,28 +205,49 @@ class PlayerHtmlController {
         return svgElement
     }
 
+    /**
+     * Sets the image source of the player.
+     *
+     * @param {string} src - The source of the image.
+     */
     setPlayerSongImage(src) {
         this.#player_image.src = src;
     }
 
+    /**
+     * Sets the value of the slider for the player.
+     *
+     * @param {number} value - The value to set the slider to.
+     */
     setSliderValue(value) {
         this.#player_slider.value = value;
     }
 
+    /**
+     * Sets the audio source of the current audio element.
+     *
+     * @param {string} source - The new audio source URL.
+     */
     setAudioSource(source) {
-        this.#audioElement.src = source
+        const currentAudioElem = this.#getCurrentAudioElement()
+
+        currentAudioElem.src = source
     }
 
     setVolume(value) {
-        this.#audioElement.volume = value
+        const currentAudioElem = this.#getCurrentAudioElement()
+
+        currentAudioElem.volume = value
     }
 
     setPlayState(state) {
+        const currentAudioElem = this.#getCurrentAudioElement()
+
         if (state) {
-            this.#audioElement.play();
+            currentAudioElem.play();
             this.#setContinusProgress();
         } else {
-            this.#audioElement.pause();
+            currentAudioElem.pause();
         }
     }
 
@@ -220,17 +262,23 @@ class PlayerHtmlController {
     }
 
     #setContinusProgress() {
-        const audioElement = this.#audioElement
+        const audioElement = this.#getCurrentAudioElement()
         const sliderElement = this.#player_slider
         const currentTime = audioElement.currentTime
         const duration = audioElement.duration
         const playState = this.#player.getPlayState()
-        
+        const timeLeft = duration - currentTime
+
         const progress = 100 * (currentTime / duration)
 
         if (playState == false) {
             return
         }
+
+        if (timeLeft <= this.#crossfadeOffset && this.#crossfadeOffset > 0) {
+            this.#crossfade();
+        }
+
         sliderElement.value = progress
         /*
         stretchedProgress = progress * 2.6
@@ -240,7 +288,7 @@ class PlayerHtmlController {
     }
 
     #setProgress(progress) {
-        const audioElement = this.#audioElement;
+        const audioElement = this.#getCurrentAudioElement();
         const duration = audioElement.duration
         const newProgress = duration * progress / 100
         audioElement.currentTime = newProgress
@@ -279,5 +327,79 @@ class PlayerHtmlController {
             this.#repeatButtonOnce.style.fill = '#ffffff'
             this.#repeatButtonOnce.style.display = 'none'
         }
+    }
+
+    #getCurrentAudioElement() {
+        const currentAudioElemIndex = this.#currentAudioElementIndex;
+        const currentAudioElem = this.#audioElements[currentAudioElemIndex];
+
+        return currentAudioElem
+    }
+
+    #switchAudioElements() {
+        this.#currentAudioElementIndex = this.#currentAudioElementIndex == 0 ? 1 : 0
+    }
+
+    async #crossfade() {
+            if (this.#crossfadeInProgress) return
+            this.#crossfadeInProgress = true
+            const oldAudioElem = this.#getCurrentAudioElement()
+            this.#switchAudioElements() //switches audio elements to the new one
+            const targets = await this.#player.onEndPlay() //starts playing of the next song
+            const newAudioElem = this.#getCurrentAudioElement()
+            newAudioElem.volume = 0
+
+            const nrSteps = this.#crossfadeOffset * this.#crossfadeUpdates; //updates ever 200ms
+            const stepOld = targets[0] / nrSteps
+            const stepNew = targets[1] / nrSteps
+
+            this.#crossFadeProgress(oldAudioElem, newAudioElem, stepOld, stepNew)
+    }
+
+    #crossFadeProgress(oldAudioElem, newAudioElem, stepOld, stepNew) {
+        //old
+        const currentVolumeOld = oldAudioElem.volume
+        let newVolumeOld = currentVolumeOld - stepOld
+        if (newVolumeOld < 0) {
+            newVolumeOld = 0
+        }
+        oldAudioElem.volume = newVolumeOld
+
+        //new
+        const currentVolumeNew = newAudioElem.volume
+        let newVolumeNew = currentVolumeNew + stepNew
+        if (newVolumeNew > 1) {
+            newVolumeNew = 1
+        }
+        newAudioElem.volume = newVolumeNew
+
+        if (newVolumeOld == 0) {
+            this.#crossfadeInProgress = false
+            return
+        }
+
+        //call this function again after 200ms
+        setTimeout(() => this.#crossFadeProgress(oldAudioElem, newAudioElem, stepOld, stepNew), 1000 / this.#crossfadeUpdates);
+    }
+
+    #nonCrossfadeNextSong() {
+        if (this.#crossfadeOffset > 0) return
+
+        this.#player.onEndPlay()
+    }
+
+    #prevSongButton() {
+        const audioElement = this.#getCurrentAudioElement()
+        const currentTime = audioElement.currentTime
+        const duration = audioElement.duration
+        const progress = 100 * (currentTime / duration)
+
+        if (progress <= 5) {
+            this.#player.playLastSong()
+        }
+
+        //go to beginning
+        this.#setProgress(0)
+
     }
 }

@@ -5,6 +5,8 @@ class Player {
     #repeatState = 0
     #playerHtmlController = null;
     #queue = null
+    #currentSong = null
+    #crossfade  = true
 
     constructor(viewController) {
         this.#viewController = viewController;
@@ -21,23 +23,45 @@ class Player {
     /*
      * this method plays the current song from the queue.
     */
-    async play() {
-        const nextSong = this.#queue.getNextSong();
-
-        this.#setPlayerImage(nextSong.getSongImageUrl());
+    async #play(song) {
+        this.#currentSong = song
+        await this.#setMediaSessionsAPI(song);
+        this.#setPlayerImage(song.getSongImageUrl());
         this.#setSpecificProgress(0);
-        this.#setAudioSource(nextSong.getSongStreamingUrl());
-        this.#setSpecificVolume(nextSong.getSongPreferredVolume());
+        this.#setAudioSource(song.getSongStreamingUrl());
+        this.#setSpecificVolume(song.getSongPreferredVolume());
         this.setPlayState(true);
     }
 
-    async addSongToPlayer() {
+    async #playCrossfade(song) {
+        this.#currentSong = song
+        await this.#setMediaSessionsAPI(song);
+        this.#setPlayerImage(song.getSongImageUrl());
+        this.#setSpecificProgress(0);
+        this.#setAudioSource(song.getSongStreamingUrl());
+        this.setPlayState(true);
+    }
+
+    async playQueue() {
+        const song = this.#queue.getNextSong();
+        await this.#play(song);
+    }
+
+    async onEndPlay() {
         const nextSong = this.#queue.getNextSong();
-        
+        const targetVolumeOld = this.#currentSong.getSongPreferredVolume();
+        const targetVolumeNew = nextSong.getSongPreferredVolume();
+
+        if (this.#crossfade) {
+            this.#playCrossfade(nextSong);
+            return [targetVolumeOld, targetVolumeNew];
+        }
+
+        this.#play(nextSong);
     }
 
     async pause() {
-
+        this.setPlayState(false);
     }
 
     registerQueue(queue) {
@@ -56,6 +80,7 @@ class Player {
     
         //TODO sometimes the information is not updated - NO IDEA WHY ..........
     
+        /*
         navigator.mediaSession.setActionHandler('previoustrack', async function () {
             goBackTrack();
             await setTimeout(function(){
@@ -66,6 +91,18 @@ class Player {
             await setTimeout(function(){
             }, 100);
         });
+        */
+    }
+
+    async createNewNotification(song) {
+        data = {
+            title: song.getSongTitle(),
+            subTitle: song.getSongArtistString(),
+            body: song.getAlbumName(),
+            imageUrl: song.getSongImageUrl()
+        }
+    
+        sendNotification(data)
     }
 
     #setSpecificProgress(progress) {
@@ -100,6 +137,16 @@ class Player {
 
     getPlayState() {
         return this.#playState;
+    }
+
+    playLastSong() {
+        const lastSong = this.#queue.getLastSong();
+        this.#play(lastSong);
+    }
+
+    playNextSong() {
+        const nextSong = this.#queue.getNextSong();
+        this.#play(nextSong);
     }
     
 }

@@ -12,12 +12,40 @@ class Queue {
     }
 
     getNextSong() {
-        if (this.#songQueue.length == 0 && this.#currentSong == null) {
+        if (this.#songQueue.length == 0) {
             return null;
         }
-        
-        return this.#currentSong;
-    } 
+
+        if (this.#currentSong != null) {
+            this.#playedQueue.push(this.#currentSong);
+        }
+
+        this.#currentSong = this.#songQueue.shift();
+
+        return this.#currentSong
+    }
+
+    getLastSong() {
+        if (this.#playedQueue.length == 0) {
+            return null;
+        }
+
+        const lastSong = this.#playedQueue.pop();
+
+        if (this.#currentSong != null) {
+            const currentSong = this.#currentSong;
+            this.#songQueue.unshift(currentSong);
+        }
+
+        this.#currentSong = lastSong;
+
+        console.log(this.#playedQueue);
+        console.log(this.#currentSong);
+        console.log(this.#songQueue);
+
+
+        return lastSong;
+    }
 
     async enqueue(songInfo) {
         const song = await new SongNew(songInfo);
@@ -26,10 +54,6 @@ class Queue {
 
 
     async enqueueSong(song) {
-        if (this.#currentSong == null) {
-            this.#currentSong = song;
-            return
-        }
         this.#songQueue.push(song);
     }
 
@@ -39,25 +63,15 @@ class Queue {
     }
 
     async prioritizeSong(song) {
-        if (this.#currentSong == null) {
-            this.#currentSong = song;
-            return
-        }
-
         this.#songQueue.unshift(song);
     }
 
     async skipQueue(songInfo) {
         const song = await new SongNew(songInfo);
-        return thisskipQueueSong(song);
+        return this.skipQueueSong(song);
     }
 
     async skipQueueSong(song) {
-        if (this.#currentSong == null) {
-            this.#currentSong = song;
-            return;
-        }
-
         const lastSong = this.#currentSong;
         this.#playedQueue.unshift(lastSong);
         this.#currentSong = song;

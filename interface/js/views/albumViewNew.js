@@ -273,6 +273,10 @@ class AlbumView extends View {
             trackItem.appendChild(songArtistHTML);
             trackItem.appendChild(songDurationHTML);
 
+            trackItem.addEventListener('click', () => {
+                this.#playNowTrackItem(SONG_INFO);
+            })
+
             albumSongsContainer.appendChild(trackItem);
         }
 
@@ -304,6 +308,13 @@ class AlbumView extends View {
         buttonContainer.appendChild(shuffleButtonContainer);
 
         return buttonContainer;
+    }
+
+    async #playNowTrackItem(songInfo) {
+        const queue = this.#viewController.getQueue();
+        const player = this.#viewController.getPlayer();
+        await queue.enqueue(songInfo);
+        player.playQueue();
     }
 }
 

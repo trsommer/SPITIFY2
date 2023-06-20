@@ -1,10 +1,12 @@
 const spotify = require("./spotify");
 const youtube = require("./youtube");
 const database = require("./dataBase");
+const downloader = require("./downloader")
 const songComparison = require("./songComparison");
 
 module.exports = {
-    generateSong
+    generateSong,
+    downloadSongs
 }
 
 async function generateSong(info) {
@@ -58,14 +60,15 @@ async function getSongParameters(info) {
         info = response.data.tracks[0];
 
         const URLS = await getStreamingUrl(info);
+        const album = info.album || info.albumOfTrack
 
         const songParameters = {
-            songSpotifyId: info.id,
+            songSpotifyId: id,
             songTitle: info.name,
             songArtistArray: info.artists.items,
             songType: "",
-            songAlbum: info.album,
-            songImageUrl: getImageCoverUrl(info.album),
+            songAlbum: JSON.stringify(album),
+            songImageUrl: getImageCoverUrl(album),
             songDuration: info.duration.totalMilliseconds,
             songLyrics: "",
             songStreamingUrl: URLS.streamingURL,
@@ -76,6 +79,7 @@ async function getSongParameters(info) {
             songInfo: info
         };
 
+        await database.insertSong({id: id, songData: songParameters});
         //write to db
 
         return songParameters
@@ -92,6 +96,7 @@ async function getSongParameters(info) {
         const youtubeUrl = "https://www.youtube.com/watch?v=" + songParameters.songYoutubeId;
         const streamingURL = await youtube.convertURL(youtubeUrl);
         songParameters.songStreamingUrl = streamingURL
+        await database.updateSong({id: id, songData: songParameters});
     }
 
     //write back to db
@@ -120,4 +125,8 @@ async function getStreamingUrl(info) {
         streamingURL: streamingURL,
         youtubeId: correctSong.youtubeId
     }
+}
+
+async function downloadSongs(songs, mainWindow) {
+    const locations = downloader.downloadSongs(songs, mainWindow)
 }

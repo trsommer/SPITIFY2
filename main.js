@@ -129,7 +129,7 @@ app.whenReady().then(() => {
   //Downloaded Songs
 
   ipcMain.handle("download:songs", async (event, songs) => {
-    return downloader.downloadSongs(songs, mainWindow);
+    return song.downloadSongs(songs, mainWindow);
   })
   ipcMain.handle("add:downloadedSong", async (event, songId) => {
     timestamp = new Date().getTime();

@@ -27,6 +27,10 @@ class SongNew {
         return this.#params.songArtistArray;
     }
 
+    getSongArtistString() {
+        return getArtistsAsString(this.#params.songArtistArray);
+    }
+
     getSongType () {
         return this.#params.songType;
     }

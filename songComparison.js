@@ -169,7 +169,7 @@ async function chooseCorrectSong(apiResponse, info) {
 
     console.table(searchResults);
 
-    return closestMatch;
+    return apiResponse[0];
   }
 
   async function compareArtists(spotifyArtists, ytArtists, songTitle) {
