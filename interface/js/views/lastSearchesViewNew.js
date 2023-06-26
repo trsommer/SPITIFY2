@@ -6,6 +6,7 @@ class LastSearchesView extends View {
     #displayed = false
     #viewController = null
     #messageBroker = null
+    #htmlLastSearches = []
 
     constructor(data, viewController) {
         super();
@@ -30,6 +31,7 @@ class LastSearchesView extends View {
     show() {
         const viewPort = document.getElementById('viewport');
         viewPort.appendChild(this.#viewHTML);
+        this.updateView();
         this.#displayed = true;
     }
 
@@ -101,19 +103,33 @@ class LastSearchesView extends View {
 
         //remove the item from the database
         deleteSpecificLastSearch(lastSearchId);
+
+        this.#updateLastSearchesView();
     }
 
-    async #openLastSearch(lastSearchId, type) {
+    async #openLastSearch(id, type) {
         switch (type) {
             case "artist":
-                const ARTIST = await getSpotifyArtist(lastSearchId);
-                this.#viewController.switchView("artist", ARTIST);
+                this.#viewController.switchView("artist", id);
                 break;
             case "album":
-                this.#viewController.switchView("album", lastSearchId);
+                this.#viewController.switchView("album", id);
                 break;
             default:
                 break;
+        }
+
+        const PREVIOUS_LAST_SEARCHES = this.#lastSearches;
+        const PREVIOUS_LAST_SEARCHES_LENGTH = Object.keys(PREVIOUS_LAST_SEARCHES).length
+        const DATA = PREVIOUS_LAST_SEARCHES.find(search => search.spotifyId === id) || null;
+
+        for (let i = 0; i < PREVIOUS_LAST_SEARCHES_LENGTH; i++) {
+            const LAST_SEARCH = PREVIOUS_LAST_SEARCHES[i];
+            if (LAST_SEARCH.spotifyId == id) {
+                await deleteSpecificLastSearch(id);
+                await insertLastSearch(DATA);
+                break;
+            }
         }
     }
 
@@ -128,23 +144,21 @@ class LastSearchesView extends View {
      * @param {string} imageUrl - The image URL of the search result.
      * @param {string} additionalInfo - Additional information about the search result.
      */
-    async addLastSearch(data) {
+    async addLastSearch(data, directViewUpdate = true) {
         console.log(data);
         const PREVIOUS_LAST_SEARCHES = this.#lastSearches;
-        const PREVIOUS_LAST_SEARCHES_LENGTH = Object.keys(PREVIOUS_LAST_SEARCHES).length
-        let found = false;
+        const PREVIOUS_LAST_SEARCHES_LENGTH = PREVIOUS_LAST_SEARCHES.length
 
         //check if the search is already in the list
         for (let i = 0; i < PREVIOUS_LAST_SEARCHES_LENGTH; i++) {
             const LAST_SEARCH = PREVIOUS_LAST_SEARCHES[i];
             if (LAST_SEARCH.spotifyId == data.id) {
-                found = true;
                 await deleteSpecificLastSearch(data.id);
+                PREVIOUS_LAST_SEARCHES.splice(i, 1);
+                const HTML_LAST_SEARCH = this.#htmlLastSearches[data.id];
+                this.#HTMLContent.removeChild(HTML_LAST_SEARCH);
+                break;
             }
-        }
-
-        if (!found && PREVIOUS_LAST_SEARCHES_LENGTH == 16) {
-            await deleteSpecificLastSearch(PREVIOUS_LAST_SEARCHES[0].spotifyId);
         }
 
         const dataNew = {
@@ -156,8 +170,10 @@ class LastSearchesView extends View {
         }
         
         await insertLastSearch(dataNew)
+        this.#lastSearches.push(dataNew);
 
-        this.#updateLastSearchesView();
+        if (directViewUpdate) this.#updateLastSearchesView();
+
     }
 
     async #updateLastSearchesView() {
@@ -170,7 +186,7 @@ class LastSearchesView extends View {
     #createLastSearchesButtons(contentContainer, lastSearches) {
         contentContainer.innerHTML = '';
 
-        for (let i = lastSearches.length - 1; i >= 0; i--) {
+        for (let i = 0; i < lastSearches.length; i++) {
             const lastSearch = lastSearches[i];
             if (lastSearch == null || lastSearch == undefined) {
                 continue;
@@ -233,6 +249,8 @@ class LastSearchesView extends View {
 
 
             contentContainer.appendChild(lastSearchItem);
+
+            this.#htmlLastSearches[LAST_SEARCH_ID] = lastSearchItem;
         }
 
 

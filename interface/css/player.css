@@ -2,13 +2,15 @@
     position: absolute;
     pointer-events: all;
     display: flex;
-    height: 110px;
+    height: 100px;
     width: 50%;
 }
 
 .bottomLeft {
     bottom: 0;
     left: 60px;
+    margin-bottom: 20px;
+    margin-left: 20px;
   }
   
   .bottomRight {
@@ -33,6 +35,8 @@ div#menu_player_container {
     position: relative;
     height: 100%;
     align-items: center;
+    /* margin-left: 20px; */
+    /* margin-bottom: 20px; */
 }
 
 div#menu_player_icon_container {
@@ -41,15 +45,15 @@ div#menu_player_icon_container {
 }
 
 div#menu_player_icon_image_container {
-    width: 80%;
-    height: 80%;
-    margin: 10%;
+    width: 100%;
+    height: 100%;
+    /* margin: 20px; */
 }
 
 div#menu_player_button_container {
     margin-left: -5px;
     width: 50%;
-    height: 56%;
+    height: 70%;
     /* margin-top: 22%; */
     display: flex;
     justify-content: center;
@@ -118,4 +122,18 @@ div#menu_player_play_pause_button_container {
 
 .menu_player_button_container:hover {
     background: rgba(0,0,0,0.1);
+}
+
+div#menu_player_controls_container {
+    display: flex;
+    height: 30px;
+    align-items: center;
+    width: 90%;
+    position: relative;
+}
+
+input#menu_player_volume_slider {
+    position: absolute;
+    right: 0;
+    width: 45%;
 }

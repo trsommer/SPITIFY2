@@ -159,7 +159,7 @@ async function addLastSearch(type, name, spotifyId, imageUrl, additionalInfo) {
 }
 
 async function getLastSearches() {
-    sql = "SELECT * FROM lastSearches LIMIT 16"
+    sql = "SELECT * FROM lastSearches ORDER BY timestamp DESC LIMIT 16"
     var result = await getFromDB(sql)
     return result
 }

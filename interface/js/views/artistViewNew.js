@@ -70,6 +70,7 @@ class ArtistView extends View {
         this.#HTMLContent = RETURN_VALUES.contentContainer
 
         this.#spawnHTMLArtistContent(RETURN_VALUES.contentContainer, data);
+        this.#addToLastSearches(data);
 
         const that = this
         this.#resizeUpdate = async function (e) {
@@ -131,7 +132,7 @@ class ArtistView extends View {
             return data
         }
 
-        if (data.id == undefined) {
+        if (data.id == null || data.id == undefined) {
             const id = getIdFromSongInfo(data)
             return id
         }
@@ -736,6 +737,17 @@ class ArtistView extends View {
         const player = this.#viewController.getPlayer();
         await queue.enqueue(data);
         player.playQueue();
+    }
+
+    #addToLastSearches(data) {
+        const LastSearchData = {
+            type: "artist",
+            id: data.id,
+            name: data.profile.name,
+            imageUrl: data.visuals.avatarImage.sources[0].url,
+            data: data
+        }
+        this.#messageBroker.publish("addLastSearch", LastSearchData);
     }
 
 }

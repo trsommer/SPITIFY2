@@ -19,6 +19,7 @@
 #menu_pushed {
     position: relative;
     height: 100%;
+    display: flex;
 }
 
 #menu_left:hover {
@@ -173,12 +174,12 @@
     width: 200px;
     height: 60px;
     display: flex;
-    margin-left: 20px;
+    /* margin-left: 20px; */
     align-items: center;
     transition: 0.25s ease;
     justify-content: center;
     align-items: center;
-    
+    margin-left: 10px;
 }
 
 #menu_top_search {
@@ -198,7 +199,7 @@
     justify-content: center;
     align-items: center;
     transition: 0.1s ease;
-    opacity: 0;
+    opacity: 1;
 }
 
 #top_search_clear_icon {
@@ -260,6 +261,7 @@
     margin-left: 20px;
     overflow: hidden;
     backdrop-filter: blur(3px);
+    pointer-events: all;
 }
 
 #top_search_container_box_bg {
@@ -269,6 +271,7 @@
     position: absolute;
     z-index: -5;
     opacity: 0.95;
+    transition: 0.1s ease;
 }
 
 #top_search_icon{
@@ -290,13 +293,14 @@
 }
 
 #menu_top_hidden_stuff {
-    position: absolute;
+    /* position: absolute; */
     top: 0;
     height: 60px;
-    margin-left: 270px;
+    /* margin-left: 340px; */
     display: flex;
     flex-direction: row;
     align-items: center;
+    margin-left: 30px;
 }
 
 #menu_top_hidden_heading {
@@ -369,3 +373,42 @@
     margin-right: 4px;
 }
 
+#menu_top_forward_backward_navigator_container {
+    height: 60px;
+    /* width: 80px; */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-left: 20px;
+}
+
+.menu_time_navigator {
+    width: 0;
+    aspect-ratio: 1 / 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    transition: 0.1s ease;
+    pointer-events: all;
+    cursor: pointer;
+}
+
+.menu_time_navigator img {
+    width: 50%;
+    height: 50%;
+    object-fit: contain;
+}
+
+.menu_time_navigator:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transition: 0.1s ease;
+}
+
+#menu_top_forward_backward_navigator {
+    display: flex;
+    background: rgba(32,32,32,0.85);
+    backdrop-filter: blur(3px);
+    border-radius: 20px;
+}

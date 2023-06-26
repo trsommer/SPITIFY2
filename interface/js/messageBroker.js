@@ -89,7 +89,7 @@ class MessageBroker {
      */
     publish(topicName, data) {
         if (!this.#PushTopics[topicName]) {
-            throw new Error("Topic does not exist");
+            throw new Error("Topic does not exist or is not a PushTopic");
         }
         console.log(this.#PushTopics);
         this.#PushTopics[topicName].forEach(callback => {

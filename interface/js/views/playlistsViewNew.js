@@ -57,6 +57,9 @@ class PlaylistsView extends View {
         this.#type = "playlists_view";
 
         this.#messageBroker.createPullTopic("playlistsData", this.playlistsDataCallback.bind(this));
+        this.#messageBroker.createPushTopic("addToPlaylist");
+        this.#messageBroker.subscribe("addToPlaylist", this.addToPlaylistCallback.bind(this));
+
 
         this.#playlistsHTMLPointers = {
             playlists : [],
@@ -441,6 +444,10 @@ class PlaylistsView extends View {
 
     playlistsDataCallback() {
         return this.#playlists;
+    }
+
+    addToPlaylistCallback(data) {
+        addPlaylistSong(data.songId, data.playlistIdv);
     }
 
 }

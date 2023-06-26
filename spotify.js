@@ -89,7 +89,7 @@ async function getClientToken(clientId) {
 
 async function searchSpotify(query, mainWindow) {
   //start = new Date()
-  console.log("searching spotify");
+  console.log("searching spotify for " + query);
 
   if (abortController != null) {
     abortController.abort();

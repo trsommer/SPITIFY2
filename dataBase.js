@@ -53,7 +53,7 @@ async function createTables() {
   var sql =
     "CREATE TABLE songs (id TEXT PRIMARY KEY, info TEXT)";
   var sql2 =
-    "CREATE TABLE lastSearches (id INTEGER PRIMARY KEY AUTOINCREMENT, type TEXT, name TEXT, spotifyId TEXT, imageUrl TEXT, additionalInfo TEXT)";
+    "CREATE TABLE lastSearches (id INTEGER PRIMARY KEY AUTOINCREMENT, timestamp TEXT, type TEXT, name TEXT, spotifyId TEXT, imageUrl TEXT, additionalInfo TEXT)";
 
   var sql3 =
     "CREATE TABLE playlists (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, remote INTEGER, locked INTEGER, spotifyId TEXT, imageUrl TEXT, author TEXT)";
@@ -94,13 +94,16 @@ async function insertSong(data) {
 }
 
 async function addLastSearch(data) {
+    
+    currentTimeStamp = new Date().getTime();
     db = await getDB();
     
     const insert = db.prepare(
-        `INSERT INTO lastSearches (type, name, spotifyId, imageUrl, additionalInfo) VALUES (?, ?, ?, ?, ?)`
+        `INSERT INTO lastSearches (type, timestamp, name, spotifyId, imageUrl, additionalInfo) VALUES (?, ?, ?, ?, ?, ?)`
     );
     insert.run(
         data.type,
+        currentTimeStamp,
         data.name,
         data.spotifyId,
         data.imageUrl,

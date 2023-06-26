@@ -9,6 +9,7 @@ class PlayerHtmlController {
     #pauseButton = null
     #shuffleButton = null
     #shuffleState = false;
+    #volumeSlider = null
     #repeatButton = null
     #repeatButtonOnce = null
     #repeatState = 0;
@@ -75,9 +76,12 @@ class PlayerHtmlController {
 
         this.#player_slider = playerSlider
 
+        const controlsContainer = document.createElement("div");
+        controlsContainer.id = "menu_player_controls_container";
+
         const buttonsContainer = document.createElement('div');
         buttonsContainer.id = 'menu_player_buttons_container';
-        
+
         const shuffleButtonContainer = document.createElement('div');
         shuffleButtonContainer.classList.add('menu_player_button_container');
 
@@ -181,8 +185,25 @@ class PlayerHtmlController {
         buttonsContainer.appendChild(nextSongButtonContainer);
         buttonsContainer.appendChild(repeatButtonContainer);
 
+        const volumeSlider = document.createElement('input');
+        volumeSlider.type = "range";
+        volumeSlider.id = 'menu_player_volume_slider';
+        volumeSlider.min = '0';
+        volumeSlider.max = '1';
+        volumeSlider.value = '0.5';
+        volumeSlider.step = '0.0001';
+        volumeSlider.addEventListener('input', (event) => {
+            this.setVolume(event.target.value);
+        })
+
+        this.#volumeSlider = volumeSlider
+
+
+        controlsContainer.appendChild(buttonsContainer);
+        controlsContainer.appendChild(volumeSlider);
+
         playButtonContainer.appendChild(playerSlider);
-        playButtonContainer.appendChild(buttonsContainer);
+        playButtonContainer.appendChild(controlsContainer);
 
         playerContainer.appendChild(iconContainer);
         playerContainer.appendChild(playButtonContainer);
@@ -236,8 +257,9 @@ class PlayerHtmlController {
 
     setVolume(value) {
         const currentAudioElem = this.#getCurrentAudioElement()
-
         currentAudioElem.volume = value
+
+        this.#volumeSlider.value = value
     }
 
     setPlayState(state) {
@@ -300,7 +322,7 @@ class PlayerHtmlController {
             this.#shuffleButton.style.fill = '#ffffff'
         } else {
             this.#shuffleState = true
-            this.#shuffleButton.style.fill = 'red'
+            this.#shuffleButton.style.fill = 'var(--accentColor)'
         }
     }
 
@@ -310,14 +332,14 @@ class PlayerHtmlController {
             this.#repeatState = 1
             this.#repeatButtonOnce.style.display = 'none'
             this.#repeatButton.style.display = 'block'
-            this.#repeatButton.style.fill = 'red'
+            this.#repeatButton.style.fill = 'var(--accentColor)'
 
         } else if (this.#repeatState == 1) {
             //go from repeat to repeat once
             this.#repeatState = 2
             this.#repeatButtonOnce.style.display = 'block'
             this.#repeatButton.style.display = 'none'
-            this.#repeatButtonOnce.style.fill = 'red'
+            this.#repeatButtonOnce.style.fill = 'var(--accentColor)'
 
         } else {
             //go from repeat once to no repeat

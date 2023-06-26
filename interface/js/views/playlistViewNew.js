@@ -309,7 +309,7 @@ class PlaylistView extends View {
             const SONG_INFO = JSON.parse(SONG_DATA.info);
             const SONG_NAME = SONG_INFO.songTitle;
             const SONG_ID = SONG_DATA.id;
-            const SONG_ARTIST_ARRAY = JSON.parse(SONG_INFO.songArtistArray);
+            const SONG_ARTIST_ARRAY = SONG_INFO.songArtistArray;
             const SONG_ARTIST_STRING = getArtistsAsString(SONG_ARTIST_ARRAY.items)
             const SONG_IMAGE_URL = SONG_INFO.songImageUrl;
             const SONG_DURATION = SONG_INFO.songDuration;
@@ -497,7 +497,7 @@ class PlaylistView extends View {
 
     submenuGetArtistsCallback(data) {
         const SONGINFO = JSON.parse(data.info);        
-        const songArtistArray = JSON.parse(SONGINFO.songArtistArray).items;
+        const songArtistArray = SONGINFO.songArtistArray;
         const SUB_MENU_DATA = [];
 
         for (let i = 0; i < songArtistArray.length; i++) {
@@ -537,7 +537,7 @@ class PlaylistView extends View {
     
     async menuOpenSingleArtistCallback(data) {
         const SONGINFO = JSON.parse(data.info);
-        const SONG_ARTIST_ARRAY = JSON.parse(SONGINFO.songArtistArray).items;
+        const SONG_ARTIST_ARRAY = SONGINFO.songArtistArray;
         const ARTIST_ID = SONG_ARTIST_ARRAY[0].uri.split(":")[2];
 
         this.#viewController.switchView("artist", ARTIST_ID);
@@ -550,7 +550,7 @@ class PlaylistView extends View {
 
     menuOpenArtistCondition(data) {
         const SONGINFO = JSON.parse(data.info);
-        const SONG_ARTIST_ARRAY = JSON.parse(SONGINFO.songArtistArray).items;
+        const SONG_ARTIST_ARRAY = SONGINFO.songArtistArray;
         const LENGTH = SONG_ARTIST_ARRAY.length;
         if (LENGTH > 1) {
             return true;

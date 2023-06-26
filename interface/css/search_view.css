@@ -272,6 +272,11 @@
     transition: 0.25s ease;
 }
 
+.search_result_track_image_selected {
+    height: 70% !important;
+    width: 70% !important;
+}
+
 .search_currently_playing_container {
     height: 80%;
     width: 80%;

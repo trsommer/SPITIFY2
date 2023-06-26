@@ -5,6 +5,7 @@ class AlbumView extends View {
     #displayed = false
     #viewController = null
     #albumData = null
+    #messageBroker = null
 
     constructor(data, viewController) {
         super();
@@ -66,13 +67,14 @@ class AlbumView extends View {
         console.log(data);
         this.#albumData = data;
         this.#viewController = viewController;
+        this.#messageBroker = viewController.getMessageBroker();
         this.#type = "album_view";
         
         const returnValues = this.createHTMLContainer('unbound', 'album_view');
         this.#viewHTML = returnValues.container
         this.#HTMLContent = returnValues.contentContainer
 
-        console.log(data);
+        this.#addLastSearch(data)
         this.#createHeader(returnValues.contentContainer, data);
         this.#createAlbumSongsContainer(returnValues.contentContainer, data);
     }
@@ -315,6 +317,17 @@ class AlbumView extends View {
         const player = this.#viewController.getPlayer();
         await queue.enqueue(songInfo);
         player.playQueue();
+    }
+
+    #addLastSearch(data) {
+        const LAST_SEARCH_DATA = {
+            type: "album",
+            id: data.metadata.uri.split(':')[2],
+            name: data.metadata.uri.name,
+            imageUrl: data.metadata.coverArt.sources[0]?.url || "standardImages/cover.jpg",
+            data: data.metadata
+        }
+        this.#messageBroker.publish("addLastSearch", LAST_SEARCH_DATA);
     }
 }
 

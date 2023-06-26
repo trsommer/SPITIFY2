@@ -8,9 +8,10 @@ class SearchListView extends View {
     #htmlHeadings = [];
     #htmlSelector = null;
     #selectedPosition = null;
+    #lastPosition = null;
     #searchResultsContainer = null;
     #query = "";
-    #searchResults = [null, null, null, null]
+    #searchResults = []
     #messageBroker = null;
 
     constructor(data, viewController) {
@@ -35,17 +36,26 @@ class SearchListView extends View {
     show() {
         const viewPort = document.getElementById('viewport');
         const DATA = this.#data
+        const POSITION = this.#selectedPosition
         const that = this;
         viewPort.innerHTML = '';
         viewPort.appendChild(this.#viewHTML);
-        this.#setSelectorPosition(DATA.position);
+        this.#setSelectorPosition(POSITION, true);
         this.#displayed = true
 
-        window.electronAPI.updateSpotifySpecificSerach((event, response) => {
-            const DATA = response.data.searchV2;
-            that.#saveSearchResults(DATA);
-            that.#spawnSearchResults(DATA);
-        });
+        const SAVE_DATA = this.#loadSearchResults(POSITION);
+        //check if data is already loaded
+        if (!(SAVE_DATA)) {
+            window.electronAPI.updateSpotifySpecificSerach((event, response) => {
+                const DATA = response.data.searchV2;
+                DATA.position = POSITION
+                that.#saveSearchResults(DATA);
+                that.#spawnSearchResults(DATA);
+            });
+        } else {
+            SAVE_DATA.position = POSITION
+            that.#spawnSearchResults(SAVE_DATA);
+        }
     }
 
     /**
@@ -108,27 +118,11 @@ class SearchListView extends View {
     //searchlist specific methods
 
 
-    #openArtist(artistID, artistName, artistImage, artistData) {
-        const data = {
-            type: "artist",
-            id: artistID,
-            name: artistName,
-            imageUrl: artistImage,
-            data: artistData
-        }
-        this.#messageBroker.publish("addLastSearch", data);
+    #openArtist(artistData) {
         this.#viewController.switchView('artist', artistData);
     }
 
-    #openAlbum(albumID, albumName, albumImage, albumData) {
-        const data = {
-            type: "album",
-            id: albumID,
-            name: albumName,
-            imageUrl: albumImage,
-            data: albumData
-        }
-        this.#messageBroker.publish("addLastSearch", data);
+    #openAlbum(albumData) {
         this.#viewController.switchView('album', albumData);
     }
 
@@ -146,46 +140,46 @@ class SearchListView extends View {
         artistHeader.setAttribute('class', 'searchList_header');
         artistHeader.innerHTML = 'Artists';
         artistHeader.addEventListener('mouseenter', () => {
-            that.#setSelectorPosition(0);
+            that.#setSelectorPosition("Artists",false);
         });+
         artistHeader.addEventListener('click', () => {
-            that.#selectView(0);
+            that.#selectView("Artists");
         });
-        this.#htmlHeadings.push(artistHeader);
+        this.#htmlHeadings.Artists = artistHeader;
         const that = this;
 
         const songsHeader = document.createElement('div');
         songsHeader.setAttribute('class', 'searchList_header');
         songsHeader.innerHTML = 'Songs';
         songsHeader.addEventListener('mouseenter', () => {
-            that.#setSelectorPosition(1);
+            that.#setSelectorPosition("Tracks", false);
         });
         songsHeader.addEventListener('click', () => {
-            that.#selectView(1);
+            that.#selectView("Tracks");
         });
-        this.#htmlHeadings.push(songsHeader);
+        this.#htmlHeadings.Tracks = songsHeader;
 
         const albumsHeader = document.createElement('div');
         albumsHeader.setAttribute('class', 'searchList_header');
         albumsHeader.innerHTML = 'Albums';
         albumsHeader.addEventListener('mouseenter', () => {
-            that.#setSelectorPosition(2);
+            that.#setSelectorPosition("Albums", false);
         });
         albumsHeader.addEventListener('click', () => {
-            that.#selectView(2);
+            that.#selectView("Albums");
         });
-        this.#htmlHeadings.push(albumsHeader);
+        this.#htmlHeadings.Albums = albumsHeader;
 
         const playlistsHeader = document.createElement('div');
         playlistsHeader.setAttribute('class', 'searchList_header');
         playlistsHeader.innerHTML = 'Playlists';
         playlistsHeader.addEventListener('mouseenter', () => {
-            that.#setSelectorPosition(3);
+            that.#setSelectorPosition("Playlists", false);
         });
         playlistsHeader.addEventListener('click', () => {
-            that.#selectView(3);
+            that.#selectView("Playlists");
         });
-        this.#htmlHeadings.push(playlistsHeader);
+        this.#htmlHeadings.Playlists = playlistsHeader;
         
         const headerSelector = document.createElement('div');
         headerSelector.setAttribute('id', 'searchList_header_selector');
@@ -202,20 +196,25 @@ class SearchListView extends View {
         container.appendChild(outerContainer);
     }
 
-    #setSelectorPosition(position) {
+    #setSelectorPosition(position, state) {
+        //state can be activte or passive
+        //determines if the selector is clicked or hovered
         const SELECTOR = this.#htmlSelector;
         const SELECTOR_DIMS = this.#getSelectorDims(position);
+        const LAST_POSITION = this.#lastPosition
 
         SELECTOR.style.width = SELECTOR_DIMS.width + 'px';
         SELECTOR.style.left = SELECTOR_DIMS.leftOffset + 'px';
 
-        if (position != this.#selectedPosition) {
-            SELECTOR.classList.remove('searchList_header_selected_selector');
+        if (state) {
+            SELECTOR.classList.add('searchList_header_selected_selector');
         } else {
-            //check if the selector is already selected
-            if (!SELECTOR.classList.contains('searchList_header_selected_selector')) {
-                SELECTOR.classList.add('searchList_header_selected_selector');
-            }
+            SELECTOR.classList.remove('searchList_header_selected_selector');
+        }
+
+        if (position != LAST_POSITION && state) {
+            this.#htmlHeadings[LAST_POSITION].classList.remove('searchList_header_selected_text');
+            this.#htmlHeadings[position].classList.add('searchList_header_selected_text');
         }
     }
 
@@ -239,6 +238,7 @@ class SearchListView extends View {
         const OLD_SELECTOR_POSITION = this.#selectedPosition;
         const OLD_HEADING_ELEMENT = this.#htmlHeadings[OLD_SELECTOR_POSITION];
         this.#selectedPosition = position;
+        this.#lastPosition = OLD_SELECTOR_POSITION;
         const types = ['Artists', 'Tracks', 'Albums', 'Playlists'];
 
         HEADING_ELEMENT.classList.add('searchList_header_selected_text');
@@ -254,7 +254,7 @@ class SearchListView extends View {
         if (OLD_SEARCH_RESULT != null) {
             this.#spawnSearchResults(OLD_SEARCH_RESULT);
         } else {
-            this.#getData(this.#query, types[position], 100, 0);
+            this.#getData(this.#query, position, 100, 0);
         }
     }
 
@@ -281,25 +281,18 @@ class SearchListView extends View {
     }
 
     #spawnSearchResults(data) {
-        const POSITION = this.#selectedPosition;
         const CONTENT_CONTAINER = this.#searchResultsContainer;
 
-        switch (POSITION) {
-            case 0:
-                this.#spawnArtistSearchResults(CONTENT_CONTAINER, data);
-                break;
-            case 1:
-                this.#spawnTrackSearchResults(CONTENT_CONTAINER, data);
-                break;
-            case 2:
-                this.#spawnAlbumSearchResults(CONTENT_CONTAINER, data);
-                break;
-            case 3:
-                this.#spawnPlaylistSearchResults(CONTENT_CONTAINER, data);
-                break;
-            default:
-                break;
+        if (data.artists) {
+            this.#spawnArtistSearchResults(CONTENT_CONTAINER, data);
+        } else if (data.tracksV2) {
+            this.#spawnTrackSearchResults(CONTENT_CONTAINER, data);
+        } else if (data.albums) {
+            this.#spawnAlbumSearchResults(CONTENT_CONTAINER, data);
+        } else if (data.searchV2) {
+            this.#spawnPlaylistSearchResults(CONTENT_CONTAINER, data);
         }
+
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
@@ -324,7 +317,7 @@ class SearchListView extends View {
             //event listeners
 
             ARTIST_CONTAINER.addEventListener('click', () => {
-                that.#openArtist(ARTIST_ID, ARTIST_NAME, ARTIST_IMAGE_URL, ARTIST_DATA);
+                that.#openArtist(ARTIST_DATA);
             });
 
             artistsContainer.appendChild(ARTIST_CONTAINER);
@@ -426,7 +419,7 @@ class SearchListView extends View {
             //event listeners
 
             ALBUM_CONTAINER.addEventListener('click', () => {
-                that.#openAlbum(ALBUM_ID, ALBUM_NAME, ALBUM_IMAGE_URL, ALBUM_DATA);
+                that.#openAlbum(ALBUM_DATA);
             });
 
             albumsContainer.appendChild(ALBUM_CONTAINER);
@@ -492,5 +485,11 @@ class SearchListView extends View {
         const SAVE_NEW_WIDTH = NEW_WIDTH - 2;
 
         tileContainer.style.gridTemplateColumns = `repeat(auto-fill, ${SAVE_NEW_WIDTH}px)`;
+    }
+
+    updateSelectedPosition(position) {
+        const OLD_POSITION = this.#selectedPosition;
+        this.#selectedPosition = position;
+        this.#lastPosition = OLD_POSITION;
     }
 }

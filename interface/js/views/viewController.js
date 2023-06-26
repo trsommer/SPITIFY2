@@ -9,6 +9,7 @@ class ViewController {
     #nextSearchView = null;
     #lastViews = [];
     #contextMenus = [];
+    #lastSearchListView = null;
     constructor() {
         if (ViewController.instance) {
             return ViewController.instance;
@@ -28,6 +29,7 @@ class ViewController {
         this.#setInitialView();
         this.#player = await new Player(this)
         this.#queue = await new Queue(this.#player, this)
+        this.#createBackwardForwardNavigators();
         return this;
     }
 
@@ -37,6 +39,7 @@ class ViewController {
      */
     #registerViewListeners() {
         const searchInput = document.getElementById('top_search_input');
+        const searchClearButton = document.getElementById('top_search_clear_icon');
         searchInput.addEventListener('click', (event) => {
             const input = event.target.value;
             const query = input.trim();
@@ -52,6 +55,11 @@ class ViewController {
             const query = event.target.value;
             this.#handleSearchInput(query);
         });
+
+        searchClearButton.addEventListener('click', (event) => {
+            this.switchView("lastSearches", null);
+            searchInput.value = "";
+        })
     }
 
         /*
@@ -80,13 +88,16 @@ class ViewController {
      */
     async switchView(viewType, data) {
         let newView = null;
+        let singletonView = false
         switch (viewType) {
             //dynamic views
             case "artist":
             case "album":
             case "playlist":
-            case "searchList":
                 newView = await this.#viewFactory(viewType, data);
+                break;
+            case "searchList":
+                newView = await this.#getSearchListView(data);
                 break;
             //singleton views
             case "playlists":
@@ -94,6 +105,7 @@ class ViewController {
             case "download":
             case "lastSearches":
                 newView = this.#singletonViews[viewType];
+                singletonView = true;
                 //await newView.updateView();
                 break;
             case "search": 
@@ -104,9 +116,12 @@ class ViewController {
         this.#menu.setMenu(viewType);
         this.#currentView.hide();
         newView.show();
-        this.#lastViews.push(this.#currentView);
+        if (singletonView == false) this.#lastViews.push(this.#currentView);
         this.#currentView = newView;
         this.#hideContextMenu();
+        if (this.#lastViews.length > 0) {
+            this.#showBackwardNavigator();
+        }
     }
 
     /**
@@ -154,6 +169,44 @@ class ViewController {
     #getSearchView() {
         const nextSearchView = this.#nextSearchView;
         return nextSearchView;
+    }
+
+    #createBackwardForwardNavigators() {
+        const backwardNavigator = document.getElementById("menu_top_backward_navigator");
+        const forwardNavigator = document.getElementById("menu_top_forward_navigator");
+
+        backwardNavigator.addEventListener("click", this.#switchToPrevView.bind(this));
+    }
+
+    #switchToPrevView() {
+        const lastView = this.#lastViews.pop();
+        this.#currentView.hide();
+        lastView.show();
+        this.#currentView = lastView;
+        if (this.#lastViews.length == 0) {
+            this.#hideBackwardNavigator();
+        }
+    }
+
+    #showBackwardNavigator() {
+        const backwardNavigator = document.getElementById("menu_top_backward_navigator");
+        backwardNavigator.style.width = "40px";
+    }
+
+    #hideBackwardNavigator() {
+        const backwardNavigator = document.getElementById("menu_top_backward_navigator");
+        backwardNavigator.style.width = "0px";
+    }
+
+    async #getSearchListView(data) {
+        console.log(this.#lastSearch);
+        if (this.#lastSearch == data.query && this.#lastSearchListView) {
+            this.#lastSearchListView.updateSelectedPosition(data.position);
+            return this.#lastSearchListView;
+        }
+        const newView = await this.#viewFactory("searchList", data);
+        this.#lastSearchListView = newView;
+        return newView;
     }
 
     #handleSearchInput(input) {
