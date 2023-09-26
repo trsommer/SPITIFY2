@@ -20,6 +20,7 @@
     position: relative;
     height: 100%;
     display: flex;
+    gap: 20px;
 }
 
 #menu_left:hover {
@@ -179,7 +180,7 @@
     transition: 0.25s ease;
     justify-content: center;
     align-items: center;
-    margin-left: 10px;
+    /* margin-left: 10px; */
 }
 
 #menu_top_search {
@@ -300,7 +301,7 @@
     display: flex;
     flex-direction: row;
     align-items: center;
-    margin-left: 30px;
+    margin-left: 20px;
 }
 
 #menu_top_hidden_heading {
@@ -380,7 +381,7 @@
     justify-content: center;
     align-items: center;
     gap: 10px;
-    margin-left: 20px;
+    margin-left: 0;
 }
 
 .menu_time_navigator {

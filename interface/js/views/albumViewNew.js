@@ -190,6 +190,7 @@ class AlbumView extends View {
             const ARTIST_ID = ARTIST.id;
             
             const span = document.createElement('span');
+            span.style.textDecoration = "underline";
             span.className = 'album_author_text';
             span.innerHTML = ARTIST_NAME;
             span.addEventListener('click', () => {
@@ -323,7 +324,7 @@ class AlbumView extends View {
         const LAST_SEARCH_DATA = {
             type: "album",
             id: data.metadata.uri.split(':')[2],
-            name: data.metadata.uri.name,
+            name: data.metadata.name,
             imageUrl: data.metadata.coverArt.sources[0]?.url || "standardImages/cover.jpg",
             data: data.metadata
         }

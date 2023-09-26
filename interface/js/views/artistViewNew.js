@@ -337,6 +337,7 @@ class ArtistView extends View {
         const TYPE_ALBUM = data.type
         const RELEASE_DATE = data.date.year
         const IMAGE_URL = data.coverArt.sources[0]?.url || "standardImages/cover.jpg"
+        const ALBUM_ID = data.id
 
         const latestReleaseWrapper = document.createElement('div');
         latestReleaseWrapper.setAttribute("id", "artist_latest_release_wrapper");
@@ -384,6 +385,10 @@ class ArtistView extends View {
 
         latestReleaseContent.appendChild(latestReleaseImageContainer);
         latestReleaseContent.appendChild(latestReleaseTextContainer);
+
+        latestReleaseContent.addEventListener("click", () => {
+            this.#viewController.switchView("album", ALBUM_ID);
+        })
 
         latestReleaseTitleContainer.appendChild(latestReleaseTitle);
 
@@ -526,6 +531,7 @@ class ArtistView extends View {
             let NAME = ALBUM.name;
             const RELEASE_DATE = ALBUM.date.year;
             const IMAGE_URL = ALBUM.coverArt.sources[0].url;
+            const ALBUM_ID = ALBUM.id;
             
             if (NAME.length > 15) {
                 NAME = NAME.substring(0, 15) + "...";
@@ -559,6 +565,9 @@ class ArtistView extends View {
             albumInnerContainer.appendChild(albumDate);
 
             albumContainer.appendChild(albumInnerContainer);
+            albumContainer.addEventListener("click", () => {
+                this.#viewController.switchView("album", ALBUM_ID);
+            })
 
             albumsCarousel.appendChild(albumContainer);
         }

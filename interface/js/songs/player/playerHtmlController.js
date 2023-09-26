@@ -1,6 +1,9 @@
 class PlayerHtmlController {
     #viewController = null
+    #messageBroker = null
     #player = null
+    #playerMoveController = null
+    #playerContainerHTML = null
     #player_image = null
     #player_slider = null
     #audioElements = []
@@ -16,18 +19,19 @@ class PlayerHtmlController {
     #crossfadeOffset = 5;
     #crossfadeUpdates = 8;
     #crossfadeInProgress = false;
+    #playerTitleHtml = null
 
 
     constructor(viewController, player) {
         this.#viewController = viewController;
         this.#player = player;
-
+        this.#messageBroker = viewController.getMessageBroker();
         return this.#constructorFunction();
     }
 
     async #constructorFunction() {
         await this.setupHTML();
-
+        this.#playerMoveController = new PlayerMoveController(this.#viewController, this);
         return this;
     }
 
@@ -61,6 +65,15 @@ class PlayerHtmlController {
 
         const playButtonContainer = document.createElement('div');
         playButtonContainer.id = 'menu_player_button_container';
+
+        const titleContainer = document.createElement('div');
+        titleContainer.id = 'menu_player_title_container';
+
+        const title = document.createElement('p');
+        title.id = 'menu_player_title';
+        this.#playerTitleHtml = title
+
+        titleContainer.appendChild(title);
 
         const playerSlider = document.createElement('input');
         playerSlider.id = 'menu_player_slider';
@@ -171,12 +184,18 @@ class PlayerHtmlController {
         audioElem1.addEventListener('ended', () => {
             this.#nonCrossfadeNextSong();
         })
+        audioElem1.addEventListener('pause', () => {
+            
+        })
 
         const audioElem2 = document.createElement('audio');
         audioElem2.id = 'menu_player_audio2';
         this.#audioElements.push(audioElem2);
         audioElem2.addEventListener('ended', () => {
             this.#nonCrossfadeNextSong();
+        })
+        audioElem2.addEventListener('pause', () => {
+            
         })
 
         buttonsContainer.appendChild(shuffleButtonContainer);
@@ -202,6 +221,7 @@ class PlayerHtmlController {
         controlsContainer.appendChild(buttonsContainer);
         controlsContainer.appendChild(volumeSlider);
 
+        playButtonContainer.appendChild(titleContainer);
         playButtonContainer.appendChild(playerSlider);
         playButtonContainer.appendChild(controlsContainer);
 
@@ -212,6 +232,8 @@ class PlayerHtmlController {
         playerContainer.appendChild(audioElem2);
 
         container.appendChild(playerContainer);
+
+        this.#playerContainerHTML = container;
     }
 
     async #convertSVGInline(path) {
@@ -319,9 +341,11 @@ class PlayerHtmlController {
     #toggleShuffle() {
         if (this.#shuffleState) {
             this.#shuffleState = false
+            this.#player.setShuffleState(false)
             this.#shuffleButton.style.fill = '#ffffff'
         } else {
             this.#shuffleState = true
+            this.#player.setShuffleState(true)
             this.#shuffleButton.style.fill = 'var(--accentColor)'
         }
     }
@@ -330,13 +354,15 @@ class PlayerHtmlController {
         if (this.#repeatState == 0) {
             //go from no repeat to repeat
             this.#repeatState = 1
+            this.#player.setRepeatState(1)
             this.#repeatButtonOnce.style.display = 'none'
             this.#repeatButton.style.display = 'block'
             this.#repeatButton.style.fill = 'var(--accentColor)'
 
         } else if (this.#repeatState == 1) {
-            //go from repeat to repeat once
+            //go from repeat to repeat one
             this.#repeatState = 2
+            this.#player.setRepeatState(2)
             this.#repeatButtonOnce.style.display = 'block'
             this.#repeatButton.style.display = 'none'
             this.#repeatButtonOnce.style.fill = 'var(--accentColor)'
@@ -344,6 +370,7 @@ class PlayerHtmlController {
         } else {
             //go from repeat once to no repeat
             this.#repeatState = 0
+            this.#player.setRepeatState(0)
             this.#repeatButton.style.display = 'block'
             this.#repeatButton.style.fill = '#ffffff'
             this.#repeatButtonOnce.style.fill = '#ffffff'
@@ -423,5 +450,13 @@ class PlayerHtmlController {
         //go to beginning
         this.#setProgress(0)
 
+    }
+
+    getPlayerHtmlContainer() {
+        return this.#playerContainerHTML;
+    }
+
+    setPlayerTitle(title) {
+        this.#playerTitleHtml.innerHTML = title;
     }
 }

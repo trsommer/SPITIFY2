@@ -12,6 +12,7 @@
     display: grid;
     /*width: 100%;*/
     grid-template-columns: repeat(auto-fill, var(--playlistsItemWidth));
+    grid-template-rows: repeat(auto-fill, 280px);
     column-gap: 20px;
     row-gap: 20px;
 }

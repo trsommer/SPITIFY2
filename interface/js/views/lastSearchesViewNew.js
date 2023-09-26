@@ -161,6 +161,10 @@ class LastSearchesView extends View {
             }
         }
 
+        if (data.name == null || data.name == undefined) {
+            throw new Error("The name of the last search is null or undefined.");
+        }
+
         const dataNew = {
             type: data.type,
             name: data.name,

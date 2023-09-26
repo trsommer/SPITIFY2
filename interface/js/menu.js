@@ -100,6 +100,7 @@ class Menu {
         const topBar = document.getElementById("menu_top");
         topBar.style.opacity = visibility ? "0.95" : "0";
         this.#topBarVisible = visibility;
+        this.#messageBroker.publish("topMenu", visibility);
     }
 
     #topBarScroll(scrollData) {
@@ -155,5 +156,7 @@ class Menu {
         const menuTopHeading = document.getElementById("menu_top_heading");
         menuTopHeading.innerHTML = text;
     }
+
+    //backwards navigator
 
 }

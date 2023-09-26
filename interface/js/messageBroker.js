@@ -30,10 +30,13 @@ class MessageBroker {
         });
         this.createPushTopic("keyUp");
         window.addEventListener("keyup", (event) => {
+            event.preventDefault();
             that.publish("keyUp", event);
         });
         this.createPushTopic("addLastSearch");
         this.createPushTopic("closeContextMenu");
+        this.createPushTopic("leftMenu")
+        this.createPushTopic("topMenu");
     }
 
     /**
@@ -91,7 +94,6 @@ class MessageBroker {
         if (!this.#PushTopics[topicName]) {
             throw new Error("Topic does not exist or is not a PushTopic");
         }
-        console.log(this.#PushTopics);
         this.#PushTopics[topicName].forEach(callback => {
             callback(data);
         });

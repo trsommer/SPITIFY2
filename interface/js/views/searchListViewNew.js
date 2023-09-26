@@ -197,8 +197,9 @@ class SearchListView extends View {
     }
 
     #setSelectorPosition(position, state) {
-        //state can be activte or passive
-        //determines if the selector is clicked or hovered
+        //state is an override that sets if the selector (line under the text)
+        //is white or grey - used to set the white line under the correct text when clicked
+        //or preselected when comming from another view
         const SELECTOR = this.#htmlSelector;
         const SELECTOR_DIMS = this.#getSelectorDims(position);
         const LAST_POSITION = this.#lastPosition
@@ -206,7 +207,7 @@ class SearchListView extends View {
         SELECTOR.style.width = SELECTOR_DIMS.width + 'px';
         SELECTOR.style.left = SELECTOR_DIMS.leftOffset + 'px';
 
-        if (state) {
+        if (state || position == this.#selectedPosition) {
             SELECTOR.classList.add('searchList_header_selected_selector');
         } else {
             SELECTOR.classList.remove('searchList_header_selected_selector');

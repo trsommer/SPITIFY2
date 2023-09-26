@@ -447,7 +447,7 @@ class PlaylistsView extends View {
     }
 
     addToPlaylistCallback(data) {
-        addPlaylistSong(data.songId, data.playlistIdv);
+        addPlaylistSong(data.songId, data.playlistId);
     }
 
 }

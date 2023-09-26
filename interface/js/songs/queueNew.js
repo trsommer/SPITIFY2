@@ -2,8 +2,11 @@ class Queue {
     #playedQueue = [];
     #currentSong = null;
     #songQueue = [];
+    #songQueueShuffled = [];
     #viewController = null
     #player = null
+    #shuffleState = false
+    #repeatState = 0
 
     constructor(player, viewController) {
         this.#player = player;
@@ -12,6 +15,8 @@ class Queue {
     }
 
     getNextSong() {
+        if (this.#repeatState != 0) return this.#getNextSongRepeat(this.#repeatState);
+        if (this.#shuffleState) return this.#getNextSongShuffle();
         if (this.#songQueue.length == 0) {
             return null;
         }
@@ -23,6 +28,61 @@ class Queue {
         this.#currentSong = this.#songQueue.shift();
 
         return this.#currentSong
+    }
+
+    #getNextSongRepeat() {
+        const state = this.#repeatState; //has to be 1 (repeat all) or 2 (repeat one)
+
+        if(state == 1) {
+            //repeat all
+            if (this.#currentSong == null && this.#songQueue.length == 0) {
+                return null;
+            }
+            const lastSong = this.#currentSong;
+            
+            if (this.#shuffleState) {
+                this.#songQueueShuffled.push(lastSong);
+                this.#currentSong = this.#songQueueShuffled.shift();
+                return this.#currentSong;
+            }
+            this.#songQueue.push(lastSong);
+            this.#currentSong = this.#songQueue.shift();
+            return this.#currentSong;
+        } else {
+            //repeat the current song until repeat state is changed
+            if (this.#currentSong == null && this.#songQueue.length == 0) {
+                //no songs to be played
+                return null;
+            }
+            if (this.#currentSong == null) {
+                //no song is playing but there are songs in the queue
+                this.#currentSong = this.#songQueue.shift();
+            }
+            return this.#currentSong;
+        }
+    }
+
+    #getNextSongShuffle() {
+        if (this.#songQueueShuffled.length == 0 && this.#songQueue.length == 0) {
+            //no songs to be played
+            return null;
+        }
+        if (this.#songQueueShuffled.length == 0) {
+            //no songs in the shuffled queue (this cant happen)
+            this.shuffleSongQueue();
+        }
+
+        if (this.#currentSong != null) {
+            this.#playedQueue.push(this.#currentSong);
+        }
+
+        this.#currentSong = this.#songQueueShuffled.shift();
+        return this.#currentSong;
+    }
+
+    #shuffleSongQueue() {
+        this.#songQueueShuffled = this.#songQueue;
+        this.#songQueueShuffled.sort(() => Math.random() - 0.5);
     }
 
     getLastSong() {
@@ -117,6 +177,25 @@ class Queue {
 
     getPlayedQueue() {
         return this.#playedQueue;
+    }
+
+    getShuffleState() {
+        return this.#shuffleState;
+    }
+
+    getRepeatState() {
+        return this.#repeatState;
+    }
+
+    setShuffleState(state) {
+        this.#shuffleState = state;
+        if (state) {
+            this.#shuffleSongQueue();
+        }
+    }
+
+    setRepeatState(state) {
+        this.#repeatState = state;
     }
 
 }

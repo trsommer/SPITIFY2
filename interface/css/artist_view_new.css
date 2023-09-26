@@ -584,6 +584,7 @@ div#artist_background_image_darkener {
     height: 100%;
     position: absolute;
     background: rgba(0,0,0,0.3);
+    backdrop-filter: blur(5px);
 }
 
 .artist_biography_text_inner_container {

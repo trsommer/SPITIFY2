@@ -38,9 +38,10 @@ class ViewController {
      * but control the view switching.
      */
     #registerViewListeners() {
-        const searchInput = document.getElementById('top_search_input');
-        const searchClearButton = document.getElementById('top_search_clear_icon');
-        searchInput.addEventListener('click', (event) => {
+        const SEARCH_INPUT = document.getElementById('top_search_input');
+        const SEARCH_CLEAR_BUTTON = document.getElementById('top_search_clear_icon');
+        const MENU_LEFT = document.getElementById('menu_left');
+        SEARCH_INPUT.addEventListener('click', (event) => {
             const input = event.target.value;
             const query = input.trim();
             if (query == "" && !(this.#currentView instanceof LastSearchesView)) {
@@ -51,14 +52,21 @@ class ViewController {
                 this.switchView("search", null);
             }
         });
-        searchInput.addEventListener('input', (event) => {
+        SEARCH_INPUT.addEventListener('input', (event) => {
             const query = event.target.value;
             this.#handleSearchInput(query);
         });
 
-        searchClearButton.addEventListener('click', (event) => {
+        SEARCH_CLEAR_BUTTON.addEventListener('click', (event) => {
             this.switchView("lastSearches", null);
-            searchInput.value = "";
+            SEARCH_INPUT.value = "";
+        })
+
+        MENU_LEFT.addEventListener('mouseenter', (event) => {
+            this.#messageBroker.publish("leftMenu", true);
+            MENU_LEFT.addEventListener('mouseleave', (event) => {
+                this.#messageBroker.publish("leftMenu", false);
+            }, { once: true });
         })
     }
 
@@ -122,6 +130,7 @@ class ViewController {
         if (this.#lastViews.length > 0) {
             this.#showBackwardNavigator();
         }
+        this.#scrollToTop();
     }
 
     /**
@@ -189,11 +198,15 @@ class ViewController {
     }
 
     #showBackwardNavigator() {
+        const buttonContainer = document.getElementById("menu_top_forward_backward_navigator_container");
+        buttonContainer.style.marginLeft = "20px";
         const backwardNavigator = document.getElementById("menu_top_backward_navigator");
         backwardNavigator.style.width = "40px";
     }
 
     #hideBackwardNavigator() {
+        const buttonContainer = document.getElementById("menu_top_forward_backward_navigator_container");
+        buttonContainer.style.marginLeft = "0";
         const backwardNavigator = document.getElementById("menu_top_backward_navigator");
         backwardNavigator.style.width = "0px";
     }
@@ -258,4 +271,11 @@ class ViewController {
     getPlayer() {
         return this.#player;
     }
+
+    #scrollToTop() {
+        window.scrollTo({
+          top: 0,
+          behavior: "instant",
+        });
+      }
 }

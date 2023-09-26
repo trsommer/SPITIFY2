@@ -1,48 +1,294 @@
 position = 0
 mouseDown = false;
+minMax = 0
 startCords = null
 endCords = null
 startOffset = null
 newOffset = null
 startDate = null
-currentPosition = "bottomLeft"
+playerCurrentPosition = "bottomLeft"
 currentPositionIndex = 2
-disabled = true
+topBarVisible = true
+leftMenuVisible = false
+albumBackButtonVisible = false
+disabled = false
 
-// player in animation
+function setupMenuMove() {
+    const playerBG = document.getElementById('menu_player')
+    const volumeSlider = document.getElementById('menu_player_volume_slider')
+    const menuLeft = document.getElementById('menu_left')
+    const menu_pushed = document.getElementById('menu_pushed')
+    const player_cover = document.getElementById('menu_player_cover_container')
+    playerBG.addEventListener('mousedown', function(e) {
+        if (e.target.nodeName == "INPUT") {
+            return
+        }
+        startMovePlayer(e)
+    }, false);
+
+    volumeSlider.addEventListener('input', function(e) {
+        volumeSlider.style.backgroundSize = volumeSlider.value + '% 100%';
+        setVolume();
+    }, false)
+
+    menuLeft.addEventListener("mouseenter", function(e) {
+        updateLeftMenuVisible(true)
+    }, false)
+
+    menuLeft.addEventListener("mouseleave", function(e) {
+        updateLeftMenuVisible(false)
+    }, false)
+}
+
+function updateTopBarVisible (visible) {
+    if (topBarVisible == visible) return
+
+    const formerState = topBarVisible
+    topBarVisible = visible
+
+    if (playerCurrentPosition != "topRight") return
+
+    const player = document.getElementById("menu_player_container");
+    //reposition player if shown 
+
+    player.style.transition = "0.25s ease";
+
+    if (formerState == false && visible == true) {
+        //translate down 60px
+        player.classList.add("topRightWithTopBar")
+    } else {
+        //translate up 60px
+        player.style.transitionDelay = "0.25s";
+        player.classList.remove("topRightWithTopBar")
+    }
+
+    player.addEventListener("transitionend", function () {
+        player.style.transition = "none";
+        player.style.transitionDelay = "none";
+        console.log("transition ended");
+      }, {once: true});
+    
+}
+
+function updateLeftMenuVisible (visible) {
+    if (leftMenuVisible == visible) return
+
+    if (playerCurrentPosition == "topRight" || playerCurrentPosition == "bottomRight") return
+
+    const player = document.getElementById("menu_player_container");
+    //reposition player if shown 
+
+    player.style.transition = "0.25s ease";
+
+    if (leftMenuVisible == false && visible == true) {
+        //translate right 180px
+        if (albumBackButtonVisible && playerCurrentPosition == "topLeft") {
+            player.classList.add("topLeftWithLeftMenuAndBackButton")
+            player.classList.remove("topLeftWithBackButton")
+        } else {
+            player.classList.add("topLeftWithLeftMenu")
+        }
+    } else {
+        //translate left 180px
+        player.classList.remove("topLeftWithLeftMenu")
+        player.classList.remove("topLeftWithLeftMenuAndBackButton")
+        if (albumBackButtonVisible && playerCurrentPosition == "topLeft") {
+            player.classList.add("topLeftWithBackButton")
+        }
+    }
+    
+    leftMenuVisible = visible
+}
+
+function updateAlbumBackButtonVisible (visible) {
+    if (albumBackButtonVisible == visible) return
+
+    const formerState = albumBackButtonVisible
+    albumBackButtonVisible = visible
+
+    if (playerCurrentPosition != "topLeft") return
+
+    const player = document.getElementById("menu_player_container");
+    //reposition player if shown 
+
+    player.style.transition = "0.25s ease";
+
+    if (formerState == false && visible == true) {
+        //translate right 180px
+        player.classList.add("topLeftWithBackButton")
+    } else {
+        //translate left 180px
+        player.classList.remove("topLeftWithBackButton")
+    }
+    
+    player.addEventListener("transitionend", function () {
+        player.style.transition = "none";
+        player.style.transitionDelay = "none";
+        console.log("transition ended");
+      }, {once: true});
+
+}
+
+// player appearance animations
 async function animatePlayerIn() {
-    playerBG = document.getElementById('menu_player')
-    playerImage = document.getElementById('menu_player_cover')
-    playerText = document.getElementById('menu_player_text_container')
-    sliderBig = document.getElementById('menu_player_slider')
-    sliderSmall = document.getElementById('menu_player_volume_slider')
-    buttonSecondary0 = document.getElementById('menu_player_secondary_icon0')
-    buttonSecondary1 = document.getElementById('menu_player_secondary_icon1')
-    button1 = document.getElementById('menu_player_icon0')
-    button2 = document.getElementById('menu_player_icon1')
-    button3 = document.getElementById('menu_player_icon2')
-    button4 = document.getElementById('menu_player_icon3')
-    sliderBig.progress = 0
+    const playerBG = document.getElementById('menu_player')
+    const playerCover = document.getElementById('menu_player_cover')
+    const playerText = document.getElementById('menu_player_text_container')
+    const sliderTime = document.getElementById('menu_player_slider')
+    const sliderVolume = document.getElementById('menu_player_volume_slider')
 
-    playerBG.style.animation = "playerBgIn 0.4s forwards"
-    playerImage.style.animation = 'playerImageIn 0.6s forwards'
-    playerText.style.animation = 'playerFadeIn 0.5s forwards'
-    sliderBig.style.animation = 'playerSliderBigIn 0.5s forwards'
-    sliderSmall.style.animation = 'playerSliderVolumeIn 0.5s forwards'
-    buttonSecondary0.style.animation = 'playerFadeIn 0.5s forwards'
-    await sleep(100)
+    const buttonShuffle = document.getElementById('menu_player_shuffle')
+    const buttonBack = document.getElementById('menu_player_backward')
+    const buttonPlay = document.getElementById('menu_player_play')
+    const buttonForward = document.getElementById('menu_player_forward')
+    const buttonRepeat = document.getElementById('menu_player_repeat')
+    const buttonLike = document.getElementById('menu_player_like')
 
-    button1.style.animation = 'playerFadeIn 0.5s forwards'
-    await sleep(100)
-    button2.style.animation = 'playerFadeIn 0.5s forwards'
-    await sleep(100)
-    button3.style.animation = 'playerFadeIn 0.5s forwards'
-    await sleep(100)
-    buttonSecondary1.style.animation = 'playerFadeIn 0.5s forwards'
-    await sleep(100)
-    button4.style.animation = 'playerFadeIn 0.5s forwards'
+    const buttonsAndSlider = [buttonShuffle, buttonBack, buttonPlay, buttonForward, buttonRepeat, sliderVolume, buttonLike]
 
-    disabled = false;
+    for (let i = 0; i < buttonsAndSlider.length; i++) {
+        //add transition delay to each button
+        buttonsAndSlider[i].style.transitionDelay = `${0.15 + i * 0.08}s`
+        buttonsAndSlider[i].style.opacity = 1
+        if (i == 5) {
+            buttonsAndSlider[i].style.width = "150px"
+        }
+
+        buttonsAndSlider[i].addEventListener('transitionend', function() {
+            buttonsAndSlider[i].style.transitionDelay = null
+        }, {once: true})
+    }
+
+    //add class menu_player_shown to playerBG
+    playerBG.classList.add('menu_player_shown')
+    playerBG.classList.remove('menu_player_min')
+    playerBG.classList.add('menu_player_max')
+    
+    //add class menu_player_cover_shown to playerCover
+    playerCover.classList.add('menu_player_cover_shown')
+
+    //add class menu_player_text_container_shown to playerText
+    playerText.classList.add('menu_player_text_container_shown')
+
+    //add class menu_player_slider_shown to sliderTime
+    sliderTime.classList.add('menu_player_slider_shown')
+
+}
+
+async function animatePlayerOut() {
+    minimizePlayer()
+
+    const playerBG = document.getElementById('menu_player')
+
+    playerBG.style.transitionDelay = "0.5s"
+
+    playerBG.classList.remove('menu_player_shown')
+
+    playerBG.addEventListener('transitionend', function() {
+        playerBG.style.transitionDelay = null
+    }, {once: true})
+}
+
+async function minimizePlayer() {
+    const playerBG = document.getElementById('menu_player')
+    const playerCover = document.getElementById('menu_player_cover')
+    const playerText = document.getElementById('menu_player_text_container')
+    const sliderTime = document.getElementById('menu_player_slider')
+    const sliderVolume = document.getElementById('menu_player_volume_slider')
+
+    const buttonShuffle = document.getElementById('menu_player_shuffle')
+    const buttonBack = document.getElementById('menu_player_backward')
+    const buttonPlay = document.getElementById('menu_player_play')
+    const buttonForward = document.getElementById('menu_player_forward')
+    const buttonRepeat = document.getElementById('menu_player_repeat')
+    const buttonLike = document.getElementById('menu_player_like')
+
+    const buttonsAndSlider = [buttonShuffle, buttonBack, buttonPlay, buttonForward, buttonRepeat, sliderVolume, buttonLike]
+
+    x = 0
+
+    for (let i = buttonsAndSlider.length - 1; i >= 0 ; i--) {
+        //add transition delay to each button
+        
+        buttonsAndSlider[i].style.transitionDelay = `${0.15 + x * 0.08}s`
+        buttonsAndSlider[i].style.opacity = 0
+        if (i == 5) {
+            buttonsAndSlider[i].style.width = "24px"
+        }
+
+        buttonsAndSlider[i].addEventListener('transitionend', function() {
+            buttonsAndSlider[i].style.transitionDelay = null
+        }, {once: true})
+
+        x++;
+    }
+
+    playerBG.style.transitionDelay = "0.35s"
+    
+    playerBG.classList.remove('menu_player_max')
+    playerBG.classList.add('menu_player_min')
+
+    playerBG.addEventListener('transitionend', function() {
+        playerBG.style.transitionDelay = null
+    }, {once: true})
+
+    //add class menu_player_text_container_shown to playerText
+    playerText.classList.remove('menu_player_text_container_shown')
+
+    //add class menu_player_slider_shown to sliderTime
+    sliderTime.classList.remove('menu_player_slider_shown')
+}
+
+async function maximizePlayer() {
+    const playerBG = document.getElementById('menu_player')
+    const playerCover = document.getElementById('menu_player_cover')
+    const playerText = document.getElementById('menu_player_text_container')
+    const sliderTime = document.getElementById('menu_player_slider')
+    const sliderVolume = document.getElementById('menu_player_volume_slider')
+
+    const buttonShuffle = document.getElementById('menu_player_shuffle')
+    const buttonBack = document.getElementById('menu_player_backward')
+    const buttonPlay = document.getElementById('menu_player_play')
+    const buttonForward = document.getElementById('menu_player_forward')
+    const buttonRepeat = document.getElementById('menu_player_repeat')
+    const buttonLike = document.getElementById('menu_player_like')
+
+    const buttonsAndSlider = [buttonShuffle, buttonBack, buttonPlay, buttonForward, buttonRepeat, sliderVolume, buttonLike]
+
+    for (let i = 0; i < buttonsAndSlider.length; i++) {
+        //add transition delay to each button
+        buttonsAndSlider[i].style.transitionDelay = `${0.15 + i * 0.08}s`
+        buttonsAndSlider[i].style.opacity = 1
+        if (i == 5) {
+            buttonsAndSlider[i].style.width = "150px"
+        }
+
+        buttonsAndSlider[i].addEventListener('transitionend', function() {
+            buttonsAndSlider[i].style.transitionDelay = null
+        }, {once: true})
+    }
+    
+    playerBG.classList.remove('menu_player_min')
+    playerBG.classList.add('menu_player_max')
+
+    //add class menu_player_cover_shown to playerCover
+    playerCover.classList.add('menu_player_cover_shown')
+
+    //add class menu_player_text_container_shown to playerText
+    playerText.classList.add('menu_player_text_container_shown')
+
+    //add class menu_player_slider_shown to sliderTime
+    sliderTime.classList.add('menu_player_slider_shown')
+}
+
+function togglePlayerMinMax() {
+    if (minMax == 0) {
+        minimizePlayer()
+        minMax = 1
+    } else {
+        maximizePlayer()
+        minMax = 0
+    }
 }
 
 // player movement
@@ -54,9 +300,8 @@ function startMovePlayer(e) {
     e.preventDefault()
     mouseDown = true;
     player = document.getElementById('menu_player_container')
-    playerBg = document.getElementById('menu_player')
-    playerBg.classList.remove('mouseUpCursor')
-    playerBg.classList.add('mouseDownCursor')
+    player.classList.remove('mouseUpCursor')
+    player.classList.add('mouseDownCursor')
     startCords = {
         x: e.clientX,
         y: e.clientY
@@ -66,11 +311,10 @@ function startMovePlayer(e) {
         y: player.offsetTop
     }
 
-    player.style.animation = ""
+    player.className = ""
+    player.style.cssText = ""
     player.style.top = startOffset.y + "px"
-    player.style.right = "inherit"
     player.style.left = startOffset.x + "px"
-    player.style.bottom = "inherit"
 
     startDate = new Date()
     document.onmousemove = movePlayer
@@ -93,7 +337,6 @@ function movePlayer(e) {
     }
     player.style.left = (startOffset.x + offsetX) + "px";
     player.style.top = (startOffset.y - offsetY) + "px";
-    player.style.bottom = "inherit";
 }
 
 function endMovePlayer(e) {
@@ -104,6 +347,23 @@ function endMovePlayer(e) {
     playerBg = document.getElementById('menu_player')
     startLeft = startOffset.x + "px"
     startTop="60px"
+    startTime = startDate.getTime()
+
+    player.addEventListener('transitionend', async function() {
+        currenttime = new Date().getTime()
+        if (currenttime - startTime < 300) {
+            wait = 300 - (currenttime - startTime)
+
+            timeDiff = (currenttime - startTime)
+
+            console.log("waited " + wait + "ms");
+
+            await new Promise(r => setTimeout(r, wait));
+        }
+
+        console.log("transition ended");
+        setFinalPosition(playerCurrentPosition)
+    }, { once: true })
 
     endCords = {
         x: e.clientX,
@@ -111,22 +371,25 @@ function endMovePlayer(e) {
     }
 
     velocity = getVelocity()
+    console.log(velocity);
     if (velocity > 500) {
-        direction = getDirection(startCords, endCords)
+        const direction = getDirection(startCords, endCords)
         if(direction != "neutral") {
             offset = getOffset(direction)
-            currentPosition = direction
+            playerCurrentPosition = direction
             animationToPlayerPosition(offset)
+            //add animation end listener to player
         }
+    } else if (velocity < 500 && velocity > 10) {
+        offset = getOffset(playerCurrentPosition)
+        animationToPlayerPosition(offset)
+        playerBg.classList.remove('mouseDownCursor')
+        playerBg.classList.add('mouseUpCursor')
     }
-
-    offset = getOffset(currentPosition)
-    animationToPlayerPosition(offset)
-    playerBg.classList.remove('mouseDownCursor')
-    playerBg.classList.add('mouseUpCursor')
 
     document.onmouseup = null;
     document.onmousemove = null;
+
 }
 
 function getVelocity() {
@@ -149,50 +412,42 @@ function getVectorDistance(start, end) {
     return Math.sqrt(vectorX * vectorX + vectorY * vectorY)
 }
 
-function animationToPlayerPosition(newOffset) {
-    var root = document.querySelector(':root')
+function setFinalPosition(direction) {
     player = document.getElementById('menu_player_container')
-    root.style.setProperty('--endOffsetTop', newOffset.y + "px")
-    console.log(newOffset);
-    if (Number.isInteger(newOffset.x)) {
-        root.style.setProperty('--endOffsetLeft', newOffset.x + "px")
-    } else {
-        root.style.setProperty('--endOffsetLeft', newOffset.x)
+    console.log("end");
+    //remove transitions from player
+    player.style.cssText = null
+
+    switch (direction) {
+        case "topLeft":
+            //set player class to top left
+            player.className = "topLeft"
+            if (backButtonVisibility) player.classList.add("topLeftWithBackButton")
+            break;
+        case "topRight":
+            player.className = "topRight"
+            if (topBarVisible) player.classList.add("topRightWithTopBar")
+            break;
+        case "bottomLeft":
+            player.className = "bottomLeft"
+            break;
+        case "bottomRight":
+            player.className = "bottomRight"
+            break;
+        
+        default:
+            break;
     }
-    player.style.animation = "movePlayer 0.4s forwards"
 }
 
-function setPlayerPosition() {
+function animationToPlayerPosition(newOffset) {
     player = document.getElementById('menu_player_container')
-    switch (currentPosition) {
-        case "topLeft":
-            player.style.top = "60px"
-            player.style.left = "0"
-            player.style.bottom = "inherit"
-            player.style.right = "inherit"
-            return
-        case "topRight":
-            player.style.top = "60px"
-            player.style.right = "0"
-            player.style.bottom = "inherit"
-            player.style.left = "inherit"
-            return
-        case "bottomLeft":
-            player.style.bottom = "0"
-            player.style.left = "0"
-            player.style.top = "inherit"
-            player.style.right = "inherit"
-            return
-        case "bottomRight":
-            player.style.bottom = "0"
-            player.style.right = "0"
-            player.style.top = "inherit"
-            player.style.left = "inherit"
-            return
-        default:
-            return
-    }
-    
+
+    console.log(newOffset);
+
+    player.style.transition = "0.3s ease"
+    player.style.left = newOffset.x + "px"
+    player.style.top = newOffset.y + "px"
 }
 
 function getVector(startCords, endCords) {
@@ -312,20 +567,22 @@ function getOffset(direction) {
 
     switch(direction) {
         case "topRight":
-            offsetLeft = window.innerWidth - player.offsetWidth - 12 - 60 // 12 is width of scrollbar
-            offsetTop = 60
+            offsetLeft = window.innerWidth - player.offsetWidth - 12 // 12 is width of scrollbar
+            if (topBarVisible) offsetTop = 50
+            else offsetTop = -10
             break;
         case "topLeft":
-            offsetLeft = 0
-            offsetTop = 60
+            if (backButtonVisibility) offsetLeft = 120
+            else offsetLeft = 60
+            offsetTop = 50
             break;
         case "bottomLeft":
-            offsetLeft = 0
-            offsetTop = window.innerHeight - document.getElementById('menu_player').offsetHeight - 40 //30 is margin around player
+            offsetLeft = 60
+            offsetTop = window.innerHeight - 130 //30 is margin around player
             break;
         case "bottomRight":
-            offsetLeft = window.innerWidth - player.offsetWidth - 12 - 60 // 12 is width of scrollbar
-            offsetTop = window.innerHeight - document.getElementById('menu_player').offsetHeight - 40 //30 is margin around player
+            offsetLeft = window.innerWidth - player.offsetWidth - 12 // 12 is width of scrollbar
+            offsetTop = window.innerHeight - 130 //30 is margin around player
             break;
         default:
             return null
@@ -340,7 +597,7 @@ function getOffset(direction) {
 
 function menuSlidePlayer(direction) {
     player = document.getElementById('menu_player_container')
-    switch(currentPosition) {
+    switch(playerCurrentPosition) {
         case "topLeft":
         case "bottomLeft":
             player.style.animation = "playerChangePosition" + direction + " 0.25s forwards"
@@ -348,4 +605,8 @@ function menuSlidePlayer(direction) {
         default:
             return
     }
+}
+
+function getCurrentPlayerPosition() {
+    return getCurrentPlayerPosition
 }

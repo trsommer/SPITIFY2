@@ -9,6 +9,8 @@ class PlaylistView extends View {
     #headerPointers = null
     #selectedSongHTML = null
     #boundUnSelectSong = null
+    #playlistSongsHTML = []
+    #playlistSongsContainer = null
 
     constructor(data, viewController) {
         super();
@@ -164,10 +166,6 @@ class PlaylistView extends View {
 
         const backgroundImageContainer = IMAGE_CONTAINERS.backgroundImageContainer;
 
-        const backgroundImageGradient = document.createElement('div');
-        backgroundImageGradient.setAttribute('id', 'playlist_background_image_gradient');
-        backgroundImageContainer.appendChild(backgroundImageGradient);
-
         const foregroundImageContainer = IMAGE_CONTAINERS.imageContainer;
 
         const textContainer = document.createElement('div');
@@ -217,12 +215,8 @@ class PlaylistView extends View {
             return this.#createQuadImageContainers(data);
         }
 
-        const PLAYLIST_IMAGE_URL = data.playlistInfo.imageUrl;
-
-        if (PLAYLIST_IMAGE_ARRAY.length == 4) {
-            const PLAYLIST_ID = this.#playlistData.playlistInfo.id;
-            changePlaylistImage(PLAYLIST_ID, PLAYLIST_IMAGE_URL)
-        }
+        const firstSongData = JSON.parse(SONGS_DATA[0].info);
+        const PLAYLIST_IMAGE_URL = firstSongData.songImageUrl;
 
         const imageContainer = document.createElement('div');
         imageContainer.setAttribute('id', 'playlist_image_container');
@@ -239,9 +233,13 @@ class PlaylistView extends View {
         
         const backgroundImage = document.createElement('img');
         backgroundImage.setAttribute('id', 'playlist_background_image');
-        backgroundImage.src = PLAYLIST_IMAGE_URLS;
+        backgroundImage.src = PLAYLIST_IMAGE_URL;
+
+        const playlistBackgroundImageGradient = document.createElement('div');
+        playlistBackgroundImageGradient.setAttribute('id', 'playlist_background_image_gradient');
 
         backgroundImageContainer.appendChild(backgroundImage);
+        backgroundImageContainer.appendChild(playlistBackgroundImageGradient)
 
         return {
             imageContainer: imageContainer,
@@ -285,11 +283,10 @@ class PlaylistView extends View {
             plalistQuadImageOuterContainer.appendChild(playlistQuadImageContainer);
         }
 
-        if (PLAYLIST_IMAGE_ARRAY.length != 4) {
-            const SONG_IMAGE_STRING = SONG_IMAGES.join(',');
-            const PLAYLIST_ID = this.#playlistData.playlistInfo.id;
-            changePlaylistImage(PLAYLIST_ID, SONG_IMAGE_STRING)
-        }
+        const playlistBackgroundImageGradient = document.createElement('div');
+        playlistBackgroundImageGradient.setAttribute('id', 'playlist_background_image_gradient');
+
+        plalistQuadImageBackgroundContainer.appendChild(playlistBackgroundImageGradient);
 
         return {
             imageContainer: plalistQuadImageOuterContainer,
@@ -303,6 +300,7 @@ class PlaylistView extends View {
         const playlistSongsContainer = document.createElement('div');
         playlistSongsContainer.setAttribute('id', 'playlist_songs_container');
         playlistSongsContainer.setAttribute('class', 'tracks_container');
+        this.#playlistSongsContainer = playlistSongsContainer;
 
         for (let i = 0; i < SONGS_DATA.length; i++) {
             const SONG_DATA = SONGS_DATA[i];
@@ -352,6 +350,8 @@ class PlaylistView extends View {
             this.#addSongContextMenu(trackItem, SONG_DATA);
 
             playlistSongsContainer.appendChild(trackItem);
+
+            this.#playlistSongsHTML[SONG_ID] = trackItem;
         }
 
         contentContainer.appendChild(playlistSongsContainer);
@@ -433,9 +433,7 @@ class PlaylistView extends View {
             },
             {
                 title: "Remove from Playlist",
-                callback: function() {
-                    console.log("test");
-                },
+                callback: this.menuRemoveFromPlaylistCallback.bind(this),
                 subMenu: null
             }
         ]
@@ -561,7 +559,8 @@ class PlaylistView extends View {
 
     async menuOpenAlbumCallback(data) {
         const SONGINFO = JSON.parse(data.info);
-        const ALBUM_ID = SONGINFO.songAlbum.uri.split(":")[2];
+        const ALBUMINFO = JSON.parse(SONGINFO.songAlbum);
+        const ALBUM_ID = ALBUMINFO.uri.split(":")[2];
 
         this.#viewController.switchView("album", ALBUM_ID);
     }
@@ -571,7 +570,14 @@ class PlaylistView extends View {
     }
 
     async menuRemoveFromPlaylistCallback(data) {
-        //TODO: remove from playlist
+        const SONG_ID = data.id;
+        const PLAYLIST_ID = this.#playlistData.playlistInfo.id;
+
+        removePlaylistSong(SONG_ID, PLAYLIST_ID);
+        const SONG_ELEMENT_HTML = this.#playlistSongsHTML[SONG_ID];
+        this.#playlistSongsContainer.removeChild(SONG_ELEMENT_HTML);
+        this.playlistSongsHTML[SONG_ID] = null;
+        //TODO: update playlist image maybe necessary
     }
 
 }
