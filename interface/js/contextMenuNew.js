@@ -1,271 +1,274 @@
 class ContextMenu {
-    #data = null;
-    #parent = null;
-    #container = null;
-    #viewController = null;
-    #cursorHeight = 0;
-    #displayed = false;
-    #subMenuTimeout = null;
-    #subMenu = null;
-    #messageBroker = null;
-    #height = 0;
-    #dynSubMenues = [];
+  #data = null
+  #parent = null
+  #container = null
+  #viewController = null
+  #cursorHeight = 0
+  #displayed = false
+  #subMenuTimeout = null
+  #subMenu = null
+  #messageBroker = null
+  #height = 0
+  #dynSubMenues = []
 
-    constructor(data, parent, cursorHeight, viewController) {
-        this.#data = data;
-        this.#parent = parent;
-        this.#viewController = viewController;
-        this.#messageBroker = viewController.getMessageBroker();
-        this.#cursorHeight = cursorHeight;
+  constructor(data, parent, cursorHeight, viewController) {
+    this.#data = data
+    this.#parent = parent
+    this.#viewController = viewController
+    this.#messageBroker = viewController.getMessageBroker()
+    this.#cursorHeight = cursorHeight
 
-        const Container = this.#createContextMenu(data, parent);
+    const Container = this.#createContextMenu(data, parent)
 
-        this.#container = Container;
+    this.#container = Container
+  }
+
+  show(data) {
+    if (this.#displayed) {
+      return
     }
-
-    show(data) {
-        if (this.#displayed) {
-            return;
-        }
-        this.#data = data;
-        this.#displayed = true;
-        const MENU_CONTAINER = this.#container;
-        const contextMenuContainer = document.getElementById("context_menu_container");
-        this.#setDimsAndShape(MENU_CONTAINER);
-        this.#messageBroker.subscribe("keyUp", this.#closeContextMenuKeyUpCallback.bind(this));
-        if (Number.isInteger(this.#parent)) {
-            this.#registerCloseClickListener();
-        }
-        this.#createDynSubMenues();
-
-        contextMenuContainer.appendChild(MENU_CONTAINER);
-
-        this.#viewController.addContextMenu(this);
+    this.#data = data
+    this.#displayed = true
+    const MENU_CONTAINER = this.#container
+    const contextMenuContainer = document.getElementById("context_menu_container")
+    this.#setDimsAndShape(MENU_CONTAINER)
+    this.#messageBroker.subscribe("keyUp", this.#closeContextMenuKeyUpCallback.bind(this))
+    if (Number.isInteger(this.#parent)) {
+      this.#registerCloseClickListener()
     }
+    this.#createDynSubMenues()
 
-    hide() {
-        if (!this.#displayed) {
-            return;
-        }
-        this.#displayed = false;
-        const MENU_CONTAINER = this.#container;
-        const contextMenuContainer = document.getElementById("context_menu_container");
+    contextMenuContainer.appendChild(MENU_CONTAINER)
 
-        this.#messageBroker.unsubscribe("keyUp", this.#closeContextMenuKeyUpCallback.bind(this));
-        contextMenuContainer.removeChild(MENU_CONTAINER);
-        if (Number.isInteger(this.#parent)) {
-            this.#messageBroker.publish("closeContextMenu", null);
-        }
+    this.#viewController.addContextMenu(this)
+  }
+
+  hide() {
+    if (!this.#displayed) {
+      return
     }
+    this.#displayed = false
+    const MENU_CONTAINER = this.#container
+    const contextMenuContainer = document.getElementById("context_menu_container")
 
-    #createContextMenu(data, parent) {
-        const menuContainer = document.createElement('div');
-        menuContainer.classList.add("context_menu");
+    this.#messageBroker.unsubscribe("keyUp", this.#closeContextMenuKeyUpCallback.bind(this))
+    contextMenuContainer.removeChild(MENU_CONTAINER)
+    if (Number.isInteger(this.#parent)) {
+      this.#messageBroker.publish("closeContextMenu", null)
+    }
+  }
 
-        this.#height = data.length * 32 + 10;
+  #createContextMenu(data, parent) {
+    const menuContainer = document.createElement("div")
+    menuContainer.classList.add("context_menu")
 
-        for (let i = 0; i < data.length; i++) {
-            const entry = data[i];
+    this.#height = data.length * 32 + 10
 
-            const entryContainer = document.createElement('div');
-            entryContainer.classList.add('context_menu_item');
-            const that = this;
+    for (let i = 0; i < data.length; i++) {
+      const entry = data[i]
 
-            const entryTitle = document.createElement('p');
-            entryTitle.classList.add('context_menu_item_title');
-            entryTitle.innerHTML = entry.title;
+      const entryContainer = document.createElement("div")
+      entryContainer.classList.add("context_menu_item")
+      const that = this
 
-            entryContainer.appendChild(entryTitle);
-            const CURSOR_OFFSET = 5 + (i * 32) + 16;
+      const entryTitle = document.createElement("p")
+      entryTitle.classList.add("context_menu_item_title")
+      entryTitle.innerHTML = entry.title
 
-            if (Array.isArray(entry.subMenu)) {
-                //static submenu
+      entryContainer.appendChild(entryTitle)
+      const CURSOR_OFFSET = 5 + i * 32 + 16
 
-                const SUB_MENU = new ContextMenu(entry.subMenu, this, CURSOR_OFFSET, this.#viewController);
-                entryContainer.addEventListener('mouseenter', () => {
-                    SUB_MENU.show(this.#data);
-                    this.#subMenu = SUB_MENU;
-                    //hide open submenu stack
-                });
-            } else if (entry.subMenu != null){ 
-                //dynamic submenu
-                const DYN_SUBMENU_ENTRY = {
-                    offset: CURSOR_OFFSET,
-                    callback: entry.callback,
-                    subMenu: entry.subMenu,
-                    condition: entry.conditionSubMenu,
-                    entryContainer: entryContainer
-                }
+      if (Array.isArray(entry.subMenu)) {
+        //static submenu
 
-                this.#dynSubMenues.push(DYN_SUBMENU_ENTRY);
-                // dynamic submenu will be created when this.show is called
-            } else {
-                entryContainer.addEventListener('mouseenter', () => {
-                    this.hideSubMenues();
-                });
-                entryContainer.addEventListener('click', this.#startCallback.bind(this, entry));
-            }
-
-            menuContainer.appendChild(entryContainer);
+        const SUB_MENU = new ContextMenu(entry.subMenu, this, CURSOR_OFFSET, this.#viewController)
+        entryContainer.addEventListener("mouseenter", () => {
+          SUB_MENU.show(this.#data)
+          this.#subMenu = SUB_MENU
+          //hide open submenu stack
+        })
+      } else if (entry.subMenu != null) {
+        //dynamic submenu
+        const DYN_SUBMENU_ENTRY = {
+          offset: CURSOR_OFFSET,
+          callback: entry.callback,
+          subMenu: entry.subMenu,
+          condition: entry.conditionSubMenu,
+          entryContainer: entryContainer
         }
 
-        return menuContainer;
+        this.#dynSubMenues.push(DYN_SUBMENU_ENTRY)
+        // dynamic submenu will be created when this.show is called
+      } else {
+        entryContainer.addEventListener("mouseenter", () => {
+          this.hideSubMenues()
+        })
+        entryContainer.addEventListener("click", this.#startCallback.bind(this, entry))
+      }
+
+      menuContainer.appendChild(entryContainer)
     }
 
-    #startCallback(entry) {
-        entry.callback(this.#data);
-        this.hideSubMenues();
-        this.hide();
-        this.hideParentMenues();
-        this.#hideContextClickPlain();
+    return menuContainer
+  }
+
+  #startCallback(entry) {
+    entry.callback(this.#data)
+    this.hideSubMenues()
+    this.hide()
+    this.hideParentMenues()
+    this.#hideContextClickPlain()
+  }
+
+  #setDimsAndShape(MENU_CONTAINER) {
+    const LEFT = this.#getLeft()
+    const OFFSET_LEFT = LEFT.offsetLeft
+    const DIRECTION_LEFT = LEFT.direction
+    const TOP = this.#getTop()
+    const OFFSET_TOP = TOP.offsetTop
+    const DIRECTION_TOP = TOP.direction
+
+    const DIRECTION = "context_" + DIRECTION_LEFT + "_" + DIRECTION_TOP
+
+    MENU_CONTAINER.style.top = OFFSET_TOP + "px"
+    MENU_CONTAINER.style.left = OFFSET_LEFT + "px"
+
+    MENU_CONTAINER.classList.add(DIRECTION)
+  }
+
+  #getLeft() {
+    const PARENT = this.#parent
+    let parentOffsetLeft = 0
+    let childContextMenuOffset = 0
+
+    if (Number.isInteger(PARENT)) {
+      parentOffsetLeft = PARENT
+    } else {
+      parentOffsetLeft = PARENT.#getLeft().offsetLeft
+      childContextMenuOffset = 195
     }
 
-    #setDimsAndShape(MENU_CONTAINER) {
-        const LEFT = this.#getLeft();
-        const OFFSET_LEFT = LEFT.offsetLeft;
-        const DIRECTION_LEFT = LEFT.direction;
-        const TOP = this.#getTop();
-        const OFFSET_TOP = TOP.offsetTop;
-        const DIRECTION_TOP = TOP.direction;
+    //check if enough space to the right
+    const SPACE_RIGHT = window.innerWidth - parentOffsetLeft - 195
 
-        const DIRECTION = "context_" + DIRECTION_LEFT + "_" + DIRECTION_TOP;
-        
-        MENU_CONTAINER.style.top = OFFSET_TOP + "px";
-        MENU_CONTAINER.style.left = OFFSET_LEFT + "px";
+    if (SPACE_RIGHT > 220) {
+      const OFFSET_LEFT = parentOffsetLeft + childContextMenuOffset
 
-        MENU_CONTAINER.classList.add(DIRECTION);
+      return {
+        offsetLeft: OFFSET_LEFT,
+        direction: "right"
+      }
     }
 
-    #getLeft() {
-        const PARENT = this.#parent;
-        let parentOffsetLeft = 0;
-        let childContextMenuOffset = 0;
+    //container has to go to the left
+    const OFFSET_LEFT = parentOffsetLeft - 195
 
-        if (Number.isInteger(PARENT)) {
-            parentOffsetLeft = PARENT;
-        } else {
-            parentOffsetLeft = PARENT.#getLeft().offsetLeft;
-            childContextMenuOffset = 195;
-        }
+    return {
+      offsetLeft: OFFSET_LEFT,
+      direction: "left"
+    }
+  }
 
-        //check if enough space to the right
-        const SPACE_RIGHT = window.innerWidth - parentOffsetLeft - 195;
+  #getTop() {
+    const PARENT = this.#parent
+    let PARENT_OFFSET_TOP = 0
+    if (!Number.isInteger(PARENT)) {
+      PARENT_OFFSET_TOP = PARENT.#getTop().offsetTop
+    }
+    const CURSOR_HEIGHT = this.#cursorHeight
+    const HEIGHT = this.#height
 
-        if (SPACE_RIGHT > 220) {
-            const OFFSET_LEFT = parentOffsetLeft + childContextMenuOffset;
+    const SPACE_BOTTOM = window.innerHeight - PARENT_OFFSET_TOP - CURSOR_HEIGHT - HEIGHT
 
-            return {
-                offsetLeft: OFFSET_LEFT,
-                direction: "right"
-            }
-        }
+    if (SPACE_BOTTOM > 25) {
+      //enough space to the bottom
 
-        //container has to go to the left
-        const OFFSET_LEFT = parentOffsetLeft - 195;
+      const OFFSET_TOP = PARENT_OFFSET_TOP + CURSOR_HEIGHT
 
-
-        return {
-            offsetLeft: OFFSET_LEFT,
-            direction: "left"
-        };
+      return {
+        offsetTop: OFFSET_TOP,
+        direction: "bottom"
+      }
     }
 
-    #getTop() {
-        const PARENT = this.#parent;
-        let PARENT_OFFSET_TOP = 0;
-        if (!Number.isInteger(PARENT)) {
-            PARENT_OFFSET_TOP = PARENT.#getTop().offsetTop;
-        }
-        const CURSOR_HEIGHT = this.#cursorHeight;
-        const HEIGHT = this.#height;
+    //not enough space to the bottom
 
-        const SPACE_BOTTOM = window.innerHeight - PARENT_OFFSET_TOP - CURSOR_HEIGHT - HEIGHT;
+    const OFFSET_TOP = PARENT_OFFSET_TOP + CURSOR_HEIGHT - HEIGHT
 
-        if (SPACE_BOTTOM > 25) {
-            //enough space to the bottom
-
-            const OFFSET_TOP = PARENT_OFFSET_TOP + CURSOR_HEIGHT;
-
-            return {
-                offsetTop: OFFSET_TOP,
-                direction: "bottom"
-            };
-        }
-
-        //not enough space to the bottom
-
-        const OFFSET_TOP = PARENT_OFFSET_TOP + CURSOR_HEIGHT - HEIGHT;
-
-        return {
-            offsetTop: OFFSET_TOP,
-            direction: "top"
-        };
+    return {
+      offsetTop: OFFSET_TOP,
+      direction: "top"
     }
+  }
 
-    getContainer() {
-        return this.#container;
+  getContainer() {
+    return this.#container
+  }
+
+  hideSubMenues() {
+    const SUB_MENU = this.#subMenu
+
+    if (SUB_MENU != null) {
+      SUB_MENU.hideSubMenues()
+      SUB_MENU.hide()
     }
+  }
 
-    hideSubMenues() {
-        const SUB_MENU = this.#subMenu;
+  hideParentMenues() {
+    const PARENT = this.#parent
 
-        if (SUB_MENU != null) {
-            SUB_MENU.hideSubMenues();
-            SUB_MENU.hide();
-        }
+    if (!Number.isInteger(PARENT)) {
+      PARENT.hideParentMenues()
+      PARENT.hide()
     }
+  }
 
-    hideParentMenues() {
-        const PARENT = this.#parent;
+  #registerCloseClickListener() {
+    const that = this
+    const context_click_plain = document.getElementById("context_menu_mouse_listener")
+    context_click_plain.style.display = "block"
 
-        if (!Number.isInteger(PARENT)) {
-            PARENT.hideParentMenues();
-            PARENT.hide();
-        }
+    context_click_plain.addEventListener(
+      "click",
+      () => {
+        that.hide()
+        that.hideSubMenues()
+        that.#hideContextClickPlain()
+      },
+      { once: true }
+    )
+  }
+
+  #hideContextClickPlain() {
+    const context_click_plain = document.getElementById("context_menu_mouse_listener")
+    context_click_plain.style.display = "none"
+  }
+
+  #closeContextMenuKeyUpCallback(event) {
+    if (event.key === "Escape") {
+      this.hide()
+      this.hideSubMenues()
+      this.#hideContextClickPlain()
     }
+  }
 
-    #registerCloseClickListener() {
-        const that  = this;
-        const context_click_plain = document.getElementById("context_menu_mouse_listener");
-        context_click_plain.style.display = "block";
-
-        context_click_plain.addEventListener('click', () => {
-            that.hide();
-            that.hideSubMenues();
-            that.#hideContextClickPlain();
-        }, {once: true});
+  #createDynSubMenues() {
+    for (let i = 0; i < this.#dynSubMenues.length; i++) {
+      const DYN_SUBMENU = this.#dynSubMenues[i]
+      const CONDITION_RESULT = DYN_SUBMENU.condition(this.#data)
+      if (CONDITION_RESULT) {
+        const SUBMENU_DATA = DYN_SUBMENU.subMenu(this.#data)
+        const SUB_MENU = new ContextMenu(SUBMENU_DATA, this, DYN_SUBMENU.offset, this.#viewController)
+        DYN_SUBMENU.entryContainer.addEventListener("mouseenter", () => {
+          SUB_MENU.show(this.#data)
+          this.#subMenu = SUB_MENU
+        })
+      } else {
+        DYN_SUBMENU.entryContainer.addEventListener("mouseenter", () => {
+          this.hideSubMenues()
+        })
+        DYN_SUBMENU.entryContainer.addEventListener("click", this.#startCallback.bind(this, DYN_SUBMENU))
+      }
     }
-
-    #hideContextClickPlain() {
-        const context_click_plain = document.getElementById("context_menu_mouse_listener");
-        context_click_plain.style.display = "none";
-    }
-
-    #closeContextMenuKeyUpCallback(event) {
-        if (event.key === "Escape") {
-            this.hide();
-            this.hideSubMenues();
-            this.#hideContextClickPlain();
-        }
-    }
-
-    #createDynSubMenues() {
-        for (let i = 0; i < this.#dynSubMenues.length; i++) {
-            const DYN_SUBMENU = this.#dynSubMenues[i];
-            const CONDITION_RESULT = DYN_SUBMENU.condition(this.#data);
-            if (CONDITION_RESULT) {
-                const SUBMENU_DATA = DYN_SUBMENU.subMenu(this.#data);
-                const SUB_MENU = new ContextMenu(SUBMENU_DATA, this, DYN_SUBMENU.offset, this.#viewController);
-                DYN_SUBMENU.entryContainer.addEventListener('mouseenter', () => {
-                    SUB_MENU.show(this.#data);
-                    this.#subMenu = SUB_MENU;
-                });
-            } else {
-                DYN_SUBMENU.entryContainer.addEventListener('mouseenter', () => {
-                    this.hideSubMenues();
-                });
-                DYN_SUBMENU.entryContainer.addEventListener('click', this.#startCallback.bind(this, DYN_SUBMENU));
-            }
-        }
-    }
+  }
 }

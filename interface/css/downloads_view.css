@@ -1,13 +1,13 @@
 #downloads_container {
-    padding-top: 60px;
-    height: calc(100vh - 60px);
+  padding-top: 60px;
+  height: calc(100vh - 60px);
 }
 
 #downloads_heading {
-    color: white;
-    margin-left: 20px;
+  color: white;
+  margin-left: 20px;
 }
 
 #downloads_tracks_container {
-    padding-bottom: 150px;
+  padding-bottom: 150px;
 }

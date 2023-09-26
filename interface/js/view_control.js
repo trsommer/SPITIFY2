@@ -1,10 +1,10 @@
-var currentView = "last_searches_view";
-var openedFrom = ""; 
-var lastViewInfo = "";
-var backButtonVisibility = false;
-var artistResizeListener = false;
-var settingsScrollListener = false;
-var playerTopOffset = false;
+var currentView = "last_searches_view"
+var openedFrom = ""
+var lastViewInfo = ""
+var backButtonVisibility = false
+var artistResizeListener = false
+var settingsScrollListener = false
+var playerTopOffset = false
 const views = [
   "search_view",
   "search_list_view",
@@ -14,85 +14,85 @@ const views = [
   "playlists_view",
   "playlist_view",
   "downloads_view",
-  "settings_view",
-];
-const sideMenuViews = ["playlists_view", "downloads_view", "settings_view"];
-var scrollBarShape = 0;
+  "settings_view"
+]
+const sideMenuViews = ["playlists_view", "downloads_view", "settings_view"]
+var scrollBarShape = 0
 
 function switchView(view) {
   if (!views.includes(view)) {
-    return;
+    return
   }
 
   if (view == "artist_view") {
-    window.addEventListener("resize", recalculateAlbumCarouselWidth);
-    artistResizeListener = true;
+    window.addEventListener("resize", recalculateAlbumCarouselWidth)
+    artistResizeListener = true
   } else {
     if (artistResizeListener) {
-      window.removeEventListener("resize", recalculateAlbumCarouselWidth);
-      artistResizeListener = false;
+      window.removeEventListener("resize", recalculateAlbumCarouselWidth)
+      artistResizeListener = false
     }
   }
 
   if (view == "settings_view") {
     window.addEventListener("scroll", scrollSettings)
-    settingsScrollListener = true;
+    settingsScrollListener = true
   } else {
     if (settingsScrollListener) {
       window.removeEventListener("scroll", scrollSettings)
-      settingsScrollListener = false;
+      settingsScrollListener = false
     }
   }
 
-    document.getElementById("menu_top_hidden_heading").style.width = null;
-    setTopMenuOpacity(0.95);
-    if (scrolledDown == true) {
-      changeHiddenHeadingVisibility(false, "menu_top_heading");
-      changeHiddenHeadingVisibility(false, "menu_top_button_play");
-      changeHiddenHeadingVisibility(false, "menu_top_button_follow");
-    }
+  document.getElementById("menu_top_hidden_heading").style.width = null
+  setTopMenuOpacity(0.95)
+  if (scrolledDown == true) {
+    changeHiddenHeadingVisibility(false, "menu_top_heading")
+    changeHiddenHeadingVisibility(false, "menu_top_button_play")
+    changeHiddenHeadingVisibility(false, "menu_top_button_follow")
+  }
 
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  window.scrollTo({ top: 0, behavior: "smooth" })
 
   if (backButtonVisibility) {
-    openedFrom = "";
-    backButtonChangeVisibility(false);
+    openedFrom = ""
+    backButtonChangeVisibility(false)
   }
 
   if (openedFrom != "") {
-    backButtonChangeVisibility(true);
+    backButtonChangeVisibility(true)
   }
 
-  found = false;
+  found = false
 
   if (sideMenuViews.includes(currentView) && !sideMenuViews.includes(view)) {
-    deactivateSideButton(currentView);
+    deactivateSideButton(currentView)
   }
 
-  console.log("switched from " + currentView + " to " + view);
+  console.log("switched from " + currentView + " to " + view)
 
   //call views function to update view
-  const func1 = new Function(view + "()");
-  func1();
+  const func1 = new Function(view + "()")
+  func1()
 
-  currentView = view;
+  currentView = view
 
   for (let index = 0; index < views.length; index++) {
-    const hiddenview = views[index];
-    document.getElementById(hiddenview).style.display = "none";
+    const hiddenview = views[index]
+    document.getElementById(hiddenview).style.display = "none"
   }
 
-  document.getElementById(view).style.display = "block";
+  document.getElementById(view).style.display = "block"
 }
 
 window.addEventListener("scroll", function (event) {
-  var scrollY = window.scrollY;
-  bg_gradient = document.getElementById("av_artist_header_gradient");
+  var scrollY = window.scrollY
+  bg_gradient = document.getElementById("av_artist_header_gradient")
   if (currentView == "artist_view") {
-    scrollArtistView(scrollY);
+    scrollArtistView(scrollY)
   }
   if (currentView == "album_view") {
-    scrollAlbumView(scrollY);
+    scrollAlbumView(scrollY)
   }
 
   var limit =
@@ -102,124 +102,124 @@ window.addEventListener("scroll", function (event) {
       document.documentElement.clientHeight,
       document.documentElement.scrollHeight,
       document.documentElement.offsetHeight
-    ) - window.innerHeight;
+    ) - window.innerHeight
 
   if (scrollY == 0) {
-    setScrollBarShape(0);
+    setScrollBarShape(0)
   } else if (scrollY >= limit) {
-    setScrollBarShape(2);
+    setScrollBarShape(2)
   } else {
-    setScrollBarShape(1);
+    setScrollBarShape(1)
   }
-});
+})
 
 function setScrollBarShape(type) {
-  body = document.getElementsByTagName("body")[0];
+  body = document.getElementsByTagName("body")[0]
   switch (type) {
     case 0:
-      body.setAttribute("class", "flatTop");
-      break;
+      body.setAttribute("class", "flatTop")
+      break
     case 1:
-      body.setAttribute("class", "roundTop");
-      break;
+      body.setAttribute("class", "roundTop")
+      break
     case 2:
-      body.setAttribute("class", "flatBottom");
-      break;
+      body.setAttribute("class", "flatBottom")
+      break
     default:
-      return;
+      return
   }
 }
 
 function toggleMenuView(view) {
-  deactivateSideButton(currentView);
-  nextView = view + "_view";
-  activateSideButton(nextView);
-  switchView(nextView);
+  deactivateSideButton(currentView)
+  nextView = view + "_view"
+  activateSideButton(nextView)
+  switchView(nextView)
 }
 
 function deactivateSideButton(view) {
-  viewButtonContainer = document.getElementById("menu_item_container");
+  viewButtonContainer = document.getElementById("menu_item_container")
   if (sideMenuViews.includes(view)) {
-    index = sideMenuViews.indexOf(view);
+    index = sideMenuViews.indexOf(view)
     //get button
-    button = viewButtonContainer.children[index];
+    button = viewButtonContainer.children[index]
     //remove active class
-    button.classList.remove("menu_button_active");
+    button.classList.remove("menu_button_active")
     //add inactive class
-    button.classList.add("menu_button_inactive");
+    button.classList.add("menu_button_inactive")
   }
 }
 
 function activateSideButton(view) {
-  viewButtonContainer = document.getElementById("menu_item_container");
+  viewButtonContainer = document.getElementById("menu_item_container")
   if (sideMenuViews.includes(view)) {
-    index = sideMenuViews.indexOf(view);
+    index = sideMenuViews.indexOf(view)
     //get button
-    button = viewButtonContainer.children[index];
+    button = viewButtonContainer.children[index]
     //remove active class
-    button.classList.add("menu_button_active");
+    button.classList.add("menu_button_active")
     //add inactive class
-    button.classList.remove("menu_button_inactive");
+    button.classList.remove("menu_button_inactive")
   }
 }
 
 function backButtonChangeVisibility(visibility) {
   if (visibility) {
-    backButtonVisibility = true;
+    backButtonVisibility = true
     updateAlbumBackButtonVisible(true)
-    document.getElementById("menu_top_back_button").style.width = "45px";
-    document.getElementById("menu_top_back_button").style.opacity = "1";
-
+    document.getElementById("menu_top_back_button").style.width = "45px"
+    document.getElementById("menu_top_back_button").style.opacity = "1"
   } else {
-    backButtonVisibility = false;
+    backButtonVisibility = false
     updateAlbumBackButtonVisible(false)
-    document.getElementById("menu_top_back_button").style.width = "0px";
-    document.getElementById("menu_top_back_button").style.opacity = "0";  }
+    document.getElementById("menu_top_back_button").style.width = "0px"
+    document.getElementById("menu_top_back_button").style.opacity = "0"
+  }
 }
 
 function setOpenedFrom(from, info) {
-  openedFrom = from;
-  lastViewInfo = info;
+  openedFrom = from
+  lastViewInfo = info
 }
 
 function goBack() {
-  document.documentElement.style.setProperty("--accentColor", lastViewInfo.accentColor);
+  document.documentElement.style.setProperty("--accentColor", lastViewInfo.accentColor)
   document.getElementById("menu_top_heading").innerHTML = lastViewInfo.title
-  switchView(openedFrom);
-  openedFrom = "";
-  lastViewInfo = "";
+  switchView(openedFrom)
+  openedFrom = ""
+  lastViewInfo = ""
 }
 
 function setTopMenuOpacity(opacity) {
-  document.getElementById("menu_top").style.opacity = opacity;
+  document.getElementById("menu_top").style.opacity = opacity
 }
 
 function indicateCurrentlyPlaying(id) {
   switch (currentView) {
     case "playlist_view":
-      playlistSongCurrentlyPlaying(id);
-      break;
+      playlistSongCurrentlyPlaying(id)
+      break
     case "album_view":
-      albumSongCurrentlyPlaying(id);
-      break;
+      albumSongCurrentlyPlaying(id)
+      break
     case "downloads_view":
-      downloadsSongCurrentlyPlaying(id);
-      break;
+      downloadsSongCurrentlyPlaying(id)
+      break
     case "artist_view":
-      artistSongCurrentlyPlaying(id);
-      break;
+      artistSongCurrentlyPlaying(id)
+      break
     case "search_view":
-      searchSongCurrentlyPlaying(id);
-      break;
+      searchSongCurrentlyPlaying(id)
+      break
     default:
-      break;
+      break
   }
 }
 
 function removeCurrentlyPlaying() {
-  playlistRemoveCurrentlyPlaying();
-  albumRemoveCurrentlyPlaying();
-  downloadsRemoveCurrentlyPlaying();
-  artistRemoveCurrentlyPlaying();
-  searchRemoveCurrentlyPlaying();
+  playlistRemoveCurrentlyPlaying()
+  albumRemoveCurrentlyPlaying()
+  downloadsRemoveCurrentlyPlaying()
+  artistRemoveCurrentlyPlaying()
+  searchRemoveCurrentlyPlaying()
 }

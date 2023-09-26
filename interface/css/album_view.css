@@ -1,143 +1,143 @@
 #album_view {
-    width: 100%;
-    height: 100%;
-    overflow-x: hidden;
-    position: relative;
-    margin-top: 60px;
+  width: 100%;
+  height: 100%;
+  overflow-x: hidden;
+  position: relative;
+  margin-top: 60px;
 }
 
 #album_view_bgImage_container {
-    width: 100%;
-    height: 40vh;
-    overflow: hidden;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: relative;
+  width: 100%;
+  height: 40vh;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
 }
 
 #album_view_bgImage {
-    filter: blur(10px);
-    width: 100%;
-    position: fixed;
-    z-index: -3;
+  filter: blur(10px);
+  width: 100%;
+  position: fixed;
+  z-index: -3;
 }
 
 #album_view_gradientBG {
-    width: 100%;
-    position: absolute;
-    height: 8vh;
-    background: linear-gradient(0deg, rgba(21,22,22,1) 10%, rgba(21,22,22,0) 100%);
-    bottom: 0;
+  width: 100%;
+  position: absolute;
+  height: 8vh;
+  background: linear-gradient(0deg, rgba(21, 22, 22, 1) 10%, rgba(21, 22, 22, 0) 100%);
+  bottom: 0;
 }
 
 #album_view_cover_container {
-    position: absolute;
-    z-index: 3;
-    width: 100%;
-    height: 35vh;
-    bottom: 0;
-    display: flex;
-    justify-content: center;
+  position: absolute;
+  z-index: 3;
+  width: 100%;
+  height: 35vh;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
 }
 
 #album_view_cover {
-    width: 35vh;
-    height: 35vh;
-    border-radius: 20px 20px 0 0;
+  width: 35vh;
+  height: 35vh;
+  border-radius: 20px 20px 0 0;
 }
 
 #album_view_cover_gradient {
-    position: absolute;
-    width: 35vh;
-    height: 35vh;
-    z-index: 4;
-    background: linear-gradient(0deg, rgba(21,22,22,1) 10%, rgba(21,22,22,0) 40%);
+  position: absolute;
+  width: 35vh;
+  height: 35vh;
+  z-index: 4;
+  background: linear-gradient(0deg, rgba(21, 22, 22, 1) 10%, rgba(21, 22, 22, 0) 40%);
 }
 
 #album_view_header_container {
-    /* position: absolute; */
-    width: 100%;
-    height: 12vh;
-    top: 31vh;
-    text-align: center;
-    z-index: 5;
-    align-items: center;
-    pointer-events: none;
-    background: #151616;
-    display: grid;
+  /* position: absolute; */
+  width: 100%;
+  height: 12vh;
+  top: 31vh;
+  text-align: center;
+  z-index: 5;
+  align-items: center;
+  pointer-events: none;
+  background: #151616;
+  display: grid;
 }
 
 #album_view_header {
-    margin: 0;
-    color: var(--accentColor);
-    white-space: nowrap;
-    position: absolute;
-    bottom: 0;
-    z-index: 4;
-    max-width: 80%;
-    overflow: hidden;
+  margin: 0;
+  color: var(--accentColor);
+  white-space: nowrap;
+  position: absolute;
+  bottom: 0;
+  z-index: 4;
+  max-width: 80%;
+  overflow: hidden;
 }
 
 .album_view_header_big {
-    font-size: 70px;
-    font-weight: bold;
-    letter-spacing: 10px;
+  font-size: 70px;
+  font-weight: bold;
+  letter-spacing: 10px;
 }
 
 .album_view_header_small {
-    font-size: 43px;
-    font-weight: bold;
-    letter-spacing: 4px;
+  font-size: 43px;
+  font-weight: bold;
+  letter-spacing: 4px;
 }
 
 #album_view_2ndHeader {
-    margin: 0;
-    color: var(--contrast_bright);
-    font-size: 20px;
-    font-weight: 500;
-    pointer-events: all;
-    cursor: pointer;
+  margin: 0;
+  color: var(--contrast_bright);
+  font-size: 20px;
+  font-weight: 500;
+  pointer-events: all;
+  cursor: pointer;
 }
 
 #album_view_header_buttton_container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
 }
 
 .album_view_header_buttton {
-    margin-left: 20px;
-    margin-right: 20px;
-    margin-top: 2px;
-    padding: 8px;
-    padding-left: 20px;
-    padding-right: 20px;
-    border-radius: 18px;
-    background: var(--accentColor);
-    border: none;
-    pointer-events: all;
-    font-size: 16px;
-    transition: 0.3 ease;
+  margin-left: 20px;
+  margin-right: 20px;
+  margin-top: 2px;
+  padding: 8px;
+  padding-left: 20px;
+  padding-right: 20px;
+  border-radius: 18px;
+  background: var(--accentColor);
+  border: none;
+  pointer-events: all;
+  font-size: 16px;
+  transition: 0.3 ease;
 }
 
 .album_view_header_buttton:hover {
-    margin-left: 18px;
-    margin-right: 18px;
-    margin-top: 0;
-    padding: 9px;
-    padding-left: 21px;
-    padding-right: 21px;
-    font-size: 17px;
-    cursor: pointer;
-    transition: 0.3 ease;
+  margin-left: 18px;
+  margin-right: 18px;
+  margin-top: 0;
+  padding: 9px;
+  padding-left: 21px;
+  padding-right: 21px;
+  font-size: 17px;
+  cursor: pointer;
+  transition: 0.3 ease;
 }
 
 #album_view_content {
-    min-height: calc(60vh - 60px);
-    padding-bottom: 20vh;
-    display: flex;
-    flex-direction: column;
-    background: #151616;
+  min-height: calc(60vh - 60px);
+  padding-bottom: 20vh;
+  display: flex;
+  flex-direction: column;
+  background: #151616;
 }

@@ -1,425 +1,423 @@
 #search_view_content {
-    width: 100%;
-    display: flex;
-    flex-direction: row;
-    margin-top: 60px;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  margin-top: 60px;
 }
 
 #search_container_spacer {
-    width: 20px;
+  width: 20px;
 }
 
 #search_top_container {
-    width: 100%;
-    height: 40vh;
-    display: flex;
-    flex-direction: row;
-    padding-top: 60px;
+  width: 100%;
+  height: 40vh;
+  display: flex;
+  flex-direction: row;
+  padding-top: 60px;
 }
 
 #search_most_relevant_result {
-    /* height: calc(30vh + 50px); */
-    /* width: 30%; */
-    /* max-height: calc(26vw + 50px); */
-    /* min-height: calc(20vw + 50px); */
-    /* aspect-ratio: 1/1; */
+  /* height: calc(30vh + 50px); */
+  /* width: 30%; */
+  /* max-height: calc(26vw + 50px); */
+  /* min-height: calc(20vw + 50px); */
+  /* aspect-ratio: 1/1; */
 }
 
 #search_most_relevant_result_heading {
-    color: white;
-    /* margin-left: 20px; */
+  color: white;
+  /* margin-left: 20px; */
 }
 
 #search_most_relevant_result_image_container {
-    /* height: 30vh; */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    /* position: absolute; */
-    /* margin-left: 20px; */
-    aspect-ratio: 1/1;
-    /* max-height: 23vw; */
-    /* min-height: 15vw; */
-    width: 100%;
-    position: relative;
-    cursor: pointer;
+  /* height: 30vh; */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* position: absolute; */
+  /* margin-left: 20px; */
+  aspect-ratio: 1/1;
+  /* max-height: 23vw; */
+  /* min-height: 15vw; */
+  width: 100%;
+  position: relative;
+  cursor: pointer;
 }
 
 #search_most_relevant_result_image_container:hover #search_most_relevant_image {
-    width: 92%;
-    height: 92%;
-    transition: 0.25s ease;
+  width: 92%;
+  height: 92%;
+  transition: 0.25s ease;
 }
 
 #search_most_relevant_result_image_container:hover #search_most_relevant_image_darkener {
-    width: 92%;
-    height: 92%;
-    transition: 0.25s ease;
+  width: 92%;
+  height: 92%;
+  transition: 0.25s ease;
 }
 
 #search_most_relevant_result_image_container:hover #search_most_relevant_result_image_heading_container {
-    width: 92%;
-    height: 92%;
-    transition: 0.25s ease;
+  width: 92%;
+  height: 92%;
+  transition: 0.25s ease;
 }
 
 #search_most_relevant_image {
-    width: 100%;
-    height: 100%;
-    border-radius: 20px;
-    transition: 0.25s ease;
-    /* position: relative; */
-    top: 0;
-    object-fit: cover;
+  width: 100%;
+  height: 100%;
+  border-radius: 20px;
+  transition: 0.25s ease;
+  /* position: relative; */
+  top: 0;
+  object-fit: cover;
 }
 
 #search_most_relevant_image_darkener {
-    height: 100%;
-    width: 100%;
-    border-radius: 20px;
-    position: absolute;
-    z-index: 3;
-    background: linear-gradient(0deg, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0) 70%);
-    transition: 0.25s ease;
+  height: 100%;
+  width: 100%;
+  border-radius: 20px;
+  position: absolute;
+  z-index: 3;
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0) 70%);
+  transition: 0.25s ease;
 }
 
 #search_most_relevant_image_darkener:hover {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 #search_most_relevant_result_image_heading {
-    color: white;
-    position: absolute;
-    font-weight: 700;
-    letter-spacing: 2px;
-    z-index: 4;
-    width: 100%;
-    transition: 0.25s ease;
+  color: white;
+  position: absolute;
+  font-weight: 700;
+  letter-spacing: 2px;
+  z-index: 4;
+  width: 100%;
+  transition: 0.25s ease;
 }
 
 .search_most_relevant_result_image_heading_small {
-    font-size: 22px;
-    bottom: 10px;
-    left: 15px;
+  font-size: 22px;
+  bottom: 10px;
+  left: 15px;
 }
 
 .search_most_relevant_result_image_heading_big {
-    font-size: 30px;
-    bottom: 10px;
-    left: 15px;
+  font-size: 30px;
+  bottom: 10px;
+  left: 15px;
 }
 
-#search_results_artist_container{
-    height: 80vh;
-    width: 100%;
-    /* margin-left: 20px; */
+#search_results_artist_container {
+  height: 80vh;
+  width: 100%;
+  /* margin-left: 20px; */
 }
 
 #search_results_artists {
-    display: grid;
-    grid-template-rows: repeat(4, 1fr);
-    grid-row-gap: 10px;
+  display: grid;
+  grid-template-rows: repeat(4, 1fr);
+  grid-row-gap: 10px;
 }
 
 #search_results_artist_heading {
-    color: white;
+  color: white;
 }
 
-.search_results_artist{
-    /* height: 14vh; */
-    display: flex;
-    align-items: center;
-    /* width: 90%; */
-    background-color: rgba(255,255,255,0.0);
-    transition: background-color 0.15;
-    border-radius: 13px;
-    /* max-height: 10vw; */
+.search_results_artist {
+  /* height: 14vh; */
+  display: flex;
+  align-items: center;
+  /* width: 90%; */
+  background-color: rgba(255, 255, 255, 0);
+  transition: background-color 0.15;
+  border-radius: 13px;
+  /* max-height: 10vw; */
 }
 
-.search_results_artist:hover{
-    background-color: rgba(255,255,255,0.3);
-    cursor: pointer;
-    transition: background-color 0.15;
+.search_results_artist:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+  cursor: pointer;
+  transition: background-color 0.15;
 }
 
 .search_results_artist:hover img {
-    height: 90%;
-    width: 90%;
-    transition: 0.15s ease;
+  height: 90%;
+  width: 90%;
+  transition: 0.15s ease;
 }
 
 .search_results_artist_image_container {
-    /* height: 14vh; */
-    margin-right: 5px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    aspect-ratio: 1/1;
-    max-height: 10vw;
-    width: 40%;
-    max-width: 200px;
+  /* height: 14vh; */
+  margin-right: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  aspect-ratio: 1/1;
+  max-height: 10vw;
+  width: 40%;
+  max-width: 200px;
 }
 
 .search_results_artist img {
-    height: 100%;
-    width: 100%;
-    border-radius: 10px;
-    object-fit: cover;
-    transition: 0.15s ease;
+  height: 100%;
+  width: 100%;
+  border-radius: 10px;
+  object-fit: cover;
+  transition: 0.15s ease;
 }
 
 .search_results_artist_text {
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    margin-left: 10px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-left: 10px;
 }
 
 .search_results_artist_text_artist {
-    font-size: 18px;
-    color: white;
+  font-size: 18px;
+  color: white;
 }
 
 .search_results_artist_text_type {
-    color: grey;
-    font-size: 16px;
+  color: grey;
+  font-size: 16px;
 }
 
-
 #search_bottom_container {
-    width: 100%;
-    display: flex;
-    flex-direction: row;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
 }
 
 #search_section_songs_result {
-    /* height: 80%; */
-    /* margin-right: 20px; */
+  /* height: 80%; */
+  /* margin-right: 20px; */
 }
 
 #search_results_song_container {
-    /* height: 40vh; */
-    /* width: 70%; */
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
+  /* height: 40vh; */
+  /* width: 70%; */
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
 }
 
 #search_section_songs_result_heading {
-    color: white;
+  color: white;
 }
 
 .search_results_song {
-    height: 6vh;
-    width: 100%;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    background-color: rgba(255,255,255,0.0);
-    border-radius: 5px;
-    transition: background-color 0.15s;
-    max-height: 60px;
+  height: 6vh;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0);
+  border-radius: 5px;
+  transition: background-color 0.15s;
+  max-height: 60px;
 }
 
 .search_results_song_number {
-    height: 100%;
-    width: 50px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  height: 100%;
+  width: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .search_results_song_number p {
-    color: grey;
+  color: grey;
 }
 
 .search_results_song:hover {
-    background-color: rgba(255,255,255,0.3);
-    cursor: pointer;
+  background-color: rgba(255, 255, 255, 0.3);
+  cursor: pointer;
 }
 
 .search_results_song:hover .search_result_track_image {
-    height: 70%;
-    width: 70%;
-    transition: 0.25s ease;
+  height: 70%;
+  width: 70%;
+  transition: 0.25s ease;
 }
 
 .search_results_song:hover .search_currently_playing_container {
-    height: 70%;
-    width: 70%;
-    transition: 0.25s ease;
+  height: 70%;
+  width: 70%;
+  transition: 0.25s ease;
 }
 
 .search_results_song_image_container {
-    height: 100%;
-    /* width: 5vh; */
-    margin-right: 5px;
-    margin-left: 5px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    overflow: hidden;
-    aspect-ratio: 1/1;
-    position: relative;
+  height: 100%;
+  /* width: 5vh; */
+  margin-right: 5px;
+  margin-left: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  aspect-ratio: 1/1;
+  position: relative;
 }
 
 .search_result_track_image {
-    border-radius: 5px;
-    height: 80%;
-    width: 80%;
-    object-fit: contain;
-    transition: 0.25s ease;
+  border-radius: 5px;
+  height: 80%;
+  width: 80%;
+  object-fit: contain;
+  transition: 0.25s ease;
 }
 
 .search_result_track_image_selected {
-    height: 70% !important;
-    width: 70% !important;
+  height: 70% !important;
+  width: 70% !important;
 }
 
 .search_currently_playing_container {
-    height: 80%;
-    width: 80%;
-    transition: 0.25s ease;
+  height: 80%;
+  width: 80%;
+  transition: 0.25s ease;
 }
 
 .search_results_song p {
-    padding-left: 5px;
-    padding-right: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
 }
 
 .search_results_song_text {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
 
 .search_results_song_text_title {
-    color: white;
+  color: white;
 }
 
 .search_results_song_text_artist {
-    color: grey;
-    font-size: 14px;
+  color: grey;
+  font-size: 14px;
 }
 
 .search_results_song_text_time {
-    right: 0;
-    position: absolute;
-    color: grey;
-    font-size: 14px;
-    margin-right: 26px;
+  right: 0;
+  position: absolute;
+  color: grey;
+  font-size: 14px;
+  margin-right: 26px;
 }
 
 #search_results_albums_heading {
-    color: white;
+  color: white;
 }
 
 #search_bottom_right_container {
-    /* width: 70%; */
-    height: 80vh;
+  /* width: 70%; */
+  height: 80vh;
 }
 
 #search_results_albums {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, 150px);
-    flex-direction: row;
-    margin-right: 20px;
-    grid-column-gap: 10px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 150px);
+  flex-direction: row;
+  margin-right: 20px;
+  grid-column-gap: 10px;
 }
 
 .search_results_album {
-    width: 100%;
-    background-color: rgba(255, 255, 255, 0.0);
-    transition: background-color 0.15s;
-    border-radius: 13px;
+  width: 100%;
+  background-color: rgba(255, 255, 255, 0);
+  transition: background-color 0.15s;
+  border-radius: 13px;
 }
 
 .search_results_album:hover {
-    background-color: rgba(255, 255, 255, 0.3);
-    cursor: pointer;
+  background-color: rgba(255, 255, 255, 0.3);
+  cursor: pointer;
 }
 
 .search_results_album:hover .search_results_album_image {
-    width: 90%;
-    height: 90%;
-    transition: 0.15s ease;
+  width: 90%;
+  height: 90%;
+  transition: 0.15s ease;
 }
 
 .search_results_album_image_container {
-    width: 100%;
-    aspect-ratio: 1 / 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .search_results_album_image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: 15px;
-    transition: 0.15s ease;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 15px;
+  transition: 0.15s ease;
 }
 
 .search_results_album_text_title {
-    color: white;
-    font-size: 16px;
-    white-space: nowrap;
+  color: white;
+  font-size: 16px;
+  white-space: nowrap;
 }
 
 .search_results_album_text_type {
-    color: grey;
-    font-size: 12px;
+  color: grey;
+  font-size: 12px;
 }
 
 .search_results_album_text {
-    margin-top: 5px;
-    margin-left: 5px;
-    overflow: hidden;
+  margin-top: 5px;
+  margin-left: 5px;
+  overflow: hidden;
 }
 
-
 #search_results_playlists_heading {
-    color: white;
+  color: white;
 }
 
 #search_results_playlists {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, 150px);
-    flex-direction: row;
-    margin-right: 20px;
-    grid-column-gap: 10px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 150px);
+  flex-direction: row;
+  margin-right: 20px;
+  grid-column-gap: 10px;
 }
 
 .search_results_heading_container {
-    display: flex;
-    align-items: center;
-    color: white;
+  display: flex;
+  align-items: center;
+  color: white;
 }
 
 .search_results_heading_container img {
-    height: 22px;
-    aspect-ratio: 1 / 1;
-    margin-left: 10px;
-    margin-top: 5px;
-    cursor: pointer;
+  height: 22px;
+  aspect-ratio: 1 / 1;
+  margin-left: 10px;
+  margin-top: 5px;
+  cursor: pointer;
 }
 
 div#search_right_container {
-    /* min-width: 75%; */
-    /* max-width: calc(80% - 40px); */
-    width: calc(80% - 60px);
+  /* min-width: 75%; */
+  /* max-width: calc(80% - 40px); */
+  width: calc(80% - 60px);
 }
 
 div#search_left_container {
-    width: 20%;
-    margin-left: 20px;
+  width: 20%;
+  margin-left: 20px;
 }
 
 #search_most_relevant_result_image_heading_container {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    z-index: 5;
-    transition: 0.25s ease;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: 5;
+  transition: 0.25s ease;
 }

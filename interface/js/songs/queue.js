@@ -1,6 +1,6 @@
-var songQueue = []; //songs to be played
-var currentSong = null; //currently playing song
-var playedQueue = []; //songs that have been played
+var songQueue = [] //songs to be played
+var currentSong = null //currently playing song
+var playedQueue = [] //songs that have been played
 
 async function playNewSong(info) {
   //new main method for adding new songs
@@ -29,100 +29,99 @@ async function playSongNow(info) {
 }
 
 function addToQueue(song) {
-  if (song == null) return;
-  songQueue.push(song);
+  if (song == null) return
+  songQueue.push(song)
 }
 
 function getCurrentSong() {
-  return currentSong;
+  return currentSong
 }
 
 async function removeFromQueue() {
-  currentSong = await songQueue.shift();
-  console.log(currentSong);
-  return currentSong;
+  currentSong = await songQueue.shift()
+  console.log(currentSong)
+  return currentSong
 }
 
 async function playQueue() {
-  var songQueueLength = songQueue.length;
+  var songQueueLength = songQueue.length
 
   //no song is in queue
   if (songQueueLength == 0) {
-    removeCurrentlyPlaying();
+    removeCurrentlyPlaying()
     setPlayState(false)
-    return;
+    return
   }
 
   //there are songs in queue but no song is currently playing
   if (songQueueLength > 0 && currentSong == null) {
-    var song = await removeFromQueue();
-    console.log(song.getSongTitle());
-    await play(song);
-    
+    var song = await removeFromQueue()
+    console.log(song.getSongTitle())
+    await play(song)
+
     if (songQueueLength == 1) {
       //find a new song to play
       //TODO nextSong = await findRecommendedSong(song);
     }
-
   }
 }
 
 //adds a song to the front of the queue but keeps the songs that are already in the queue
 function skipQueue(song) {
-  songQueue.unshift(song);
+  songQueue.unshift(song)
 }
 
 //deletes the queue and plays a new song
 async function replaceQueue(song) {
-  songQueue = [];
+  songQueue = []
   finalSong = await song
-  addToQueue(finalSong);
-  playQueue();
+  addToQueue(finalSong)
+  playQueue()
 }
 
 //clears the song currently playing
 function clearCurrentlyPlaying() {
-  currentSong = null;
+  currentSong = null
 }
 
 //clears the queue of songs to be played
 function clearQueue() {
-  songQueue = [];
+  songQueue = []
 }
 
 //returns the song currently playing
 function getCurrentSong() {
-  return currentSong;
+  return currentSong
 }
 
 function setCurrentSong(song) {
-  currentSong = song;
+  currentSong = song
 }
 
 //returns, how many songs are in the queue
 function getQueueLength() {
-  return songQueue.length;
+  return songQueue.length
 }
 
 //adds a song to the played queue
 function addToPlayedQueue(song) {
-  playedQueue.push(song);
+  playedQueue.push(song)
 }
 
 //returns the played queue
 function getPlayedQueue() {
-  return playedQueue;
+  return playedQueue
 }
 
 //returns the song queue
 function getQueue() {
-  return songQueue;
+  return songQueue
 }
 
 function getLastPlayedSongInfo() {
-  return playedQueue[playedQueue.length - 1].getSongInfo();
+  return playedQueue[playedQueue.length - 1].getSongInfo()
 }
 
 function getLastPlayedSong() {
-  return playedQueue[playedQueue.length - 1];
+  return playedQueue[playedQueue.length - 1]
 }

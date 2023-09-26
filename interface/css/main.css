@@ -1,17 +1,17 @@
 ::-webkit-scrollbar {
-  width: 12px; 
+  width: 12px;
   height: 12px;
 }
 
 ::-webkit-scrollbar-track {
-    background: rgba(0, 0, 0, 0)
+  background: rgba(0, 0, 0, 0);
 }
 
 .flatTop::-webkit-scrollbar-thumb {
-    background: var(--accentColor);
-    border-radius: 0 0 10px 10px;
-    border: 1px solid transparent;
-  }
+  background: var(--accentColor);
+  border-radius: 0 0 10px 10px;
+  border: 1px solid transparent;
+}
 
 .roundTop::-webkit-scrollbar-thumb {
   background: var(--accentColor);
@@ -20,124 +20,123 @@
 }
 
 .flatBottom::-webkit-scrollbar-thumb {
-    background: var(--accentColor);
-    border-radius: 10px 10px 0 0;
-    border: 1px solid transparent;
-  }
+  background: var(--accentColor);
+  border-radius: 10px 10px 0 0;
+  border: 1px solid transparent;
+}
 
 body {
-    margin: 0;
-    user-select: none;
-    display: flex;
-    overflow-x: hidden;
-    background-color: #151616;
+  margin: 0;
+  user-select: none;
+  display: flex;
+  overflow-x: hidden;
+  background-color: #151616;
 }
 
 p {
-    margin: 0;
+  margin: 0;
 }
 
 #top_search_input:focus {
-    outline: none;
+  outline: none;
 }
 
 #viewport {
-    position: absolute;
-    z-index: -1;
-    width: calc(100% - 60px);
-    right: 0;
-    background-color: #151616;
+  position: absolute;
+  z-index: -1;
+  width: calc(100% - 60px);
+  right: 0;
+  background-color: #151616;
 }
 
 .view {
-    width: 100%;
-    height: 100vh;
-    position: absolute;
-    top: 0;
+  width: 100%;
+  height: 100vh;
+  position: absolute;
+  top: 0;
 }
 
 .view_title {
-    height: 70px;
-    color: white;
-    display: flex;
-    align-items: center;
-    margin-left: 20px;
-    font-size: 32px;
-    font-weight: bold;
-    letter-spacing: 1.5px;
-    margin-top: 60px;
+  height: 70px;
+  color: white;
+  display: flex;
+  align-items: center;
+  margin-left: 20px;
+  font-size: 32px;
+  font-weight: bold;
+  letter-spacing: 1.5px;
+  margin-top: 60px;
 }
 
 .view_content {
-    height: calc(100% - 130px);
-    margin-left: 20px;
-    margin-right: 20px;
-
+  height: calc(100% - 130px);
+  margin-left: 20px;
+  margin-right: 20px;
 }
 
 .view_content_no_title {
-    height: calc(100% - 60px);
-    margin-left: 20px;
-    margin-right: 20px;
-    margin-top: 60px;
+  height: calc(100% - 60px);
+  margin-left: 20px;
+  margin-right: 20px;
+  margin-top: 60px;
 }
 
 .view_content_unbound {
-    height: 100%;
+  height: 100%;
 }
 
 #top_container_alternativeTitle_container {
-    width: 400px;
-    height: 60px;
-    z-index: 3;
-    display: flex;
-    align-items: center;
-    overflow: hidden;
+  width: 400px;
+  height: 60px;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
 }
 
-#top_container_alternativeTitle{
-    color: white;
-    font-size: 24px;
-    font-weight: 600;
-    letter-spacing: 2px;
-    margin-left: -150px;
-    animation-fill-mode: forwards;
-    opacity: 0;
+#top_container_alternativeTitle {
+  color: white;
+  font-size: 24px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  margin-left: -150px;
+  animation-fill-mode: forwards;
+  opacity: 0;
 }
 
 #context_menu_container {
-    width: 100%;
-    height: 100%;
+  width: 100%;
+  height: 100%;
 }
 
 .context_menu {
-    border-radius: 20px;
-    background-color: rgba(187, 187, 187, 0.65);
-    backdrop-filter: blur(3px);
-    position: absolute;
-    z-index: 10;
-    padding: 5px;
+  border-radius: 20px;
+  background-color: rgba(187, 187, 187, 0.65);
+  backdrop-filter: blur(3px);
+  position: absolute;
+  z-index: 10;
+  padding: 5px;
 }
 
 #context_main_menu {
-    width: 150px;
-    max-height: 250px;
+  width: 150px;
+  max-height: 250px;
 }
 
 .context_menu_button {
-    height: 32px;
-    padding-left: 10px;
-    padding-right: 10px;
-    display: flex;
-    align-items: center;
-    border-radius: 18px;
+  height: 32px;
+  padding-left: 10px;
+  padding-right: 10px;
+  display: flex;
+  align-items: center;
+  border-radius: 18px;
 }
 
 .context_menu_button:hover {
-    background: var(--accentColor);
+  background: var(--accentColor);
 }
 
 #context_sub_menu {
-    width: 160px;
-    border-radius: 0 20px 20px 20px;
+  width: 160px;
+  border-radius: 0 20px 20px 20px;
 }

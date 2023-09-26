@@ -1,2 +1,1 @@
-async function findRecommendedSong(currentSong) {
-}
+async function findRecommendedSong(currentSong) {}

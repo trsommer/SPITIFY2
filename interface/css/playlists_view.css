@@ -1,105 +1,105 @@
 #playlists_container {
-    padding-top: 60px;
-    margin-left: 20px;
-    margin-right: 20px;
+  padding-top: 60px;
+  margin-left: 20px;
+  margin-right: 20px;
 }
 
 #playlists_heading {
-    color: white;
+  color: white;
 }
 
 #playlists_view_content {
-    display: grid;
-    /*width: 100%;*/
-    grid-template-columns: repeat(auto-fill, var(--playlistsItemWidth));
-    grid-template-rows: repeat(auto-fill, 280px);
-    column-gap: 20px;
-    row-gap: 20px;
+  display: grid;
+  /*width: 100%;*/
+  grid-template-columns: repeat(auto-fill, var(--playlistsItemWidth));
+  grid-template-rows: repeat(auto-fill, 280px);
+  column-gap: 20px;
+  row-gap: 20px;
 }
 
 .playlists_item {
-    height: 280px;
-    background: var(--bg_dark);
-    border-radius: 20px;
-    cursor: pointer;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+  height: 280px;
+  background: var(--bg_dark);
+  border-radius: 20px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .playlist_item_image {
-    width: var(--playlistsItemImageWidth);
-    margin-top: var(--playlistsItemImageTopMargin);
-    border-radius: 15px;
+  width: var(--playlistsItemImageWidth);
+  margin-top: var(--playlistsItemImageTopMargin);
+  border-radius: 15px;
 }
 
 .playlist_item_image_container {
-    display: grid;
-    grid-template-columns: 50% 50%;
-    overflow: hidden;
-    border-radius: 15px;
-    width: 80%;
-    margin-top: 10%;
+  display: grid;
+  grid-template-columns: 50% 50%;
+  overflow: hidden;
+  border-radius: 15px;
+  width: 80%;
+  margin-top: 10%;
 }
 
 .playlist_item_quad_image {
-    width: 100%;
+  width: 100%;
 }
 
 .playlists_item_text_container {
-    margin-top: 10px;
+  margin-top: 10px;
 }
 
 .playlists_item_text {
-    color: white;
-    font-size: 18px;
+  color: white;
+  font-size: 18px;
 }
 
 #playlists_liked_songs {
-    height: 280px;
-    background: var(--bg_dark);
-    border-radius: 20px;
-    cursor: pointer;
-    grid-column-start: 1;
-    grid-column-end: 3;
-    background: linear-gradient(146deg, rgba(255,0,0,0.8) 0%, rgba(227,0,132,0.8) 100%);
-    overflow: hidden;
-    display: flex;
-    position: relative;
-    flex-direction: column;
+  height: 280px;
+  background: var(--bg_dark);
+  border-radius: 20px;
+  cursor: pointer;
+  grid-column-start: 1;
+  grid-column-end: 3;
+  background: linear-gradient(146deg, rgba(255, 0, 0, 0.8) 0%, rgba(227, 0, 132, 0.8) 100%);
+  overflow: hidden;
+  display: flex;
+  position: relative;
+  flex-direction: column;
 }
 
 #playlists_liked_songs_text_Container {
-    /* height: 100%; */
-    width: var(--playlistsItemImageWidth);
-    /* overflow: hidden; */
-    margin-left: var(--playlistsItemImageTopMargin);
-    margin-top: 10px;
-    position: relative;
-    /* left: 20px; */
+  /* height: 100%; */
+  width: var(--playlistsItemImageWidth);
+  /* overflow: hidden; */
+  margin-left: var(--playlistsItemImageTopMargin);
+  margin-top: 10px;
+  position: relative;
+  /* left: 20px; */
 }
 
 #playlists_liked_songs_text_Container p {
-    /* position: relative; */
-    /* z-index: 2; */
-    color: white;
-    /* top: 191px; */
-    /* left: 20px; */
-    font-size: 18px;
-    text-align: center;
+  /* position: relative; */
+  /* z-index: 2; */
+  color: white;
+  /* top: 191px; */
+  /* left: 20px; */
+  font-size: 18px;
+  text-align: center;
 }
 
 #playlist_liked_song_image {
-    width: var(--playlistsItemImageWidth);
-    margin: var(--playlistsItemImageTopMargin);
-    margin-bottom: 0;
-    border-radius: 15px;
+  width: var(--playlistsItemImageWidth);
+  margin: var(--playlistsItemImageTopMargin);
+  margin-bottom: 0;
+  border-radius: 15px;
 }
 
 .playlists_plusButton {
-    fill: var(--accentColor);
+  fill: var(--accentColor);
 }
 
 .playlists_plusButton_background {
-    fill: #151616;
+  fill: #151616;
 }

@@ -1,4 +1,3 @@
-
 /**
  * Returns a string of all the artists of a song.
  * @param {Array} artists - Array of artist objects.
@@ -6,20 +5,19 @@
  */
 function getArtistsAsString(artists) {
   if (!Array.isArray(artists) || artists.length === 0) {
-    return null;
+    return null
   }
 
-  const artistNames = [];
+  const artistNames = []
   for (const artist of artists) {
-    const artistName = artist.profile && artist.profile.name;
+    const artistName = artist.profile && artist.profile.name
     if (artistName) {
-      artistNames.push(artistName);
+      artistNames.push(artistName)
     }
   }
 
-  return artistNames.join(", ");
+  return artistNames.join(", ")
 }
-
 
 /**
  * Checks if a streaming URL is expired by comparing the timestamp in the URL with the current time.
@@ -27,9 +25,9 @@ function getArtistsAsString(artists) {
  * @returns {boolean} - True if the URL is expired, false otherwise.
  */
 function checkIfUrlExpired(url) {
-  const expired = new URL(url).searchParams.get("expire");
-  const timeDelta = expired - Math.floor(Date.now() / 1000);
-  return timeDelta < 0;
+  const expired = new URL(url).searchParams.get("expire")
+  const timeDelta = expired - Math.floor(Date.now() / 1000)
+  return timeDelta < 0
 }
 
 /**
@@ -38,15 +36,14 @@ function checkIfUrlExpired(url) {
  * @returns {string} - The URL of the highest resolution cover image.
  */
 function getImageCoverUrl(songInfo) {
-  const images = songInfo.albumOfTrack.coverArt.sources;
+  const images = songInfo.albumOfTrack.coverArt.sources
 
   // Sort images by resolution in descending order
-  images.sort((a, b) => b.width - a.width);
+  images.sort((a, b) => b.width - a.width)
 
   // Return the URL of the first image
-  return images.length > 0 ? images[0].url : '';
+  return images.length > 0 ? images[0].url : ""
 }
-
 
 /**
  * Returns the ID of a song from the songInfo object
@@ -55,9 +52,9 @@ function getImageCoverUrl(songInfo) {
  */
 function getIdFromSongInfo(songInfo) {
   if (songInfo.id !== undefined && songInfo.id !== null) {
-    return songInfo.id;
+    return songInfo.id
   }
-  return songInfo.uri.split(":")[2];
+  return songInfo.uri.split(":")[2]
 }
 
 /**
@@ -68,21 +65,21 @@ function getIdFromSongInfo(songInfo) {
  */
 function shortenString(str, len) {
   if (str == null) {
-    return "";
+    return ""
   }
-  const strLen = str.length;
-  return strLen > len ? str.substring(0, len) + "..." : str;
+  const strLen = str.length
+  return strLen > len ? str.substring(0, len) + "..." : str
 }
 
 /**
  * Returns a formatted string of the track length from the given duration in milliseconds.
  * @param {number} ms - The duration of the track in milliseconds.
- * @returns {string} - The formatted track length in the format of "minutes:seconds". 
+ * @returns {string} - The formatted track length in the format of "minutes:seconds".
  */
 function getTrackLengthFromMS(ms) {
-  const minutes = Math.floor(ms / 60000);
-  const seconds = ((ms % 60000) / 1000).toFixed(0);
-  return `${minutes}:${(seconds < 10 ? "0" : "")}${seconds}`;
+  const minutes = Math.floor(ms / 60000)
+  const seconds = ((ms % 60000) / 1000).toFixed(0)
+  return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`
 }
 
 /**
@@ -91,23 +88,22 @@ function getTrackLengthFromMS(ms) {
  * @returns {string} - A string representing the time in days, hours, and minutes.
  */
 function msToTimeString(totalMs) {
-  const totalSeconds = Math.floor(totalMs / 1000);
-  const minutes = Math.floor(totalSeconds / 60);
-  const seconds = totalSeconds % 60;
-  const hours = Math.floor(minutes / 60);
-  const days = Math.floor(hours / 24);
+  const totalSeconds = Math.floor(totalMs / 1000)
+  const minutes = Math.floor(totalSeconds / 60)
+  const seconds = totalSeconds % 60
+  const hours = Math.floor(minutes / 60)
+  const days = Math.floor(hours / 24)
 
-  const timeStringParts = [];
+  const timeStringParts = []
   if (days > 0) {
-    timeStringParts.push(`${days} day${days > 1 ? 's' : ''}`);
+    timeStringParts.push(`${days} day${days > 1 ? "s" : ""}`)
   }
   if (hours > 0) {
-    timeStringParts.push(`${hours} hour${hours > 1 ? 's' : ''}`);
+    timeStringParts.push(`${hours} hour${hours > 1 ? "s" : ""}`)
   }
   if (minutes > 0) {
-    timeStringParts.push(`${minutes} minute${minutes > 1 ? 's' : ''}`);
+    timeStringParts.push(`${minutes} minute${minutes > 1 ? "s" : ""}`)
   }
 
-  return timeStringParts.join(' and ');
+  return timeStringParts.join(" and ")
 }
-
